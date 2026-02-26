@@ -2,7 +2,8 @@
  * 파워볼 실시간 추첨 애니메이션 엔진
  * 핵심 로직: Matter.js (물리) + GSAP (연출 제어)
  */
-
+// 파일 맨 윗줄 (이미 추가하셨다면 그대로 두세요)
+import * as THREE from 'three';
 let engine, render, runner, world;
 let balls = [];
 let isAgitating = false;
@@ -17,7 +18,7 @@ const railGap = 34; // 이중 레일 사이의 간격 (공 크기 28~30px 고려
 const railThick = 4;
 const nozzleHeight = 44;
 // 1. 엔진 초기화 및 환경 설정
-function initPowerballEngine(cfg) {
+export function initPowerballEngine(cfg) {
     // 전역 설정에 주입 (초기 결과 배치에서 사용)
     config = cfg;
     const { Engine, Render, Runner, Composite, Bodies, Body, Events } = Matter;

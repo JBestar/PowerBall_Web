@@ -39,13 +39,22 @@
         <canvas id="lottery-canvas" width="500" height="500"></canvas>
     </div>
 </div>
-
+<!-- 1. UNPKG 공식 가이드에 따른 importmap 설정 -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.183.1/build/three.module.min.js"
+  }
+}
+</script>
 <!-- 라이브러리 및 스크립트 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-<script src="<?= base_url('js/animation.js') ?>"></script>
-
-<script>
+<!--<script src="https://unpkg.com/three/build/three.module.min.js"></script>-->
+<!--<script src="<?= base_url('js/animation.js') ?>"></script>-->
+<script type="module">
+    import * as THREE from 'three';
+    import { initPowerballEngine } from "<?= base_url('js/animation.js') ?>";
     const POWERBALL_CONFIG = {
         baseUrl: '<?= base_url() ?>',
         lastRound: <?= $draw_data['last_id'] ?>,
@@ -58,12 +67,8 @@
         prevPower: <?= $draw_data['prev_power'] !== null ? $draw_data['prev_power'] : 'null' ?>,
         prevSum: <?= isset($draw_data['prev_sum']) && $draw_data['prev_sum'] !== null ? (int)$draw_data['prev_sum'] : 'null' ?>
     };
-
-    window.onload = function() {
-        if (typeof initPowerballEngine === 'function') {
-            initPowerballEngine(POWERBALL_CONFIG);
-        }
-    };
+    // 엔진 시작
+    initPowerballEngine(POWERBALL_CONFIG);
 </script>
 
 </body>
