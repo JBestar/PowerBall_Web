@@ -19,7 +19,7 @@ class Filters extends BaseConfig
 			// 'csrf',
 		],
 		'after'  => [
-			'toolbar',
+			'toolbar' => ['except' => ['frame/dayLog', 'frame/*']],
 			//'honeypot'
 		],
 	];

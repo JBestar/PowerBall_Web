@@ -1,75 +1,457 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>Powerball Live Mini-View</title>
-    <script>const BASE_URL = "<?= BASEURL ?>";</script>
-    
-    <!-- 전용 스타일 연결 -->
-    <link rel="stylesheet" href="<?= base_url('css/style.css') ?>">
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><?=$site_name?></title>
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="파워볼게임(PBG) : 실시간 파워볼 분석 커뮤니티" />
+    <meta property="og:description" content="파워볼 커뮤니티, 홀짝, 출줄, 패턴, 분석기, 실시간 통계" />
+    <meta property="og:image" content="<?php echo site_furl('images/main_logo.gif'); ?>" />
+    <meta property="og:url" content="<?php echo site_furl(''); ?>" />
+    <link rel="canonical" href="<?php echo site_furl(''); ?>" />
+    <?php $cdn = 'https://static.powerballgame.co.kr'; $local = rtrim(site_furl(''), '/'); $cssVer = ($_ENV['CI_ENVIRONMENT'] ?? '') == (defined('ENV_PRODUCTION') ? ENV_PRODUCTION : 'production') ? '1' : time(); ?>
+    <!-- 선배님 CDN 우선, 실패 시 로컬 -->
+    <link rel="stylesheet" href="<?php echo $cdn; ?>/css/common.css?v=201905194" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/common.css?v=<?php echo $cssVer; ?>';" />
     <style>
-        /* 기본 레이아웃 */
-        body { background: #071221; color: #fff; margin: 0; padding: 0; overflow: hidden; font-family: 'Malgun Gothic', sans-serif; }
-        
-        #main-wrapper {
-            width: 900px; height: 400px; margin: 30px auto;
-            background: #2f5cb0; border: 2px solid #1a2a44; border-radius: 12px;
-            display: flex; position: relative; box-shadow: 0 0 40px rgba(0,0,0,0.6);
+        /* 보드 메뉴 4개(유머/포토/분석픽공유/자유) 한 줄 유지 - float 줄바꿈 방지 */
+        .boardBox ul.menu { display: flex; flex-wrap: nowrap; }
+        .boardBox ul.menu li { float: none; flex: none; width: 155px; }
+        .boardBox ul.menu li.none { width: 154px; }
+        /* timeBox / shareBox / shareDiv (선배님 스타일) */
+        div.timeBox {
+            position: absolute; top: 17px; right: 125px;
+            width: 402px; height: 30px; line-height: 30px;
+            border: 1px solid #D5D5D5; text-align: center;
+            background-color: #F1F1F1; font-size: 11px; font-family: tahoma, dotum;
         }
-
-        /* 좌측 타이틀 바 */
-        .side-title-bar {
-            width: 40px; background: #c0392b; display: flex; align-items: center; justify-content: center;
-            border-top-left-radius: 10px; border-bottom-left-radius: 10px;
+        div.shareBox {
+            position: absolute; top: 17px; right: 15px;
+            width: 100px; height: 30px; line-height: 30px;
+            border: 1px solid #921417; text-align: center;
+            background-color: #C11A20; font-size: 11px; font-family: tahoma, dotum;
+            color: #fff;
         }
-        .side-title-bar span { writing-mode: vertical-rl; font-size: 13px; font-weight: bold; color: #fff; letter-spacing: 2px; }
-
-        /* 좌측 추첨기 영역 */
-        .machine-container { flex: 0 0 800px; height: 400px; position: relative; overflow: hidden; border-centre: 2px solid #142238; }
-        #lottery-canvas { width: 800px !important; height: 400px !important; }
-</style>
+        div.shareBox a { display: block; color: #fff; }
+        #shareDiv {
+            position: absolute; background-color: #333; width: 790px; padding: 20px;
+            display: none; z-index: 99;
+        }
+        #shareDiv .tit { color: #fff; padding: 10px 0; }
+        #shareDiv .text { padding-bottom: 10px; }
+        #shareDiv .text textarea {
+            background-color: #000; border: 1px solid #000; color: #fff;
+            width: 600px; padding: 10px; resize: none;
+        }
+        #shareDiv .text .btn {
+            position: absolute; background-color: #C11A20; color: #fff;
+            width: 50px; height: 50px; text-align: center; line-height: 50px;
+            margin-left: 5px; border: 1px solid #921417;
+        }
+        .txTooltip {
+            background-color: #C11A20; border: 1px solid #921417; color: #fff;
+            width: 16px; height: 16px; text-align: center;
+            display: inline-block; line-height: 16px;
+        }
+        .txIcon { width: 20px; height: 20px; }
+        #txTooltipDiv {
+            position: absolute; margin-top: 5px; background-color: #333;
+            width: 200px; height: 30px; color: #fff; padding: 20px;
+            border-radius: 2px; text-align: left; display: none;
+        }
+        .powerballBox a { color: #5F6164; }
+        /* inner-right(일자별 분석 영역)가 메인 헤더에 가리지 않도록 */
+        #wrap #topArea { position: relative; z-index: 1; overflow: hidden; }
+        #wrap #container { position: relative; z-index: 2; }
+        #wrap .inner-right { position: relative; z-index: 3; }
+    </style>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-149467684-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-149467684-1');
+    </script>
 </head>
+
 <body>
+    <div id="wrap">
+        <!-- 2. 이미지 소스에서 확인된 상단 영역(topArea) 구조 구현 -->
+        <div id="topArea">
+            <!-- 로고 영역 -->
+            <div class="logo">
+                <a href="/" class="none">
+                    <img src="<?php echo site_furl('images/main_logo.gif'); ?>" width="163" height="60" alt="로고">
+                </a>
+            </div>
 
-<div id="main-wrapper">
-    <div class="side-title-bar"><span>실시간 파워볼게임 미니뷰</span></div>
+            <!-- 로고 옆 텍스트 영역 (공지 & 가이드) -->
+            <div class="text">
+                <!-- 공지사항 (notice) -->
+                <div class="notice">
+                    <img src="<?php echo site_furl('images/bl_notice.png'); ?>" width="46" height="13" alt="NOTICE">
+                    <!-- 선배님의 게시판 데이터($boards) 중 첫 번째 공지를 가져옵니다 -->
+                    <a href="/bbs/board.php?bo_table=custom&wr_id=164" target="mainFrame">
+                        [제재] 계좌, 톡, 연락처 및 개인정보 공유 시 경고없이 영구 차단조치 합니다.
+                    </a>
+                </div>
 
-    <div class="machine-container">
-        <canvas id="lottery-canvas" width="500" height="500"></canvas>
+                <!-- 가이드 (guide) -->
+                <div class="guide">
+                    <img src="<?php echo site_furl('images/bl_guide.png'); ?>" width="46" height="13" alt="GUIDE">
+                    <a href="/bbs/board.php?bo_table=custom&wr_id=166" target="mainFrame">
+                        [업데이트] 베스트 픽스터 추가 및 선정 기준 안내
+                    </a>
+                </div>
+            </div>
+            <div style="position:absolute; top:0; right:2px;">
+                <a href="/bbs/board.php?bo_table=custom&wr_id=147" target="mainFrame">
+                    <img src="<?php echo site_furl('images/banner_bullet.png'); ?>" alt="총알선물">
+                </a>
+            </div>
+            <div class="gnb">
+                <ul>
+                    <!-- 1. 파워볼게임 (활성화 상태 'on') -->
+                    <li><a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame" class="on">파워볼2게임(PBG2)</a></li>
+                    
+                    <!-- 2. 픽 (로그인 체크 로직 포함) -->
+                    <li>
+                        <a href="#" onclick="<?php echo is_login(true) ? 'location.href=\'/pick\'' : 'alert(\'로그인 후 이용가능합니다.\');'; ?> return false;">픽</a>
+                    </li>
+
+                    <!-- 3. 커뮤니티 -->
+                    <li><a href="/bbs/board.php?bo_table=humor" target="mainFrame">커뮤니티</a></li>
+
+                    <!-- 4. 마켓 (로그인 체크) -->
+                    <li>
+                        <a href="#" onclick="<?php echo is_login(true) ? 'location.href=\'/market\'' : 'alert(\'로그인 후 이용가능합니다.\');'; ?> return false;">마켓</a>
+                    </li>
+
+                    <!-- 5. 방채팅 -->
+                    <li><a href="#" onclick="openChatRoom(); return false;">방채팅</a></li>
+
+                    <!-- 6. 고객 관련 메뉴들 -->
+                    <li><a href="/bbs/board.php?bo_table=qna" target="mainFrame">1:1문의사항</a></li>
+                    <li><a href="/bbs/board.php?bo_table=faq" target="mainFrame">자주묻는질문</a></li>
+                    <li><a href="/bbs/board.php?bo_table=request" target="mainFrame">기능개선요청</a></li>
+                    <li><a href="/bbs/board.php?bo_table=custom" target="mainFrame">고객센터</a></li>
+                    <li><a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">출석체크</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="container">
+            <!-- 메인 콘텐츠 및 사이드바 박스 -->
+            <div id="box-ct">             
+                <!-- [inner-left] 메인 분석판 및 게시판이 들어갈 자리 -->
+                <div class="inner-left">
+                    <!-- [box-login] 로그인 버튼 영역 -->
+                    <div class="box-login">
+                        <div style="padding:15px 25px 10px 15px;">
+                            <!-- 로그인 여부에 따라 버튼 동작 분기 -->
+                            <?php if(!is_login(true)) : ?>
+                                <a href="/login" class="btn_login">파워볼게임 로그인</a>
+                                <div class="login_menu">
+                                    <a href="/?view=simpleJoin">회원가입</a>
+                                    <span class="right">
+                                        <a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">아이디</a> 
+                                        <span>&middot</span> 
+                                        <a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">비밀번호 찾기</a>
+                                    </span>
+                                </div>
+                            <?php else : ?>
+                                <!-- 로그인 시 유저 정보 표시 (선배님 스타일) -->
+                                <div style="text-align:center; padding: 10px 0;">
+                                    <strong style="color:#0056b3;"><?= isset($objMember) ? esc($objMember->mb_nickname) : '' ?></strong>님 환영합니다.
+                                    <div style="margin-top:5px;"><a href="/logout" style="font-size:11px; color:#999;">[로그아웃]</a></div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <!-- [notice] 공지사항 롤링 영역 -->
+                        <div class="notice">
+                            <!-- 공지 아이콘 이미지 (이미지 소스 경로) -->
+                            <img src="<?php echo site_furl('images/text_notice.jpg'); ?>" alt="공지">
+                            
+                            <div style="position:absolute" id="scrollNotice">
+                                <ul>
+                                    <!-- 실제로는 선배님의 $boards 데이터를 반복문으로 돌리면 됩니다 -->
+                                    <?php if(!empty($boards)) : foreach($boards as $row) : ?>
+                                        <li><a href="/bbs/view?id=<?= $row->notice_fid ?>"><?= esc($row->notice_title) ?></a></li>
+                                    <?php endforeach; else : ?>
+                                        <li><a href="#">[안내] 건전하고 매너 있는 게임 문화를 만들어갑니다.</a></li>
+                                        <li><a href="#">[제재] 타인 비방 및 욕설 시 이용이 제한될 수 있습니다.</a></li>
+                                    <?php endif; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>           
+                    <!-- [banner_left1_area] 상단 광고 영역 -->
+                    <div id="banner_left1_area" style="height:50px; text-align:center;">
+                        <div style="text-align:center;">
+                            <!-- 이미지 소스에 있는 실제 광고 링크와 이미지 주소 적용 -->
+                            <a href="http://qootoon.com/f4c21cda" target="_blank">
+                                <img src="<?php echo site_furl('images/toptoon_320_50_1.jpg'); ?>" alt="상단광고">
+                            </a>
+                        </div>
+                    </div>
+                    <!-- [guide_banner] 메인 분석판 상단 가이드 영역 -->
+                    <div id="guide_banner">
+                        <!-- 실제 분석판이 들어가는 iframe (선배님 소스 구조 그대로) -->
+                        <iframe scrolling="no" frameborder="0" width="100%" height="575" 
+                            src="<?php echo site_furl('home/chat'); ?>" id="chatFrame">
+                        </iframe>
+                        <!-- 분석판 위에 떠 있는 퀵 메뉴 버튼들 -->
+                        <div class="top_banner" style="top:-217px; left:-46px;">
+                            <div class="lb1">
+                                <a href="/bbs/board.php?bo_table=custom&wr_id=4" target="mainFrame">매뉴얼</a>
+                            </div>
+                            <div class="lb2">
+                                <a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">랭킹</a>
+                            </div>
+                            <div class="lb3">
+                                <a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">출석</a>
+                            </div>
+                            <div class="lb4">
+                                <a href="/bbs/board.php?bo_table=custom&wr_id=537" target="mainFrame">
+                                    <img src="<?php echo site_furl('images/banner_security.png'); ?>" width="44" height="75" alt="보안접속">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="bottom_banner">
+                            <!-- 베스트 픽스터 헤더 -->
+                            <div class="bestpickster">
+                                <div class="inner">
+                                    <a href="#" onclick="ajaxBestPickster(); return false;"
+                                        style="color:#fff; display:block; fontsize:11px;">
+                                        <img src="/images/bestpickster.gif" width="46" height="101" alt="금일베스트픽터">
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- 베스트 픽스터 상세 내용 (이미지 소스 그대로) -->
+                            <div id="bestPicksterList">
+                                <div class="title"><?php echo date('Y년 m월 d일'); ?> 베스트 픽스터</div>
+                                <div class="content" style="background-color:#F8F8F8; min-height:50px;">
+                                    <!-- 선배님의 픽스터 랭킹 데이터가 PHP 반복문으로 들어올 자리입니다 -->
+                                    <p style="text-align:center; padding-top:15px; color:#999;">데이터를 불러오는 중...</p>
+                                </div>
+                                <div class="guide">
+                                    <span class="highlight">매일 0시 기준</span>으로 집계되며<br>
+                                    <span class="highlight">월요일에 1~3등까지 시상</span>합니다.
+                                </div>
+                            </div>
+
+                            <!-- 방채팅 대기실 버튼 (이미지 소스 그대로) -->
+                            <div style="margin-top:4px;">
+                                <div class="chatRoomLobby">
+                                    <a href="#" onclick="openChatRoom(); return false;">
+                                        방채팅<br>대기실
+                                    </a>
+                                </div>
+                                <!-- 채팅방 리스트 (스페셜 & 일반) -->
+                                <ul class="chatRoomList" id="speciallist"></ul>
+                                <ul class="chatRoomList" id="chatRoomList">
+                                    <li>
+                                        <a href="#" onclick="openChatRoom(); return false;">
+                                            <img src="<?php echo site_furl('images/room_1.gif'); ?>" 
+                                                     style="width:44px; height:44px;">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="openChatRoom(); return false;">
+                                            <img src="<?php echo site_furl('images/room_2.gif'); ?>" 
+                                                     style="width:42px; height:42px;">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="openChatRoom(); return false;">
+                                            <img src="<?php echo site_furl('images/room_3.gif'); ?>" 
+                                                     style="width:42px; height:42px;">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="openChatRoom(); return false;">
+                                            <img src="<?php echo site_furl('images/room_4.gif'); ?>" 
+                                                     style="width:42px; height:42px;">
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="openChatRoom(); return false;">
+                                            <img src="<?php echo site_furl('images/room_5.gif'); ?>" 
+                                                     style="width:42px; height:42px;">
+                                        </a>
+                                    </li>
+                                </ul>
+                                
+                            </div>                               
+                        </div>
+                    </div>
+                    <div id="banner_left2_area" style="text-align:center;">
+                    </div>
+                    
+                </div>
+                <div class="inner-right">
+                    <?= view('home/board_box', [
+                        'list_humor' => $list_humor ?? [],
+                        'list_pick'  => $list_pick ?? [],
+                        'list_free'  => $list_free ?? [],
+                        'list_photo' => $list_photo ?? [],
+                    ]) ?>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <!-- 푸터 영역 연결 -->
+        <div id="footer">
+            <?php echo view('mini/footer'); ?>
+        </div>
+        
     </div>
-</div>
-<!-- 1. UNPKG 공식 가이드에 따른 importmap 설정 -->
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.183.1/build/three.module.min.js"
-  }
-}
-</script>
-<!-- 라이브러리 및 스크립트 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.20.0/matter.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-<!--<script src="https://unpkg.com/three/build/three.module.min.js"></script>-->
-<!--<script src="<?= base_url('js/animation.js') ?>"></script>-->
-<script type="module">
-    import * as THREE from 'three';
-    import { initPowerballEngine } from "<?= base_url('js/animation.js') ?>";
-    const POWERBALL_CONFIG = {
-        baseUrl: '<?= base_url() ?>',
-        lastRound: <?= $draw_data['last_id'] ?>,
-        initialNumbers: <?= json_encode($draw_data['numbers']) ?>,
-        powerball: <?= $draw_data['powerball'] ?>,
-        serverTime: <?= $draw_data['server_time'] ?>,
-        sum: <?= isset($draw_data['sum']) ? (int)$draw_data['sum'] : 'null' ?>,
-        prevRound: <?= $draw_data['prev_id'] ? $draw_data['prev_id'] : 'null' ?>,
-        prevNumbers: <?= json_encode($draw_data['prev_numbers']) ?>,
-        prevPower: <?= $draw_data['prev_power'] !== null ? $draw_data['prev_power'] : 'null' ?>,
-        prevSum: <?= isset($draw_data['prev_sum']) && $draw_data['prev_sum'] !== null ? (int)$draw_data['prev_sum'] : 'null' ?>
-    };
-    // 엔진 시작
-    initPowerballEngine(POWERBALL_CONFIG);
-</script>
-
+    
+    <!-- 선배님의 jQuery 로드 -->
+    <script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery-1.11.2.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-1.11.2.min.js';document.body.appendChild(s);"></script>
+    <script>
+    (function(){
+        "use strict";
+        // ladderTimer (메인 페이지용 변수)
+        var remainTime = 85;
+        // 쿠키 읽기
+        function getCookie(name) {
+            var v = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
+            return v ? v.pop() : "";
+        }
+        $(window).load(function(){
+            var frameEl = document.getElementById("miniViewFrame");
+            if (frameEl && frameEl.contentWindow) {
+                try {
+                    if (getCookie("MINIVIEWLAYER") == "Y" && typeof window.miniViewControl === "function") {
+                        window.miniViewControl("open");
+                    }
+                    if (getCookie("POINTBETLAYER") != "Y" && typeof frameEl.contentWindow.toggleBetting === "function") {
+                        frameEl.contentWindow.toggleBetting();
+                    }
+                } catch (e) {}
+            }
+            // ajaxPattern('oddEven', '2026-03-07', 'powerball');
+        });
+        // 공지 롤링 (scrollNotice)
+        var $scrollNotice = $("#scrollNotice");
+        if ($scrollNotice.length && $scrollNotice.find("ul li").length > 1) {
+            var $ul = $scrollNotice.find("ul");
+            var h = 0;
+            $ul.find("li").each(function(){ h += $(this).outerHeight(true); });
+            $ul.css("height", h + "px");
+            var idx = 0;
+            var run = function(){
+                idx = (idx + 1) % $ul.find("li").length;
+                $ul.css("marginTop", -$ul.find("li").eq(idx).position().top + "px");
+            };
+            setInterval(run, 3000);
+        }
+        // 방채팅 열기 (메인/iframe 공통)
+        window.openChatRoom = function(){
+            window.open("<?php echo site_furl(''); ?>?view=chatRoom", "chatRoom", "width=400,height=500,scrollbars=yes");
+        };
+        // 베스트 픽스터 AJAX (90% 구현: 목록 갱신)
+        window.ajaxBestPickster = function(){
+            var $content = $("#bestPicksterList .content");
+            if (!$content.length) return;
+            $content.html("<p style='text-align:center;padding-top:15px;color:#999;'>데이터를 불러오는 중...</p>");
+            $.ajax({
+                url: "<?php echo site_furl(''); ?>",
+                type: "GET",
+                data: { view: "ranking", ajax: 1 },
+                dataType: "json"
+            }).done(function(data){
+                if (data && data.list && data.list.length) {
+                    var html = "<ul style='list-style:none;padding:5px;margin:0;'>";
+                    for (var i = 0; i < Math.min(5, data.list.length); i++) {
+                        var r = data.list[i];
+                        html += "<li style='padding:3px 0;'>" + (i+1) + ". " + (r.nick || r.mb_nickname || "-") + "</li>";
+                    }
+                    html += "</ul>";
+                    $content.html(html);
+                } else {
+                    $content.html("<p style='text-align:center;padding-top:15px;color:#999;'>금일 베스트 픽스터가 없습니다.</p>");
+                }
+            }).fail(function(){
+                $content.html("<p style='text-align:center;padding-top:15px;color:#999;'>금일 베스트 픽스터가 없습니다.</p>");
+            });
+        };
+        $(document).ready(function(){
+            try { if (typeof top.initAd === "function") top.initAd(); } catch(e) {}
+            setTimeout(function(){ if (typeof heightResize === "function") heightResize(); }, 500);
+            if (typeof $.fn.qtip === "function") {
+                $("[title!='']").qtip({
+                    position: { my: "top center", at: "bottom center" },
+                    style: { classes: "tooltip_dark" }
+                });
+            }
+            $(window).resize(function(){ if (typeof heightResize === "function") heightResize(); });
+            var sixPatternCnt = 6, sixPatternType = "oddEven", sixDivision = "powerball";
+            $("#sixBox .patternCnt .btn a").on("click", function(){
+                $("#sixBox .patternCnt .btn a").removeClass("on1");
+                $(this).addClass("on1");
+                $("#sixBox .patternType .btn a").removeClass("on2");
+                $("#sixBox .patternType .btn").find("[sixType=" + sixDivision + "_" + sixPatternType + "]").addClass("on2");
+                sixPatternCnt = $(this).attr("rel");
+                if (typeof window.ajaxSixPattern === "function") {
+                    window.ajaxSixPattern(sixPatternCnt, sixPatternType, "<?= date('Y-m-d') ?>", sixDivision);
+                }
+            });
+            $("#sixBox .patternType .btn a").on("click", function(){
+                $("#sixBox .patternType .btn a").removeClass("on2");
+                $(this).addClass("on2");
+                $("#sixBox .patternCnt .btn a").removeClass("on1");
+                $("#sixBox .patternCnt .btn").find("[rel=" + sixPatternCnt + "]").addClass("on1");
+                sixPatternType = $(this).attr("rel");
+                sixDivision = $(this).attr("division") || sixDivision;
+                if (typeof window.ajaxSixPattern === "function") {
+                    window.ajaxSixPattern(sixPatternCnt, sixPatternType, "<?= date('Y-m-d') ?>", sixDivision);
+                }
+            });
+            $("#bestPicksterList .content").on("click", function(){ ajaxBestPickster(); });
+            // boardBox 탭 전환 (유머/포토/분석픽공유/자유)
+            $(".boardBox ul.menu li").on("click", function(){
+                var rel = $(this).attr("rel");
+                if (!rel) return;
+                $(".boardBox ul.menu li").removeClass("on");
+                $(this).addClass("on");
+                $(".boardBox .listBox").hide();
+                $("#list_" + rel).show().css("display", "block");
+            });
+        });
+        // 미니뷰 높이 제어 (선배님 스크립트)
+        window.miniViewControl = function(type) {
+            var $frame = $("#powerballMiniViewDiv #miniViewFrame");
+            if (type === "open") $frame.css("height", "400px");
+            else if (type === "close") $frame.css("height", "117px");
+        };
+        // 툴팁 표시/숨김 토글
+        window.txTooltip = function() {
+            if ($("#txTooltipDiv").is(":visible")) $("#txTooltipDiv").hide();
+            else $("#txTooltipDiv").show();
+        };
+        // 공유 영역 표시/숨김 토글
+        window.toggleShare = function() {
+            if ($("#shareDiv").is(":visible")) $("#shareDiv").hide();
+            else $("#shareDiv").show();
+        };
+        // 공유용 코드/링크 복사 (type: 'link' 등 → share_link 요소)
+        window.copyShare = function(type) {
+            var url = document.getElementById("share_" + type);
+            if (url) {
+                url.select();
+                document.execCommand("copy");
+                alert("코드가 복사되었습니다. 원하시는 곳에 Ctrl + v로 붙여넣기 하세요.");
+            }
+        };
+    })();
+    </script>
 </body>
 </html>

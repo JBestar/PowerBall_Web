@@ -18,10 +18,10 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 
-//use App\Models\ConfSite_Model;
-//use App\Models\Member_Model;
-//use App\Models\Sess_Model;
-//use App\Models\Notice_Model;
+use App\Models\ConfSite_Model;
+use App\Models\Member_Model;
+use App\Models\Sess_Model;
+use App\Models\Notice_Model;
 //use App\Models\ConfGame_Model;
 //use App\Models\CasPrd_Model;
 //use App\Models\SlotPrd_Model;
@@ -87,11 +87,11 @@ class BaseController extends Controller
 		// $this->session = \Config\Services::session();
 
         $this->session = session();
-//		$this->modelMember = new Member_Model();
-//		$this->modelConfsite = new ConfSite_Model();
+		$this->modelMember = new Member_Model();
+		$this->modelConfsite = new ConfSite_Model();
 //		$this->modelConfgame = new ConfGame_Model();
-//		$this->modelSess = new Sess_Model();
-//		$this->modelNotice = new Notice_Model();
+		$this->modelSess = new Sess_Model();
+		$this->modelNotice = new Notice_Model();
 //		$this->modelCasprd = new CasPrd_Model();
 //      $this->modelSlotprd = new SlotPrd_Model();
 //      $this->modelTransfer = new Transfer_Model();
@@ -143,8 +143,7 @@ class BaseController extends Controller
         $language->setLocale($this->session->lang);
 		// writeLog(" language=".$language->getLocale());
 		
-	}
-/*    
+	}    
 	protected function getSiteConf(){
 		
 		$confs = ['site_name'=>"", "bpg_deny"=>false, "evol_deny"=>false, "slot_deny"=>false, "cas_deny"=>false, 
@@ -224,7 +223,6 @@ class BaseController extends Controller
 
 		return $confs;
 	}
-*/
 	protected function sess_destroy(){
 		$sess_id = $this->session->session_id;
 		$this->modelSess->deleteBySess($sess_id);

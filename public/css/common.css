@@ -1,0 +1,1635 @@
+@charset "utf-8";
+
+/*
+@font-face{font-family:NanumGothicBold;src:url(/font/NanumGothicBold.eot);src:local(※),url(/font/NanumGothicBold.woff) format('woff')}
+#@font-face{font-family:NanumGothic;src:url(/font/NanumGothic.eot);src:local(※),url(/font/NanumGothic.woff) format('woff')}
+*/
+
+@font-face {font-family:DINWeb-Bold; src:local(※),url(/font/DINWeb-Bold.eot);}
+@font-face {font-family:DINWeb-Bold; src:local(※),url(/font/DINWeb-Bold.woff) format('woff');}
+
+* {margin:0; padding:0;}
+body,input,textarea,select,table,button{line-height:15px;font-family:"돋움",Dotum,"굴림",Gulim,AppleGothic,Sans-serif;font-size:12px;}
+input,textarea {outline-style:none;}
+body{position:relative;color:#000;}
+caption, legend, #accessibility, .hidden{font-size: 0;line-height: 0;text-indent: -5000px;}
+img, fieldset, iframe{border:0 none;vertical-align:top;}
+fieldset{font-size:0;}
+ul,ol{list-style:none;}
+a{color:#000;text-decoration:none;cursor:pointer;}
+em,address{font-style:normal;}
+table {border-collapse:collapse; table-layout:fixed;}
+hr{display:none;}
+.hidden {clear: both;font-size: 0;height: 0;line-height: 0;visibility: hidden;width: 0;}
+.cl{*zoom:1;}
+.cl:after{content:'';display:block;clear:both;}
+
+.b {font-weight:bold;}
+
+.highlight {color:#2962D9;}
+
+.pointer {cursor:pointer;}
+
+/* font */
+.numberFont {font-family:DINWeb-Bold;}
+.oddFont{font-family:DINWeb-Bold;color:#1265cd;}
+.evenFont{font-family:DINWeb-Bold;color:#cd1212;}
+
+/* color */
+.orange {color:orange;}
+.blue {color:blue !important;}
+.red {color:red !important;}
+.lightblue {color:#00e6ff !important;}
+.yellow {color:yellow !important;}
+.lightgray {color:#838383 !important;}
+
+/* align */
+.center {text-align:center;}
+
+/* display */
+.displayBlock {display:block;}
+.displayNone {display:none;}
+
+.error {color:#ff5858 !important;}
+.confirm {color:#0099ff !important;}
+
+/* padding */
+.pd5 {padding:5px;}
+.pdT5 {padding-top:5px;}
+.pdR5 {padding-right:5px;}
+.pdB5 {padding-bottom:5px;}
+.pdL5 {padding-left:5px;}
+
+.pd10 {padding:10px;}
+.pdT10 {padding-top:10px;}
+.pdR10 {padding-right:10px;}
+.pdB10 {padding-bottom:10px;}
+.pdL10 {padding-left:10px;}
+
+/* margin */
+.mgT10 {margin-top:10px;}
+
+/* font-size */
+.fs11 {font-size:11px;}
+
+/* background-color */
+.bgRed {background-color:#FFECEC;}
+.bgGray {background-color:#FBFBFB;}
+.bgWhite {background-color:#FFFFFF;}
+.bgSky {background-color:#F0FDFF;}
+.bgBlack {background-color:#848694;}
+.bgYellow {background-color:#FFFFD9;}
+
+/* vertical-align */
+.valign_t {vertical-align:top;}
+.valign_m {vertical-align:middle;}
+.valign_b {vertical-align:bottom;}
+
+/* tr */
+.trOdd {background-color:#fff;}
+.trEven {background-color:#f1f1f1;}
+
+#wrap {width:100%;}
+#container {position:relative;width:1233px;margin:auto;}
+
+.header{position:fixed;top:0;left:0;width:100%;height:33px;background:url('https://simg.powerballgame.co.kr/images/bg_navi.gif') repeat-x 0 0;z-index:100;line-height:30px;}
+.header .navigation {width:1153px;margin:auto;}
+.header .navigation .left {float:left;font-size:11px;}
+.header .navigation .left li a {color:#00e6ff;margin-left:50px;}
+.header .navigation .left img {position:absolute;top:7px;}
+
+.header .navigation .right {float:right;}
+.header .navigation .right li {float:left;padding:0 10px 0 10px;font-size:11px;background:url(https://simg.powerballgame.co.kr/images/navi_bar.gif) no-repeat right center;}
+.header .navigation .right li a {color:#d0d0d0;}
+.header .navigation .right li a:hover {color:#fff;text-decoration:none;}
+
+/* header */
+#header {width:1176px;margin:0 auto;padding-left:57px;}
+#nav {*zoom:1;height:38px;background:url(https://simg.powerballgame.co.kr/images/bg_nav.jpg);}
+#nav:after {content:'';display:block;clear:both;}
+#nav ul li {float:left;padding:0;margin:0;}
+
+/* top */
+#topArea {width:1236px;margin:0 auto;margin-top:0px;position:relative;}
+#topArea .logo {margin-left:60px;}
+#topArea .text {position:absolute;top:15px;left:250px;}
+#topArea .text .notice a {font-size:11px;color:#0D568C;}
+#topArea .text .guide {margin-top:3px;}
+#topArea .text .guide a {font-size:11px;color:#b70004;}
+#topArea .text a:hover {text-decoration:underline;}
+#topArea .gnb {width:1174px;height:38px;background-color:#127ccb;border:1px solid #0e609c;margin-left:58px;}	/* 임시 margin-left:60px; */
+#topArea .gnb ul li {position:relative;float:left;}
+#topArea .gnb ul li a {display:block;height:38px;line-height:38px;padding:0 20px;font-family:dotum;font-size:12px;font-weight:bold;color:#fff;letter-spacing:-1px;border-right:1px solid #1173bb;}
+#topArea .gnb ul li a.on {position:relative;top:-1px;left:-1px;padding:0 20px 0 21px;background-color:#0d568c;border:1px solid #0c4d7c;}
+
+/* box-logo */
+#box-logo{position:relative;}
+#box-logo h1{}
+#box-logo .etc{position:absolute;top:-17px;right:0;width:800px;text-align: right;}
+#box-logo .etc .sns{position:relative;top:46px;right:173px;}
+#box-logo .etc .ul-1{position:absolute;top:0;right:0;right: 179px;top: 70px;*zoom:1;}
+#box-logo .etc .ul-1:after{content:'';display:block;clear:both;}
+#box-logo .etc .ul-1 li{float:left;line-height:11px;}
+#box-logo .etc .ul-1 li a{font-size:11px;color:#7c7c7c;}
+#box-logo .etc .ad{}
+
+/* box-gnb */
+#box-gnb{height:70px;width:100%;position:relative;z-index:1000;background:url(https://simg.powerballgame.co.kr/images/top_bg.jpg);}
+#box-gnb .list-menu{*zoom:1;width:1140px;margin:0 auto;}
+#box-gnb .list-menu:after{content:'';display:block;clear:both;}
+#box-gnb .list-menu li {float:left;padding:0 15px;font-size:15px;cursor:pointer;}
+#box-gnb .list-menu li.li-1{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_01_off.png) top center no-repeat;}
+#box-gnb .list-menu li.li-2{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_04_off.png) top center no-repeat;}
+#box-gnb .list-menu li.li-3{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_02_off.png) top center no-repeat;}
+#box-gnb .list-menu li.li-4{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_05_off.png) top center no-repeat;}
+#box-gnb .list-menu li.li-5{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_06_off.png) top center no-repeat;}
+#box-gnb .list-menu li.li-6{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_08_off.png) top center no-repeat;}
+#box-gnb .list-menu li.li-7{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_09_off.png) top center no-repeat;}
+#box-gnb .list-menu li.li-8{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_10_off.png) top center no-repeat;}
+
+#box-gnb .list-menu li.li-1:hover {position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_01_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-2:hover {position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_04_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-3:hover {position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_02_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-4:hover {position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_05_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-5:hover {position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_06_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-6:hover {position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_08_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-7:hover {position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_09_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-8:hover {position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_10_on.png) top center no-repeat;}
+
+#box-gnb .list-menu li:hover a {color:#fff;}
+
+#box-gnb .list-menu li.li-1.on{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_01_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-2.on{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_04_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-3.on{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_02_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-4.on{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_05_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-5.on{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_06_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-6.on{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_08_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-7.on{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_09_on.png) top center no-repeat;}
+#box-gnb .list-menu li.li-8.on{position:relative;background:url(https://simg.powerballgame.co.kr/images/menu_10_on.png) top center no-repeat;}
+
+#box-gnb .list-menu li.on a {color:#fff;}
+
+#box-gnb a {display:block;height:25px;padding-top:45px;font-weight:bold;color:#b0b0b0;font-family:gulim;}
+#box-gnb a.on {color:#fff;}
+#box-gnb a.none {height:65px;padding-top:5px;}
+
+/* left */
+.leftRoundResult {height:25px;line-height:25px;background-color:#717171;color:#fff;text-align:center;border:1px solid #676767;font-size:11px;}
+.leftRoundResult img {vertical-align:middle;margin-bottom:3px;}
+
+/* footer */
+#footer {width:1236px;border-top:1px solid #deded9;margin:0 auto;text-align:center;padding-bottom:30px;}
+#footer dl {padding:15px 0 10px 0;}
+#footer dl span {padding:0 5px;color:#e9e9e9;}
+#footer a {font-size:12px;color:#444;}
+#footer a:hover {text-decoration:underline;}
+#footer .small {font-size:11px;color:#666;padding:5px 0 10px 0;}
+#footer .small .bar {color:#e9e9e9;margin:0 5px;}
+#footer .copyright {font-family:Verdana;font-size:9px;color:#444;}
+#footer .copyright strong {font-size:10px;}
+
+/* 메인 본문 */
+#box-ct{*zoom:1;padding:10px 0 21px 0;padding-left:57px;}
+#box-ct:after{content:'';display:block;clear:both;}
+#box-ct .inner-left,
+#box-ct .inner-right{float:left;*zoom:1;}
+#box-ct .inner-left:after,
+#box-ct .inner-right:after{content:'';display:block;clear:both;}
+
+#box-ct .inner-left{width:336px;margin-right:10px;}
+#box-ct .inner-left .box-login{border-top:2px solid #71757b;border-left:1px solid #cecece;border-right:1px solid #cecece;border-bottom:1px solid #71757b;background:#f8f8f8;padding:4px 4px 0 10px;position:relative;margin-bottom:0px;}
+#box-ct .inner-left .box-login .btn_login {display:block;text-align:center;width:284px;height:37px;line-height:37px;color:#fff;font-size:16px;letter-spacing:-1px;border:1px solid #0e609c;border-radius:3px;box-sizing:border-box;background:#127ccb;vertical-align:top;}
+#box-ct .inner-left .box-login .login_menu {width:284px;margin-top:10px;}
+#box-ct .inner-left .box-login .login_menu a {color:#666;}
+#box-ct .inner-left .box-login .login_menu .right {float:right;}
+
+#box-ct .inner-left .box-login .btn-1{color:#737373;font-size:11px;line-height:11px;margin-bottom:7px;}
+#box-ct .inner-left .box-login .btn-1 input{position:relative;top:2px;}
+#box-ct .inner-left .box-login .btn-1 label{border-right:1px solid #737373;padding:0 9px 0 0;margin:0 7px 0 0;}
+#box-ct .inner-left .box-login .btn-1 .color-1{color:#2aa0bb;text-decoration:underline;}
+#box-ct .inner-left .box-login .btn-1 a{color:#737373;}
+#box-ct .inner-left .box-login .login{position:relative;padding-bottom:8px;}
+#box-ct .inner-left .box-login .login .input-1{}
+#box-ct .inner-left .box-login .login .input-2{}
+#box-ct .inner-left .box-login .login .input-3{position:absolute;top:0;right:3px;}
+#box-ct .inner-left .box-login .login .input-1 input{width:250px;height:29px;line-height:29px;text-indent:5px;*text-indent:0;border:1px solid #cecece;}
+#box-ct .inner-left .box-login .login .input-1 .mb_id {background:#fff url('https://simg.powerballgame.co.kr/images/bg_id.jpg') no-repeat 0 0;}
+#box-ct .inner-left .box-login .login .input-2 input{width:250px;height:29px;line-height:29px;text-indent:5px;*text-indent:0;border:1px solid #cecece;position:relative;top:-1px;*top:-3px;}
+#box-ct .inner-left .box-login .login .input-2 .mb_passwd {background:#fff url('https://simg.powerballgame.co.kr/images/bg_pw.jpg') no-repeat 0 0;}
+#box-ct .inner-left .box-login .btn-2{*zoom:1;margin-bottom:9px;}
+#box-ct .inner-left .box-login .btn-2:after{content:'';display:block;clear:both;}
+#box-ct .inner-left .box-login .btn-2 li{float:left;padding:0 7px 0 0;line-height:11px;}
+#box-ct .inner-left .box-login .btn-2 li a{color:#737373;font-size:11px;}
+#box-ct .inner-left .box-login .notice{position:relative;overflow:hidden;height:23px;background:#ececec;z-index:10;position:relative;padding-left:50px;margin:0 -4px 0 -10px;}
+#box-ct .inner-left .box-login .notice img{position:absolute;top:0;left:0;}
+#box-ct .inner-left .box-login .notice a{color:#454545;display:block;height:23px;line-height:23px;}
+#box-ct .inner-left .box-login .btn-etc2{*zoom:1;left: 0;position: absolute;top: 66px;background:#eaeaea;width:292px;padding:3px 0 3px 6px;}
+#box-ct .inner-left .box-login .btn-etc2:after{content:'';display:block;clear:both;}
+#box-ct .inner-left .box-login .btn-etc2 li{float:left;padding:0 5px;}
+#box-ct .inner-left .box-login .id{color:#454545;font-weight:bold;position:absolute;top:17px;left:68px;}
+#box-ct .inner-left .box-login .btn-etc{*zoom:1;left: 67px;position: absolute;top: 40px;}
+#box-ct .inner-left .box-login .btn-etc:after{content:'';display:block;clear:both;}
+#box-ct .inner-left .box-login .btn-etc li{float:left;line-height:11px;margin:0 5px;}
+#box-ct .inner-left .box-login .btn-etc li a{color:#737373;font-size:11px;}
+#box-ct .inner-left .box-login .btn-etc li a .color-1{color:#59b5ca;}
+#box-ct .inner-left .box-login .btn-logout{position:absolute;top:0;right:0;}
+#box-ct .inner-left .box-login .userImg{position:absolute;top:10px;left:12px;border:1px solid #a8e4f1;}
+#box-ct .inner-right{width:830px;}
+
+/* main */
+.boardBox {float:left;width:622px;height:200px;margin-bottom:5px;float:left;border:1px solid #D5D5D5;}
+.boardBox ul.menu li {float:left;display:inline-block;width:155px;height:30px;line-height:30px;text-align:center;border-right:1px solid #D5D5D5;border-bottom:1px solid #D5D5D5;font-size:11px;background-color:#F1F1F1;cursor:pointer;}
+.boardBox ul.menu li.none {width:154px;border-right:none;}
+.boardBox ul.menu li.on {background-color:#fff;color:#0D568C;border-bottom:none;}
+.boardBox .listBox {width:622px;height:170px;display:none;}
+.boardBox .listBox .left {float:left;width:311px;height:170px;}
+.boardBox .listBox .bar {float:left;width:1px;height:160px;margin:5px 0;background-color:#ebebeb;}
+.boardBox .listBox .right {float:right;width:310px;height:170px;}
+.boardBox .listBox ul.list {clear:both;width:100%;padding:5px;}
+.boardBox .listBox ul.list li {height:27px;line-height:27px;}
+.boardBox .listBox ul.list li img {vertical-align:middle;}
+.boardBox .listBox ul.list li .comment {color:#C11A20;}
+.boardBox .listBox ul.list li.photo {display:inline-block;position:relative;width:82px;height:76px;border:1px solid #ddd;overflow:hidden;margin:2px;}
+.boardBox .listBox ul.list li.photo .image {position:absolute;left:-9px;top:-12px;width:100px;height:100px;}
+.bannerBox {float:right;width:200px;height:200px;border:1px solid #D5D5D5;}
+
+/* login */
+.box-login .loginUserInfo {float:left;margin-top:5px;width:155px;}
+.box-login .loginUserInfo ul li.level {font-size:11px;color:#7f7f7f;margin-top:5px;}
+.box-login .loginUserInfo ul li.exp {font-size:11px;color:#7f7f7f;margin-top:5px;}
+.box-login .loginUserInfo ul li .logout {position:absolute;top:3px;right:0;background:url(https://simg.powerballgame.co.kr/images/icon_logout.png) left center no-repeat;font-size:11px;font-weight:normal;color:#737478;padding-left:16px;}
+.box-login .loginUserInfo ul li img {vertical-align:middle;}
+
+.box-login .loginCoinInfo {float:right;width:150px;border:1px solid #dedddc;background-color:#fdfdfd;}
+.box-login .loginCoinInfo ul li {position:relative;line-height:13px;border-bottom:1px solid #f6f6f6;padding:3px;font-size:11px;color:#8c8c8c;}
+.box-login .loginCoinInfo ul li.none {border-bottom:none;}
+.box-login .loginCoinInfo ul li a {float:right;}
+.box-login .loginCoinInfo ul li a.charge {position:absolute;top:2px;left:30px;width:30px;height:13px;line-height:15px;border:1px solid #CC0000;background-color:#EC0000;color:#fff;text-align:center;}
+.box-login .loginCoinInfo ul li a.refill {position:absolute;top:2px;left:40px;width:30px;height:13px;line-height:15px;border:1px solid #0E4D98;background-color:#1265CD;color:#fff;text-align:center;}
+
+.box-login .btn {position:absolute;top:116px;left:0;background:#E8E8E8;width:322px;padding:3px 6px;border-top:1px solid #CECECE;border-bottom:1px solid #CECECE;}
+.box-login .btn li {height:30px;line-height:30px;float:left;width:33%;text-align:center;font-size:11px;border-right:1px solid #CDCDCD;}
+.box-login .btn li.none {border-right:none;}
+.box-login .btn li a {display:block;color:#747379;padding-top:11px;}
+
+.box-chatting{float:left;width:336px;position:relative;z-index:10;background:#fff;margin-bottom:10px;}
+.box-chatting .btn-etc{position:relative;background:#efefef;border-left:1px solid #cecece;border-right:1px solid #cecece;border-bottom:1px solid #cecece;}
+.box-chatting .btn-etc .cnt{color:#4c4c4c;}
+.box-chatting .btn-etc .cnt *{vertical-align:middle;}
+.box-chatting .btn-etc ul.ul-1{position:absolute;top:0;right:0;}
+.box-chatting .btn-etc ul.ul-1 li{float:left;}
+.box-chatting .btn-etc ul.ul-1 li a{}
+.box-chatting .table-type-1{position:relative;z-index:10;background:#fff;border-right:1px solid #cecece;}
+.box-chatting .table-type-1 .ul-1{background:#e2e2e2;*zoom:1;padding:0 0 0 1px;position:relative;}
+.box-chatting .table-type-1 .ul-1:after{content:'';display:block;clear:both;}
+.box-chatting .table-type-1 .ul-1 li{float:left;margin-left:-1px;border-right:1px solid #cecece;}
+.box-chatting .table-type-1 .ul-1 li a{display:block;height:26px;line-height:26px;color:#737373;padding:0 9px;padding:0 9px 0 9px;}
+.box-chatting .table-type-1 .ul-1 li a.on{color:#e2e2e2;background:#696969;font-weight:bold;}
+.box-chatting .table-type-1 .ul-1 .btn{float:none;margin:0;border:none;position:absolute;top:0;right:0;}
+.box-chatting .table-type-1 .ul-1 .btn a{padding:0;margin:0;}
+.box-chatting .list-chatting{overflow:auto;height:261px;border-left:1px solid #cecece;border-right:1px solid #cecece;padding:0 5px 0 5px;}
+.box-chatting .list-chatting li{color:#8c8c8c;padding:0 0 0 0;line-height:20px;}
+.box-chatting .list-chatting li strong{color:#404040;}
+.box-chatting .input-chatting{position:relative;background:#e2e2e2;padding:2px;border-left:1px solid #cecece;border-right:1px solid #cecece;border-top:1px solid #cecece;}
+.box-chatting .input-chatting .input-1{width:250px;height:20px;line-height:20px;border:1px solid #949494;color:#949494;text-indent:3px;}
+.box-chatting .input-chatting .input-2{position:absolute;top:2px;right:2px;*top:3px;}
+.box-issue{position:relative;z-index:10;border-top:2px solid #71757b;border-left:1px solid #cecece;border-right:1px solid #cecece;border-bottom:1px solid #71757b;background:#fff;clear:both;margin-bottom:10px;}
+.box-issue .ul-1{background:#ededed;*zoom:1;border-bottom:1px solid #cecece;}
+.box-issue .ul-1:after{content:'';display:block;clear:both;}
+.box-issue .ul-1 li{float:left;}
+.box-issue .ul-1 li a{display:block;height:25px;line-height:25px;font-weight:bold;color:#202020;padding:0 9px;}
+.box-issue .ul-1.type-1 li{border-right:1px solid #cecece;}
+.box-issue .ul-1.type-1 li a{padding:0 12px;}
+.box-issue .list-text{padding:9px 9px 0 7px;height:149px;}
+.box-issue .list-text li{position:relative;padding-bottom:8px;*padding-bottom:10px;padding-left:30px;}
+.box-issue .list-text li a{color:#5c5c5c;display:inline-block;*display:inline;}
+.box-issue .list-text li a *{vertical-align:middle;}
+.box-issue .list-text li a img{position:relative;top:-1px;}
+.box-issue .list-text li .day{position:absolute;top:0;right:0;color:#575757;font-size:11px;}
+.box-issue .list-text li .cnt{background:url('https://simg.powerballgame.co.kr/images/bl_cnt.jpg') no-repeat 0 0;width:16px;padding:0 5px 0 0;height:13px;display:block;color:#fff;font-size:11px;line-height:13px;text-align:center;margin-right:5px;position:absolute;top:1px;left:0;*top:-1px;}
+.box-issue .list-text.type-1 li a{background:url('https://simg.powerballgame.co.kr/images/bl_black.gif') no-repeat 3px 5px;padding-left:10px;}
+.box-issue .btn-more{position:absolute;top:0;right:-1px;}
+#box-ct .inner-left .banner-type-1{*zoom:1;margin-bottom:9px;}
+#box-ct .inner-left .banner-type-1:after{content:'';display:block;clear:both;}
+#box-ct .inner-left .banner-type-1 li{float:left;}
+#box-ct .inner-left .tab-game{}
+#box-ct .inner-left .tab-game .tab{*zoom:1;border-bottom:2px solid #71757b;padding:0 0 0 1px;}
+#box-ct .inner-left .tab-game .tab:after{content:'';display:block;clear:both;}
+#box-ct .inner-left .tab-game .tab li{float:left;padding:4px 0 0 0;margin-left:-1px;}
+#box-ct .inner-left .tab-game .tab li a{display:block;border:1px solid #cecece;font-weight:bold;height:26px;line-height:26px;background:#e2e2e2;width:99px;text-align:center;}
+#box-ct .inner-left .tab-game .tab li.on{padding:0;}
+#box-ct .inner-left .tab-game .tab li.on a{background:#656565 url('https://simg.powerballgame.co.kr/images/bl_black_2.jpg') no-repeat 0 0;height:30px;line-height:30px;color:#fff;border-bottom:1px solid #656565;}
+#box-ct .inner-left .tab-game .tab li.day{padding:4px 0 0 0;}
+#box-ct .inner-left .tab-game .tab li.day span{background:#f1f1f1;color:#787878;font-weight:bold;display:block;height:26px;line-height:26px;border:1px solid #cecece;width:128px;text-align:center;}
+
+.main-rightBanner{right:-170px;width:160px;height:1210px;margin: 0 0 0 627px;position: absolute;top:-40px;}
+.main-rightBanner .fixed {position:fixed;}
+
+/* guide banner */
+#guide_banner {position:relative;}
+#guide_banner .top_banner {position:absolute;}
+#guide_banner .top_banner a {color:#fff;display:block;}
+#guide_banner .top_banner .lb1 {width:42px;height:30px;line-height:30px;text-align:center;border:1px solid #505050;font-weight:bold;background-color:#696969;}
+#guide_banner .top_banner .lb2 {margin-top:2px;width:42px;height:30px;line-height:30px;text-align:center;border:1px solid #8A0D0D;font-weight:bold;background-color:#CD1212;}
+#guide_banner .top_banner .lb3 {margin-top:2px;width:42px;height:30px;line-height:30px;text-align:center;border:1px solid #02589f;font-weight:bold;background-color:#037adc;}
+#guide_banner .top_banner .lb4 {margin-top:2px;width:42px;height:75px;}
+
+#guide_banner .bottom_banner {position:absolute;top:-32px;left:-46px;}
+#guide_banner .bottom_banner .bestpickster {position:relative;width:42px;height:101px;}
+#guide_banner .bottom_banner .bestpickster .inner {position:absolute;left:-1px;}
+
+/* left ladderBetGraph */
+#ladderBetGraph {position:relative;width:100%;height:40px;}
+#ladderBetGraph .oddChart{position:relative;float:left;width:145px;height:40px;}
+#ladderBetGraph .oddBar{position:absolute;background:url(https://simg.powerballgame.co.kr/images/blue_bar.png) repeat-x 0 0;display:block;width:0;height:20px;top:10px;right:-10px;}
+#ladderBetGraph .oddPer{position:absolute;top:15px;right:113px;width:35px;text-align:right;display:block;color:#1265cd;font-family:DINWeb-Bold;}
+
+#ladderBetGraph .vsChart{position:absolute;left:50%;top:5px;margin-left:-16px;width:32px;height:32px;background:url(https://simg.powerballgame.co.kr/images/vs_icon.png) repeat-x 0 0;border-radius:20px;z-index:99;}
+
+#ladderBetGraph .evenChart{position:relative;float:right;width:145px;height:40px;}
+#ladderBetGraph .evenBar{position:absolute;background:url(https://simg.powerballgame.co.kr/images/red_bar.png) repeat-x right 0;display:block;width:0;height:20px;top:10px;left:-10px;}
+#ladderBetGraph .evenPer{position:absolute;top:15px;left:113px;width:35px;text-align:left;display:block;color:#cd1212;font-family:DINWeb-Bold;}
+
+#powerballPointBetGraph {position:relative;width:100%;height:40px;}
+#powerballPointBetGraph .oddChart{position:relative;float:left;width:145px;height:40px;}
+#powerballPointBetGraph .oddBar{position:absolute;background:url(https://simg.powerballgame.co.kr/images/blue_bar.png) repeat-x 0 0;display:block;width:0;height:20px;top:10px;right:-10px;}
+#powerballPointBetGraph .oddPer{position:absolute;top:15px;right:113px;width:35px;text-align:right;display:block;color:#1265cd;font-family:DINWeb-Bold;}
+
+#powerballPointBetGraph .vsChart{position:absolute;left:50%;top:5px;margin-left:-16px;width:32px;height:32px;background:url(https://simg.powerballgame.co.kr/images/vs_icon.png) repeat-x 0 0;border-radius:20px;z-index:1;}
+
+#powerballPointBetGraph .evenChart{position:relative;float:right;width:145px;height:40px;}
+#powerballPointBetGraph .evenBar{position:absolute;background:url(https://simg.powerballgame.co.kr/images/red_bar.png) repeat-x right 0;display:block;width:0;height:20px;top:10px;left:-10px;}
+#powerballPointBetGraph .evenPer{position:absolute;top:15px;left:113px;width:35px;text-align:left;display:block;color:#cd1212;font-family:DINWeb-Bold;}
+
+.powerballBox{border:1px solid #D5D5D5;}
+.powerballBox th.title {height:30px;background-color:#F1F1F1;color:#000;font-size:11px;font-weight:normal;}
+.powerballBox .subTitle th {height:30px;background-color:#FCFCFC;color:#5F6164;border:1px solid #D5D5D5;font-size:11px;font-weight:normal;}
+.powerballBox .thirdTitle th {height:25px;background-color:#fff;color:#5F6164;border:1px solid #D5D5D5;font-size:11px;font-weight:normal;}
+.powerballBox td {border:1px solid #D5D5D5;font-size:11px;color:#5F6164;}
+.powerballBox .none td {border:none;border-bottom:1px solid #adadad;}
+.powerballBox .none td.none {border:none;}
+
+.powerballBox .oddBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_odd.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .evenBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_even.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .overBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_over.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .underBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_under.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .leftBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_left.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .rightBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_right.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .threeBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_three.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .fourBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_four.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .left3evenBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_left3even.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .left4oddBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_left4odd.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .right3oddBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_right3odd.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballBox .right4evenBox{width:64px;height:36px;background:url(https://simg.powerballgame.co.kr/images/data_right4even.png) no-repeat 0 0;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+
+.powerballBox .oddColor{color:#1265cd;}
+.powerballBox .evenColor{color:#cd1212;}
+.powerballBox .middleColor{color:#14805E;}
+.powerballBox .oddText{color:#1265cd;font-family:DINWeb-Bold;}
+.powerballBox .evenText{color:#cd1212;font-family:DINWeb-Bold;}
+.powerballBox .middleText{color:#14805E;font-family:DINWeb-Bold;}
+.powerballBox .date{font-family:DINWeb-Bold;}
+
+.powerballBox .periodBox{height:36px;vertical-align:middle;}
+
+.powerballBox .odd {width:20px;height:15px;border-radius:20px;background-color:#156AEA;border:1px solid #1156bd;color:#fff;text-align:center;padding-top:5px;}
+.powerballBox .even {width:20px;height:15px;border-radius:20px;background-color:#D6412B;border:1px solid #992e1e;color:#fff;text-align:center;padding-top:5px;}
+
+.numberText{font-family:DINWeb-Bold;}
+
+.betChart{position:relative;width:100%;}
+.oddChart{position:relative;float:left;width:100px;height:42px;}
+.oddBar{position:absolute;background:url(https://simg.powerballgame.co.kr/images/blue_bar.png) repeat-x 0 0;display:block;height:20px;top:10px;right:-60px;}
+.oddPer{position:absolute;width:50px;top:14px;text-align:right;display:block;color:#1265cd;font-family:DINWeb-Bold;}
+
+.vsChart{position:absolute;left:50%;top:5px;margin-left:-16px;width:32px;height:32px;background:url(https://simg.powerballgame.co.kr/images/vs_icon.png) repeat-x 0 0;border-radius:20px;z-index:99;}
+.evenChart{position:relative;float:right;width:100px;height:42px;}
+.evenBar{position:absolute;background:url(https://simg.powerballgame.co.kr/images/red_bar.png) repeat-x right 0;display:block;height:20px;top:10px;left:-60px;}
+.evenPer{position:absolute;width:50px;top:14px;text-align:left;display:block;color:#cd1212;font-family:DINWeb-Bold;}
+
+/* resultBox */
+#resultBox {position:relative;display:none;}
+#resultBox .bar {position:absolute;top:96px;width:824px;height:40px;}
+#resultBox .bar.odd {border:3px solid #1265cd;}
+#resultBox .bar.even {border:3px solid #cd1212;}
+#resultBox .bar .oddIcon {position:absolute;left:478px;}
+#resultBox .bar .evenIcon {position:absolute;right:0;}
+
+/* pickResultBox */
+#pickResultBox {position:relative;display:none;}
+#pickResultBox .bar {position:absolute;top:159px;width:824px;height:60px;}
+#pickResultBox .bar.odd {border:3px solid #1265cd;}
+#pickResultBox .bar.even {border:3px solid #cd1212;}
+#pickResultBox .bar.yellow {border:3px solid #ffff00;}
+#pickResultBox .bar.green {border:3px solid green;}
+#pickResultBox .bar.black {border:3px solid #000;}
+#pickResultBox .bar .oddIcon {position:absolute;right:0;}
+#pickResultBox .bar .evenIcon {position:absolute;right:0;}
+
+#pickResultBox1 {position:relative;display:none;}
+#pickResultBox1 .bar {position:absolute;top:188px;right:58px;width:44px;height:56px;}
+#pickResultBox1 .bar.odd {border:3px solid #1265cd;}
+#pickResultBox1 .bar.even {border:3px solid #cd1212;}
+#pickResultBox1 .bar.yellow {border:3px solid #ffff00;}
+#pickResultBox1 .bar.green {border:3px solid green;}
+#pickResultBox1 .bar.black {border:3px solid #000;}
+
+#pickResultBox2 {position:relative;display:none;}
+#pickResultBox2 .bar {position:absolute;top:188px;right:0px;width:44px;height:56px;}
+#pickResultBox2 .bar.odd {border:3px solid #1265cd;}
+#pickResultBox2 .bar.even {border:3px solid #cd1212;}
+#pickResultBox2 .bar.yellow {border:3px solid #ffff00;}
+#pickResultBox2 .bar.green {border:3px solid green;}
+#pickResultBox2 .bar.black {border:3px solid #000;}
+
+#pickResultRound1 {position:relative;display:none;}
+#pickResultRound1 .bar {position:absolute;top:271px;right:212px;width:46px;height:60px;}
+#pickResultRound1 .bar.odd {border:2px solid #1265cd;}
+#pickResultRound1 .bar.even {border:2px solid #cd1212;}
+#pickResultRound1 .bar.yellow {border:2px solid #ffff00;}
+#pickResultRound1 .bar.green {border:2px solid green;}
+#pickResultRound1 .bar.black {border:2px solid #000;}
+
+#pickResultRound2 {position:relative;display:none;}
+#pickResultRound2 .bar {position:absolute;top:271px;right:159px;width:46px;height:60px;}
+#pickResultRound2 .bar.odd {border:2px solid #1265cd;}
+#pickResultRound2 .bar.even {border:2px solid #cd1212;}
+#pickResultRound2 .bar.yellow {border:2px solid #ffff00;}
+#pickResultRound2 .bar.green {border:2px solid green;}
+#pickResultRound2 .bar.black {border:2px solid #000;}
+
+#pickResultRound3 {position:relative;display:none;}
+#pickResultRound3 .bar {position:absolute;top:271px;right:106px;width:46px;height:60px;}
+#pickResultRound3 .bar.odd {border:2px solid #1265cd;}
+#pickResultRound3 .bar.even {border:2px solid #cd1212;}
+#pickResultRound3 .bar.yellow {border:2px solid #ffff00;}
+#pickResultRound3 .bar.green {border:2px solid green;}
+#pickResultRound3 .bar.black {border:2px solid #000;}
+
+#pickResultRound4 {position:relative;display:none;}
+#pickResultRound4 .bar {position:absolute;top:271px;right:53px;width:46px;height:60px;}
+#pickResultRound4 .bar.odd {border:2px solid #1265cd;}
+#pickResultRound4 .bar.even {border:2px solid #cd1212;}
+#pickResultRound4 .bar.yellow {border:2px solid #ffff00;}
+#pickResultRound4 .bar.green {border:2px solid green;}
+#pickResultRound4 .bar.black {border:2px solid #000;}
+
+#pickResultRound5 {position:relative;display:none;}
+#pickResultRound5 .bar {position:absolute;top:271px;right:0px;width:46px;height:60px;}
+#pickResultRound5 .bar.odd {border:2px solid #1265cd;}
+#pickResultRound5 .bar.even {border:2px solid #cd1212;}
+#pickResultRound5 .bar.yellow {border:2px solid #ffff00;}
+#pickResultRound5 .bar.green {border:2px solid green;}
+#pickResultRound5 .bar.black {border:2px solid #000;}
+
+#powerballPickBox .totalResultName.odd {background-color:#1265cd;color:#fff;border-radius:0;border:none;}
+#powerballPickBox .totalResultName.even {background-color:#cd1212;color:#fff;border-radius:0;border:none;}
+#powerballPickBox .totalResultName.yellow {background-color:#ffff00;color:#000 !important;border-radius:0;border:none;}
+#powerballPickBox .totalResultName.black {background-color:#000;color:#fff;border-radius:0;border:none;}
+
+#powerballPickBox .totalResult .oddRound {position:absolute;top:0;width:46px;height:39px;border:2px solid #1265cd;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResultName .oddRound {position:absolute;top:0;background-color:#1265cd;color:#fff;width:50px;height:21px;line-height:23px;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResult .evenRound {position:absolute;top:0;width:46px;height:39px;border:2px solid #cd1212;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResultName .evenRound {position:absolute;top:0;background-color:#cd1212;color:#fff;width:50px;height:21px;line-height:23px;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResult .greenRound {position:absolute;top:0;width:46px;height:39px;border:2px solid green;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResultName .greenRound {position:absolute;top:0;background-color:green;color:#fff;width:50px;height:21px;line-height:23px;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResult .blackRound {position:absolute;top:0;width:46px;height:39px;border:2px solid #000;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResultName .blackRound {position:absolute;top:0;background-color:#000;color:#fff;width:50px;height:21px;line-height:23px;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResult .underRound {position:absolute;top:0;width:46px;height:39px;border:2px solid #1265cd;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResultName .underRound {position:absolute;top:0;background-color:#1265cd;color:#fff;width:50px;height:21px;line-height:23px;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResult .overRound {position:absolute;top:0;width:46px;height:39px;border:2px solid #cd1212;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResultName .overRound {position:absolute;top:0;background-color:#cd1212;color:#fff;width:50px;height:21px;line-height:23px;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResult .bigRound {position:absolute;top:0;width:46px;height:39px;border:2px solid #cd1212;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResultName .bigRound {position:absolute;top:0;background-color:#cd1212;color:#fff;width:50px;height:21px;line-height:23px;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResult .middleRound {position:absolute;top:0;width:46px;height:39px;border:2px solid green;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResultName .middleRound {position:absolute;top:0;background-color:green;color:#fff;width:50px;height:21px;line-height:23px;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResult .smallRound {position:absolute;top:0;width:46px;height:39px;border:2px solid #1265cd;margin:-1px 0 0 -1px;}
+#powerballPickBox .totalResultName .smallRound {position:absolute;top:0;background-color:#1265cd;color:#fff;width:50px;height:21px;line-height:23px;margin:-1px 0 0 -1px;}
+
+#powerballPickBox .totalResult .oddRound img {padding-top:5px;}
+#powerballPickBox .totalResult .evenRound img {padding-top:5px;}
+#powerballPickBox .totalResult .underRound img {padding-top:5px;}
+#powerballPickBox .totalResult .overRound img {padding-top:5px;}
+#powerballPickBox .totalResult .blackRound img {padding-top:5px;}
+#powerballPickBox .totalResult .bigRound {line-height:40px;font-weight:bold;font-size:13px;}
+#powerballPickBox .totalResult .middleRound {line-height:40px;font-weight:bold;font-size:13px;}
+#powerballPickBox .totalResult .smallRound {line-height:40px;font-weight:bold;font-size:13px;}
+#powerballPickBox .totalResult .blackRound {line-height:40px;font-weight:bold;font-size:13px;}
+
+/* more btn */
+.moreBox {margin-top:5px;border:1px solid #D5D5D5;background-color:#F1F1F1;height:30px;line-height:30px;text-align:center;}
+.moreBox a {display:block;text-decoration:none;color:#5F6164;}
+.moreBox a:hover {background-color:#F1F1F1;color:#0E609C;}
+
+/* index (patternBox) */
+#patternBox {border:1px solid #D5D5D5;}
+#patternBox th {position:relative;}
+#patternBox th.title {font-weight:bold;background-color:#F1F1F1;color:#5F6164;border-bottom:1px solid #D5D5D5;font-size:11px;font-weight:normal;}
+#patternBox .subTitle th {height:30px;background-color:#FCFCFC;color:#5F6164;border:1px solid #D5D5D5;font-size:11px;font-weight:normal;}
+#patternBox th.btn {border-right:1px solid #D5D5D5;background-color:#fff;color:#5F6164;font-size:11px;font-weight:normal;}
+#patternBox th a {height:30px;line-height:30px;color:#5F6164;display:block;text-decoration:none;}
+#patternBox th a:hover {color:#0E609C;text-decoration:underline;}
+#patternBox th a.on {position:absolute;top:-1px;left:-1px;width:100%;color:#fff;background-color:#127CCB;border:1px solid #0E609C;}
+#patternBox .content {width:830px;overflow-x:auto;}
+
+#patternBox a{display:block;color:#5F6164;}
+//#patternBox .btn.on{background-color:#393939;}
+
+/* index (sixBox) */
+#sixBox {border:1px solid #D5D5D5;}
+#sixBox th {position:relative;}
+#sixBox th.title {font-weight:bold;background-color:#F1F1F1;color:#5F6164;border-bottom:1px solid #D5D5D5;font-size:11px;font-weight:normal;}
+#sixBox .subTitle th {height:30px;background-color:#FCFCFC;color:#5F6164;border:1px solid #D5D5D5;font-size:11px;font-weight:normal;}
+#sixBox th.btn {border-right:1px solid #D5D5D5;background-color:#fff;color:#5F6164;font-size:11px;font-weight:normal;}
+#sixBox th a {height:30px;line-height:30px;color:#5F6164;display:block;text-decoration:none;}
+#sixBox th a:hover {color:#0E609C;text-decoration:underline;}
+#sixBox th a.on {position:absolute;top:-1px;left:-1px;width:100%;color:#fff;background-color:#127CCB;border:1px solid #0E609C;}
+#sixBox td a.on1 {top:-1px;left:-1px;color:#fff;background-color:#127CCB;border:1px solid #0E609C;}
+#sixBox th a.on2 {position:absolute;top:-1px;left:-1px;width:100%;color:#000;background-color:#F1F1F1;border:1px solid #c2c2c2;}
+#sixBox .content {width:830px;overflow-x:auto;}
+#sixBox a {display:block;color:#5F6164;}
+
+#sixBox .sixPatternCntBox td.btn {border-right:1px solid #D5D5D5;background-color:#fff;color:#5F6164;font-size:11px;font-weight:normal;}
+#sixBox .sixPatternCntBox td.none {border-right:none;}
+
+
+
+.defaultTable {border:1px solid #D5D5D5;}
+.defaultTable th {position:relative;}
+.defaultTable th.title {font-weight:bold;background-color:#F1F1F1;}
+.defaultTable th.btn {border-right:1px solid #D5D5D5;background-color:#F1F1F1;font-weight:normal;}
+.defaultTable th.menu {border-top:2px solid #0E609C;border-right:1px solid #D5D5D5;background-color:#F1F1F1;font-weight:normal;}
+.defaultTable th.menu a:hover{color:#0E609C;}
+.defaultTable th.menu.none {border-top:2px solid #0E609C;border-right:none;background-color:#F1F1F1;font-weight:normal;}
+.defaultTable th a {color:#000;display:block;text-decoration:none;}
+.defaultTable th a.on {position:absolute;top:0px;left:-1px;width:100%;color:#fff;background-color:#127CCB;border:1px solid #0E609C;border-top:none;}
+.defaultTable th a.on:hover {color:#fff;}
+.defaultTable .content {width:840px;overflow-x:auto;}
+
+.defaultTable a {display:block;height:30px;line-height:30px;}
+
+div.dateInfo {position:relative;height:65px;}
+div.date-box {width:300px;position:relative;float:left;height:65px;color:#404040;z-index:1;margin:0 auto;}
+div.date-box span.date {position:absolute;left:37px;padding-top:1px;font-family:DINWeb-Bold;font-size:25px;font-weight:bold;letter-spacing:-1px;vertical-align:top;line-height:65px;}
+div.date-box a.prev {position:absolute;left:15px;top:21px;}
+div.date-box a.next {position:absolute;right:123px;top:21px;}
+div.date-box a.today {position:absolute;right:75px;top:16px;}
+div.date-box .calendar {position:absolute;right:35px;top:16px;z-index:12;border:none;cursor:pointer;}
+
+div.time-box {width:500px;height:50px;position:absolute;top:8px;right:0px;}
+div.time-box .timeBar{position:relative;width:420px;height:49px;line-height:49px;background:url(https://simg.powerballgame.co.kr/images/time.png) no-repeat 0 0;color:#fff;font-weight:bold;text-align:center;}
+div.time-box .timeBar .msg1 {float:left;padding-left:30px;}
+div.time-box .timeBar .msg2 {float:right;padding-right:30px;}
+div.time-box .timeBar .time {position:absolute;top:3px;left:122px;font-family:DINWeb-Bold;font-size:26px;letter-spacing:2px;}
+div.time-box .timeBar .msg2 .round {font-family:DINWeb-Bold;font-weight:bold;color:#BF1A20;font-size:15px;margin:0 3px;}
+
+div.time-box img.refresh {position:absolute;right:10px;top:2px;}
+
+div.timeBox {position:absolute;top:17px;right:15px;width:402px;height:30px;line-height:30px;border:1px solid #D5D5D5;text-align:center;background-color:#F1F1F1;font-size:11px;font-family:tahoma,dotum;}
+div.timeBox .left {float:left;width:300px;}
+div.timeBox .left strong {color:#CD1212;}
+div.timeBox .refresh {float:right;width:100px;background-color:#127CCB;color:#fff;border:1px solid #0E609C;margin-top:-1px;margin-right:-1px;}
+div.timeBox .refresh a {display:block;color:#fff;}
+
+.periodBox {position:relative;margin:0;height:65px;top:15px;}
+.periodBox .dateBox {float:left;width:400px;}
+.periodBox .dateBox input {float:left;}
+.periodBox .dateBox a {float:left;margin-left:5px;}
+.periodBox .bar {float:left;margin:0 5px;line-height:44px;}
+.periodBox .btnBox {float:left;}
+.periodBox .btnBox a {width:46px;height:44px;text-align:center;line-height:44px;display:inline-block;color:#fff;font-weight:bold;}
+.periodBox .dateInput {width:154px;height:45px;font-size:15px;font-family:DINWeb-Bold;border:none;text-align:center;}
+
+/* left */
+#lastResult b {color:yellow;}
+
+/*
+div.date-box {width:400px;position:relative;height:40px;padding-top:15px;color:#404040;text-align:center;z-index:1;margin:0 auto;}
+div.date-box span.date {font-family:DINWeb-Bold;font-size:25px;font-weight:bold;letter-spacing:-1px;vertical-align:top;line-height: 30px;}
+div.date-box img.prev {position:absolute;left:120px;top:20px;}
+div.date-box img.next {position:absolute;right:120px;top:20px;}
+div.date-box img.today {position:absolute;right:70px;top:15px;}
+div.date-box img.calendar {position:absolute;right:30px;top:15px;}
+div.time-box {width:500px;height:50px;position:absolute;top:50px;right:0px;}
+div.time-box .timeBar{width:420px;height:49px;background:url(https://simg.powerballgame.co.kr/images/time.png) no-repeat 0 0;}
+div.time-box img.refresh {position:absolute;right:10px;top:2px;}
+*/
+
+/* pattern table */
+.patternTable {background-color:#fff;border:1px solid #9b9b9b;}
+.patternTable .innerTable {background-color:#fff;}
+.patternTable .innerTable th {height:30px;font-size:12px;font-family:dotum;background-color:#EFEFEF;border-right:1px solid #9b9b9b;border-bottom:1px solid #9b9b9b;}
+.patternTable .innerTable td {width:30px;height:30px;border-top:1px solid #e4e4e4;border-right:1px solid #e4e4e4;text-align:center;}
+.patternTable .innerTable td.sum {font-weight:bold;}
+.patternTable .innerTable td.order {font-weight:bold;background-color:#EFEFEF;border-right:1px solid #9b9b9b;border-top:1px solid #9b9b9b;}
+.patternTable .innerTable .none td {border:none;height:none;}
+.patternTable .innerTable td.date {width:80px;font-family:DINWeb-Bold;}
+.patternTable .innerTable td.patternRound {background-color:#4C4C4C;color:#fff;width:40px;height:20px !important;}
+.patternTable .innerTable td.patternImg {height:40px !important;}
+
+/* odd, even */
+.patternTable .innerTable th.title_odd {color:#1265cd;}
+.patternTable .innerTable th.title_even {color:#cd1212;}
+.patternTable .innerTable th.title_middle {color:#14805E;}
+.patternTable .innerTable td .odd {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#1265cd;border:1px solid #0d50a3;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .even {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#cd1212;border:1px solid #a30d0d;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .middle {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#14805E;border:1px solid #0D513A;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .small {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#1265cd;border:1px solid #0d50a3;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .big {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#cd1212;border:1px solid #a30d0d;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .none {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#b6b6b6;border:1px solid #747474;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+
+/* under, over */
+.patternTable .innerTable th.title_under {color:#1265cd;}
+.patternTable .innerTable th.title_over {color:#cd1212;}
+.patternTable .innerTable td .under {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#1265cd;border:1px solid #0d50a3;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .over {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#cd1212;border:1px solid #a30d0d;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+
+/* left, right */
+.patternTable .innerTable th.title_left {color:#1265cd;}
+.patternTable .innerTable th.title_right {color:#cd1212;}
+.patternTable .innerTable td .left {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#1265cd;border:1px solid #0d50a3;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .right {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#cd1212;border:1px solid #a30d0d;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+
+/* ladderCnt(3,4) */
+.patternTable .innerTable th.title_three {color:#1265cd;}
+.patternTable .innerTable th.title_four {color:#cd1212;}
+.patternTable .innerTable td .three {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#1265cd;border:1px solid #0d50a3;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .four {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#cd1212;border:1px solid #a30d0d;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+
+/* startLadderCnt */
+.patternTable .innerTable th.title_left3 {color:#cd1212;font-size:11px;}
+.patternTable .innerTable th.title_left4 {color:#1265cd;font-size:11px;}
+.patternTable .innerTable th.title_right3 {color:#1265cd;font-size:11px;}
+.patternTable .innerTable th.title_right4 {color:#cd1212;font-size:11px;}
+.patternTable .innerTable td .left3 {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#cd1212;border:1px solid #a30d0d;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .left4 {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#1265cd;border:1px solid #0d50a3;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .right3 {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#1265cd;border:1px solid #0d50a3;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+.patternTable .innerTable td .right4 {width:20px;height:20px;line-height:20px;border-radius:20px;background-color:#cd1212;border:1px solid #a30d0d;color:#fff;text-align:center;font-size:11px;margin:0 5px;}
+
+/* patternBox */
+.patternBox {background-color:#fff;border:1px solid #ADADAD;}
+.patternBox .title {height:30px;background-color:#F1F1F1;color:#000;font-size:11px;font-weight:normal;}
+.patternBox .subTitle th {height:30px;background-color:#FCFCFC;color:#5F6164;border:1px solid #D5D5D5;font-size:11px;font-weight:normal;}
+.patternBox .innerTable {width:100%;background-color:#fff;border-bottom:1px solid #ADADAD;}
+.patternBox .innerTable tr.line {border-bottom:1px solid #ADADAD;}
+.patternBox .innerTable td {text-align:center;padding:4px;}
+.patternBox .innerTable td.date {width:80px;font-family:DINWeb-Bold;border-right:1px solid #ADADAD;}
+.patternBox .innerTable td.nextResult {width:82px;text-align:center;border-left:1px solid #ADADAD;}
+.patternBox .innerTable td.patternRound {background-color:#717171;border:1px solid #151515;color:#fff;width:40px;height:20px !important;line-height:20px;font-family:DINWeb-Bold;}
+.patternBox .innerTable td.patternImg {height:40px !important;}
+.patternBox .innerTable td.patternImg div {margin:0 auto;}
+.patternBox .bd {border:1px solid #ADADAD;}
+
+/* patternAnalyze */
+#patternSet {position:relative;border:1px solid #ADADAD;border-top:none;margin:0;padding:0;}
+#patternSet li {display:inline-block;text-align:center;width:40px;padding:0;margin:0;cursor:pointer;vertical-align:top;}
+#patternSet .round {height:20px;line-height:20px;background-color:#717171;color:#fff;border-right:1px solid #151515;border-bottom:1px solid #151515;}
+#patternSet .img {margin:3px auto;}
+
+.patternSearchBox {position:relative;height:45px;line-height:45px;margin:10px 0;}
+.patternSearchBox img {vertical-align:middle;}
+.patternSearchBox a.chk {display:inline-block;background:url(https://simg.powerballgame.co.kr/images/check_off.png) left center no-repeat;padding-left:22px;margin-right:5px;}
+.patternSearchBox a.chk.on {background:url(https://simg.powerballgame.co.kr/images/check_on.png) left center no-repeat;}
+
+.patternSearchBox ul {float:left;}
+.patternSearchBox ul li {display:inline-block;width:130px;height:40px;line-height:40px;text-align:center;border:1px solid #D5D5D5;cursor:pointer;}
+.patternSearchBox ul li.on {border:1px solid #0E609C;background-color:#127CCB;color:#fff;}
+
+/* roundLog */
+.roundSelect{width:95px;}
+.typeSelect{width:105px;}
+.selectOverflow{height:400px;}
+.selectArea {position:absolute;width:380px;top:5px;}
+.selectArea .text {height:10px;padding-top:10px;display:inline-block;vertical-align:top}
+
+/* latestLog */
+.roundCntSelect {width:100px;}
+
+/* agree */
+.agreeBox {background-color:#F8F8F8;color:#666666;}
+.agreeBox .title {height:35px;line-height:35px;font-size:12px;background-color:#aaaaaa;border:1px solid #999999;}
+.agreeBox .title ul li a {float:left;padding:0 20px;border-right:1px solid #999999;color:#333;text-decoration:none;}
+.agreeBox .title ul li a.on {display:block;background-color:#4C4C4C;color:#fff;font-weight:bold;border:1px solid #3c3c3c;height:35px;margin:-1px 0 0 -1px;}
+.agreeBox .content {padding:20px;font-size:12px;line-height:20px;border:1px solid #CECECE;border-top:none;}
+
+/* mypage */
+.mypageBox {background-color:#F8F8F8;color:#666666;}
+.mypageBox .title {height:35px;line-height:35px;font-size:12px;background-color:#aaaaaa;border:1px solid #999999;}
+.mypageBox .title ul li a {float:left;padding:0 9px;border-right:1px solid #999999;color:#333;text-decoration:none;}
+.mypageBox .title ul li a.on {display:block;background-color:#4C4C4C;color:#fff;font-weight:bold;border:1px solid #3c3c3c;height:35px;margin:-1px 0 0 -1px;}
+.mypageBox .content {padding:10px;font-size:12px;line-height:20px;border:1px solid #CECECE;border-top:none;min-height:500px;}
+
+.mypageBox .memberInfoBox {border:solid 1px #CECECE;padding:10px;background-color:#fff;}
+.mypageBox .memberInfoBox .table {border-top:1px dotted #c6c6c6;width:100%;}
+.mypageBox .memberInfoBox .table td {height:50px;border-bottom:1px dotted #c6c6c6;}
+.mypageBox .memberInfoBox .table td.none {border:none;}
+.mypageBox .memberInfoBox .table .tit {font-size:12px;font-weight:bold;font-family:Gulim;background-color:#f7f7f7;padding-left:10px;}
+.mypageBox .memberInfoBox .table .val {font-size:12px;font-weight:bold;}
+.mypageBox .memberInfoBox .table .guideMsg {padding-left:10px;font-size:11px;color:#555555;}
+.mypageBox .memberInfoBox .input {margin-left:10px;padding:0 8px;width:150px;height:22px;line-height:22px;border:1px solid #c2c6cb;font-family:Gulim;font-size:12px;font-weight:bold;z-index:10;}
+.mypageBox .memberInfoBox .input:focus {position:relative;border:1px solid #4C4C4C;}
+.mypageBox .memberInfoBox .table .smallMsg {padding-left:10px;font-size:11px;color:#555555;}
+
+.mypageBox .memberInfoBox .btn {display:block;width:200px;height:40px;margin:0 auto;background-color:#4C4C4C;color:#fff;border:solid 1px #3C3C3C;font-weight:bold;font-size:15px;line-height:40px;text-align:center;text-decoration:none;}
+.mypageBox .memberInfoBox .btn2 {display:block;width:150px;height:30px;margin:0 auto;background-color:#127ccb;color:#fff;border:solid 1px #0e609c;font-size:12px;line-height:30px;text-align:center;text-decoration:none;}
+
+.mypageBox .memberBox {margin:0;padding:0;border:none;background-color:#F8F8F8;}
+.mypageBox .memberBox .titBox {margin-bottom:10px;}
+.mypageBox .memberBox .titBox .table {border:1px solid #c6c6c6;width:100%;}
+.mypageBox .memberBox .titBox .table td {border-bottom:1px dotted #c6c6c6;padding:20px;vertical-align:top;}
+.mypageBox .memberBox .titBox .table td.none {border:none;}
+.mypageBox .memberBox .titBox .table td.tit {margin:0;padding:20px 0 0 20px;font-size:12px;font-weight:bold;font-family:Gulim;background-color:#EFEFEF;vertical-align:top;border-right:1px solid #c6c6c6;text-align:left;}
+.mypageBox .memberBox .titBox .table td.relative {position:relative;}
+.mypageBox .memberBox .titBox .table td .haveBox {display:inline-block;border:1px solid #D9D9D8;height:30px;line-height:30px;padding:0 5px;background-color:#f8f8f8;color:#8d8d8d;}
+.mypageBox .memberBox .titBox .table td .number {margin-right:2px;color:#2962D9;}
+.mypageBox .memberBox .titBox .table .val {font-size:12px;font-weight:bold;}
+.mypageBox .memberBox .titBox .table .guideMsg {padding-left:10px;font-size:11px;color:#555;}
+.mypageBox .memberBox .titBox .table .noneMsg {font-size:12px;color:#b5b5b5;}
+.mypageBox .memberBox .titBox .input {margin-left:10px;padding:0 8px;width:150px;height:22px;line-height:22px;border:1px solid #c2c6cb;font-family:Gulim;font-size:12px;font-weight:bold;z-index:10;}
+.mypageBox .memberBox .titBox .input:focus {position:relative;border:1px solid #4C4C4C;}
+.mypageBox .memberBox .titBox .table .smallMsg {padding-left:10px;font-size:11px;color:#555555;}
+
+.mypageBox .memberBox .btn {display:block;width:200px;height:40px;margin:0 auto;background-color:#4C4C4C;color:#fff;border:solid 1px #3C3C3C;font-weight:bold;font-size:15px;line-height:40px;text-align:center;text-decoration:none;}
+
+.mypageBox .memberBox .btn_set {display:inline-block;height:30px;line-height:30px;padding:0 5px;background-color:#efefef;color:#000;border:1px solid #c6c6c6;text-align:center;}
+.mypageBox .memberBox .btn_buy {display:inline-block;height:30px;line-height:30px;padding:0 5px;background-color:#ec0000;color:#fff;border:1px solid #cc0000;text-align:center;}
+
+.mypageBox .memberBox .btn2 {display:block;width:150px;height:30px;margin:0 auto;background-color:#127ccb;color:#fff;border:solid 1px #0e609c;font-size:12px;line-height:30px;text-align:center;text-decoration:none;}
+
+.mypageBox .itemList {padding:0 0 0 3px;}
+.mypageBox .itemList li {display:inline-block;width:160px;height:180px;border:1px solid #C8C5C5;background-color:#fff;padding:0 15px;margin:5px 3px;}
+.mypageBox .itemList li img {margin:5px auto;display:block;}
+.mypageBox .itemList li .name {font-size:13px;font-weight:bold;margin-bottom:10px;}
+.mypageBox .itemList li .btn {float:left;margin-left:5px;}
+.mypageBox .itemList li .btn a.btn_use {display:inline-block;width:42px;height:27px;line-height:27px;background-color:#ec0000;color:#fff;border:1px solid #cc0000;text-align:center;}
+.mypageBox .itemList li .btn a.btn_gift {display:inline-block;width:42px;height:27px;line-height:27px;background-color:#efefef;color:#000;border:1px solid #c6c6c6;text-align:center;}
+
+.mypageBox .amountSet {position:relative;float:left;width:62px;height:29px;background:url(https://simg.powerballgame.co.kr/images/bg_amount.png) no-repeat;}
+.mypageBox .amountSet input {border:none;width:45px;height:27px;line-height:27px;margin:1px;text-align:center;}
+.mypageBox .amountSet .up {position:absolute;top:0;right:0;width:15px;height:14px;cursor:pointer;}
+.mypageBox .amountSet .down {position:absolute;bottom:0;right:0;width:15px;height:14px;cursor:pointer;}
+
+.mypageBox .logBox {width:100%;border:1px solid #C8C5C5;}
+.mypageBox .logBox tr.title {background-color:#EFEFEF;border:1px solid #C8C5C5;}
+.mypageBox .logBox tr {border-top:1px solid #E9E8E7;}
+.mypageBox .logBox td {height:30px;text-align:center;background-color:#fff;}
+.mypageBox .logBox td.left {text-align:left;}
+
+.mypageBox .exp-box span.text {font-size:11px;color:#888;margin-right:3px;}
+.mypageBox .exp-box span.exp {font-size:12px;font-weight:bold;letter-spacing:0px;margin-right:2px;color:#127CCB;}
+.mypageBox .exp-box span.ea {font-size:10px;color:#888;}
+
+.mypageBox .box-level {margin-top:5px;background:#f1f1ef;border-radius:15px;padding:26px 5px 26px 5px;margin-bottom:20px;height:30px;}
+.mypageBox .box-level ul {*zoom:1;}
+.mypageBox .box-level li {float:left;position:relative;width:34px;}
+.mypageBox .box-level li div{display:block;cursor:pointer;text-align:center;font-size:11px;}
+.mypageBox .box-level li div p{padding:5px 0 0 0;}
+.mypageBox .box-level li div .text{position:absolute;bottom:55px;left:9px;color:#565656;background:#fff;padding:5px 5px;min-width:90px;border:1px solid #127ccb;text-align:left;display:none;font-size:11px;}
+.mypageBox .box-level li div .text .ar{background:url('https://simg.powerballgame.co.kr/images/bg_arrow.png') no-repeat 100% 0;width:9px;height:5px;position:absolute;bottom:-5px;left:5px;display:block;}
+.mypageBox .box-level li div p{line-height:12px;}
+.mypageBox .box-level li.on .text{display:block;}
+
+/* memberModify */
+.modifyBox {color:#5A5552;background-color:#fff;}
+.modifyBox .title {height:40px;line-height:40px;padding-left:10px;font-size:13px;font-weight:bold;background-color:#127CCB;color:#fff;}
+.modifyBox .content {margin:10px;}
+
+.modifyBox .table {border:1px solid #c6c6c6;width:100%;}
+.modifyBox .table td {border-bottom:1px dotted #c6c6c6;padding:12px;vertical-align:top;}
+.modifyBox .table td.none {border:none;}
+.modifyBox .table td.tit {margin:0;padding:20px 0 0 10px;font-size:12px;font-weight:bold;font-family:Gulim;background-color:#EFEFEF;vertical-align:top;border-right:1px solid #c6c6c6;text-align:left;}
+.modifyBox .table td input {border:1px solid #D9D9D8;height:30px;width:120px;line-height:30px;padding:0 5px;background-color:#f8f8f8;color:#8d8d8d;}
+.modifyBox .table td.guideMsg {padding:20px 0 0 10px;color:#bbb;}
+
+.modifyBox .btnBox {margin:20px auto;text-align:center;}
+.modifyBox .btnBox .confirm {display:inline-block;width:180px;height:40px;margin:0 auto;text-shadow:1px 1px 1px #2f447f;text-align:center;text-decoration:none;font-weight:bold;line-height:40px;color:#fff !important;font-size:16px;background-color:#CC3300;border:1px solid #9c1818;border-radius:3px;}
+.modifyBox .btnBox .confirm:hover {background-color:#b72e00;}
+.modifyBox .btnBox .cancel {display:inline-block;width:180px;height:40px;margin:0 auto;text-shadow:1px 1px 1px #2f447f;text-align:center;text-decoration:none;font-weight:bold;line-height:40px;color:#fff;font-size:16px;background-color:#8a8a8a;border:1px solid #696969;border-radius:3px;}
+.modifyBox .btnBox .cancel:hover {background-color:#808080;}
+.modifyBox .btn_set {display:inline-block;height:30px;line-height:30px;padding:0 10px;background-color:#efefef;color:#000;border:1px solid #c6c6c6;text-align:center;}
+
+/* market */
+.marketBox {color:#666666;}
+.marketBox .title {height:30px;line-height:30px;font-size:12px;background-color:#F1F1F1;border:1px solid #D5D5D5;border-top:2px solid #0E609C;}
+.marketBox .title ul li a {float:left;padding:0 30px;border-right:1px solid #D5D5D5;color:#333;text-decoration:none;}
+.marketBox .title ul li a.on {display:block;background-color:#127CCB;color:#fff;font-weight:bold;border:1px solid #0E609C;height:30px;margin:-1px 0 0 -1px;}
+.marketBox .title ul li.right {float:right;border-left:1px solid #D5D5D5;border-right:none;}
+.marketBox .title ul li.right a {background-color:#0D568C;color:#fff;border:1px solid #0E609C;margin:-1px -1px 0 -1px;}
+.marketBox .title ul li.free {float:right;border-left:1px solid #D5D5D5;border-right:none;}
+.marketBox .title ul li.free a {background-color:#fff;color:#000;border:1px solid #0E609C;margin:-1px -1px 0 -1px;}
+.marketBox .content {background-color:#FCFCFC;margin-top:10px;padding:10px;font-size:12px;line-height:20px;border:1px solid #D5D5D5;}
+
+.marketBox .content .tit {font-size:11px;height:25px;line-height:25px;background-color:#127CCB;color:#fff;padding:0 10px;margin:10px 6px 0 6px;border:1px solid #0E609C;}
+.marketBox .content .tit.none {margin-top:0;}
+.marketBox .content .tit strong {color:yellow;}
+
+.marketBox .itemList {padding:0 0 0 3px;}
+.marketBox .itemList li {position:relative;display:inline-block;width:160px;height:310px;border:1px solid #C8C5C5;background-color:#fff;padding:0 15px;margin:5px 3px;vertical-align:top;}
+.marketBox .itemList li:hover {border:1px solid #000;}
+.marketBox .itemList li .edge {position:absolute;top:-10px;left:-5px;}
+.marketBox .itemList li img {margin:5px auto;display:block;}
+.marketBox .itemList li .name {font-size:13px;font-weight:bold;}
+.marketBox .itemList li .bonus {font-size:11px;}
+.marketBox .itemList li .bonus .tit {background-color:#0066CC;color:#fff;padding:2px;border:1px solid #006699;}
+.marketBox .itemList li .bonus .point {color:#1264D0;}
+.marketBox .itemList li .bonus .exp {color:#CD1212;}
+.marketBox .itemList li .desc {margin:10px 0;font-size:11px;line-height:16px;max-height:60px;color:#8b8b8b;}
+
+.marketBox .itemList li .priceBox {position:absolute;bottom:15px;}
+
+.marketBox .itemList li .price {font-family:DINWeb-Bold;margin:10px 0;color:#e80000;}
+.marketBox .itemList li .price strike {color:#000;}
+.marketBox .itemList li .price .arrow {font-family:gulim;}
+.marketBox .itemList li .btn {float:left;margin-left:5px;}
+.marketBox .itemList li .btn a.btn_buy {display:inline-block;width:42px;height:27px;line-height:27px;background-color:#ec0000;color:#fff;border:1px solid #cc0000;text-align:center;}
+.marketBox .itemList li .btn a.btn_gift {display:inline-block;width:42px;height:27px;line-height:27px;background-color:#efefef;color:#000;border:1px solid #c6c6c6;text-align:center;}
+
+.marketBox .amountSet {position:relative;float:left;width:62px;height:29px;background:url(https://simg.powerballgame.co.kr/images/bg_amount.png) no-repeat;}
+.marketBox .amountSet input {border:none;width:45px;height:27px;line-height:27px;margin:1px;text-align:center;}
+.marketBox .amountSet .up {position:absolute;top:0;right:0;width:15px;height:14px;cursor:pointer;}
+.marketBox .amountSet .down {position:absolute;bottom:0;right:0;width:15px;height:14px;cursor:pointer;}
+
+.marketBox .chargeBox {margin:15px;background:url(https://simg.powerballgame.co.kr/images/bg_coin.png) right top no-repeat;}
+.marketBox .chargeBox .text {color:#333;margin:20px 0;}
+.marketBox .chargeBox .descBox {position:relative;border:1px solid #d5d5d5;background-color:#fefefe;margin:0 0 15px 0;padding:0 10px;}
+.marketBox .chargeBox .descBox table {width:100%;}
+.marketBox .chargeBox .descBox table th {text-align:left;padding-left:10px;width:170px;height:40px;border-bottom:1px dotted #D2D2D2;}
+.marketBox .chargeBox .descBox table td {border-bottom:1px dotted #D2D2D2;}
+.marketBox .chargeBox .descBox table td .price {font-size:18px;font-weight:bold;font-family:tahoma;color:#CD1212;}
+.marketBox .chargeBox .descBox table .none {border-bottom:none;}
+.marketBox .chargeBox .descBox table td input {border:1px solid #D9D9D8;height:22px;padding:0 5px;}
+.marketBox .chargeBox .descBox table td span.small {font-size:11px;color:#848484;}
+.marketBox .chargeBox .descBox table td.msg {font-size:11px;}
+.marketBox .chargeBox .descBox table td .check {width:20px;height:20px;border:none;}
+
+.marketBox .chargeBox .chargeBtn .btn {display:block;width:210px;height:40px;margin:0 auto;text-shadow:1px 1px 1px #2f447f;text-align:center;text-decoration:none;font-weight:bold;line-height:40px;color:#fff;font-size:16px;background-color:#CC3300;border:1px solid #9c1818;}
+.marketBox .chargeBox .chargeBtn .btn:hover{background-color:#b72e00;}
+
+.marketBox .coinList {padding:0 0 0 0;}
+.marketBox .coinList li {position:relative;display:inline-block;width:153px;height:160px;border:1px solid #D5D5D5;background-color:#f5f5f5;padding:0 15px;margin:0 6px 10px 0;cursor:pointer;}
+.marketBox .coinList li.on {border:1px solid #127CCB;background-color:#fff;}
+.marketBox .coinList li img {margin:0 auto;display:block;width:150px;height:128px;}
+.marketBox .coinList li .price {text-align:center;font-size:18px;font-weight:bold;font-family:tahoma,dotum;}
+.marketBox .coinList li .input {width:128px;height:32px;text-align:right;font-weight:bold;font-family:tahoma;padding:0 5px 0 0;border:1px solid #D5D5D5;margin-left:5px;}
+.marketBox .coinList li .txt {font-weight:bold;font-family:tahoma,dotum;}
+.marketBox .coinList li.last {width:738px;height:56px;line-height:53px;}
+.marketBox .coinList li.last img {display:inline;width:47px;height:45px;vertical-align:middle;}
+.marketBox .coinList li.on .price {color:#127CCB;}
+.marketBox .coinList li.on .input {width:128px;height:32px;color:#127CCB;padding:0 5px 0 0;border:1px solid #127CCB;margin-left:5px;}
+.marketBox .coinList li.on .txt {color:#127CCB;}
+
+.marketBox .subtitle {display: inline-block;background-color: #127CCB;color: #fff;font-size:12px;margin-top:10px;font-weight:normal;border: 1px solid #0E609C;height: 26px;line-height:26px;padding:0 8px;}
+.marketBox .coinInput {padding:20px;border:1px solid #D5D5D5;background-color:#fff;margin-bottom:10px;}
+.marketBox .coinInput.on {border:1px solid #127CCB;}
+.marketBox .coinInput .plusCoin {display: inline-block;width: 50px;height: 32px;line-height: 32px;background-color: #efefef;color: #000;border: 1px solid #c6c6c6;text-align: center;vertical-align:middle;}
+.marketBox .coinInput .input {vertical-align:middle;width:128px;height:32px;text-align:right;font-weight:bold;font-family:tahoma;padding:0 5px 0 0;border:1px solid #D5D5D5;margin-left:5px;}
+.marketBox .coinInput .txt {padding-left:60px;font-size:11px;color:#848484;font-weight:normal;}
+.marketBox .coinInput .txt .dot {font-size:12px;color:#CD1212;}
+
+.marketBox .payTypeList {font-size:0;margin-bottom:10px;}
+.marketBox .payTypeList li {display:inline-block;width:100px;height:50px;border:1px solid #D5D5D5;background-color:#f5f5f5;height:40px;line-height:40px;cursor:pointer;text-align:center;font-size:12px;margin:0 -1px -1px 0;}
+.marketBox .payTypeList li.on {position:relative;border:1px solid #127CCB;color:#127CCB;background-color:#fff;}
+
+.marketBox .freeChargeBox {margin:15px;text-align:center;}
+
+/* charge */
+.chargeBox {background-color:#F8F8F8;color:#666666;}
+.chargeBox .title {height:35px;line-height:35px;font-size:13px;border:1px solid #3c3c3c;background-color:#4C4C4C;color:#fff;font-weight:bold;padding-left:10px;}
+.chargeBox .content {padding:10px;font-size:12px;line-height:20px;background-color:#FDFDFD;}
+.chargeBox .content .userCoin {height:40px;line-height:40px;text-indent:15px;color:#666666;background:#f7f7f7;border:1px solid #f0f0f0;}
+.chargeBox .content .userCoin span {font-family:DINWeb-Bold;color:#e80000;}
+.chargeBox .content .priceBox {position:relative;border:2px solid #CCCCCC;margin-top:10px;padding:20px;font-size:18px;font-weight:bold;background-color:#fff;text-align:center;}
+.chargeBox .content .priceBox .price {font-family:DINWeb-Bold;padding:0 3px 0 10px;color:#e80000;}
+.chargeBox .content .priceBox .small {position:absolute;top:22px;right:30px;font-size:11px;font-weight:normal;}
+
+.chargeBox .content .payPrice {margin:20px 0;font-size:0;}
+.chargeBox .content .payPrice .tit {margin:5px 0;font-weight:bold;font-size:12px;}
+.chargeBox .content .payPrice ul {width:460px;height:110px;margin:0 auto;}
+.chargeBox .content .payPrice ul li {width:93px;display:inline-block;line-height:60px;text-align:center;margin-right:-1px;font-size:12px;}
+.chargeBox .content .payPrice ul li label {position:relative;display:block;background:#FCFCFC url(https://simg.powerballgame.co.kr/images/coin_off.png) center 15px no-repeat;cursor:pointer;}
+.chargeBox .content .payPrice ul li label div {width:91px;padding-top:60px;height:50px;border:1px solid #CAC9C9;font-weight:bold;}
+
+.chargeBox .content .payPrice ul li label:hover {position:relative;margin:0;color:#333;background:url(https://simg.powerballgame.co.kr/images/coin_over.png) center 15px no-repeat;z-index:10;}
+.chargeBox .content .payPrice ul li label:hover div {border-color:#333;}
+
+.chargeBox .content .payPrice ul li label.on {color:#fff;font-weight:bold;background:#CC3300 url(https://simg.powerballgame.co.kr/images/coin_on.png) center 15px no-repeat;z-index:20;}
+.chargeBox .content .payPrice ul li label.on div {border-color:#9c1818;}
+
+.chargeBox .content .payType {margin:20px 0 20px 0;font-size:0;}
+.chargeBox .content .payType .tit {margin:5px 0;font-weight:bold;font-size:12px;}
+.chargeBox .content .payType ul {width:464px;margin:0 auto;}
+.chargeBox .content .payType ul li {position:relative;display:inline-block;border:1px solid #CAC9C9;width:108px;height:100px;line-height:100px;text-align:center;background:url(https://simg.powerballgame.co.kr/images/bg_payType.png);font-size:12px;margin:0 3px;}
+.chargeBox .content .payType ul li:hover {border:1px solid #333;background:url(https://simg.powerballgame.co.kr/images/bg_payType.png);font-weight:bold;}
+.chargeBox .content .payType ul li.on {border:1px solid #9c1818;background:none;background-color:#CC3300;color:#fff;font-weight:bold;}
+
+.chargeBox .content .payType ul li label {display:block;padding-top:30px;cursor:pointer;}
+.chargeBox .content .payType ul li label.mobile {background:url(https://simg.powerballgame.co.kr/images/payType_mobile.png) center 5px no-repeat;}
+.chargeBox .content .payType ul li label.card {background:url(https://simg.powerballgame.co.kr/images/payType_card.png) center 5px no-repeat;}
+.chargeBox .content .payType ul li label.account {background:url(https://simg.powerballgame.co.kr/images/payType_account.png) center 5px no-repeat;}
+.chargeBox .content .payType ul li label.deposit {background:url(https://simg.powerballgame.co.kr/images/payType_deposit.png) center 5px no-repeat;}
+
+.chargeBox .content .payType ul li.on label.mobile {background:url(https://simg.powerballgame.co.kr/images/payType_mobile_on.png) center 5px no-repeat;}
+.chargeBox .content .payType ul li.on label.card {background:url(https://simg.powerballgame.co.kr/images/payType_card_on.png) center 5px no-repeat;}
+.chargeBox .content .payType ul li.on label.account {background:url(https://simg.powerballgame.co.kr/images/payType_account_on.png) center 5px no-repeat;}
+.chargeBox .content .payType ul li.on label.deposit {background:url(https://simg.powerballgame.co.kr/images/payType_deposit_on.png) center 5px no-repeat;}
+
+.chargeBox .content .payGuide {margin-bottom:10px;}
+.chargeBox .content .payGuide .depositBox {width:480px;border:1px solid #dbdbdb;background-color:#fafafa;margin:0 auto;padding:10px 0;}
+.chargeBox .content .payGuide .depositBox table th {text-align:left;padding-left:10px;width:170px;height:30px;}
+.chargeBox .content .payGuide .depositBox table td input {border:1px solid #D9D9D8;height:22px;padding:0 5px;}
+.chargeBox .content .payGuide .depositBox table td span.small {font-size:11px;color:#848484;}
+.chargeBox .content .payGuide .depositBox table td.msg {font-size:11px;}
+
+.chargeBox .btn{height:40px;padding:15px;text-align:center;background-color:#EAEAEA;border-top:1px solid #CDCDCD;}
+.chargeBox .btn .charge{display:inline-block;width:210px;height:40px;margin:0 auto;text-shadow:1px 1px 1px #2f447f;text-align:center;text-decoration:none;font-weight:bold;line-height:40px;color:#fff;font-size:16px;background-color:#CC3300;border:1px solid #9c1818;border-radius:3px;}
+.chargeBox .btn .charge:hover{background-color:#b72e00;}
+.chargeBox .btn .cancel{display:inline-block;width:210px;height:40px;margin:0 auto;text-shadow:1px 1px 1px #2f447f;text-align:center;text-decoration:none;font-weight:bold;line-height:40px;color:#fff;font-size:16px;background-color:#8a8a8a;border:1px solid #696969;border-radius:3px;}
+.chargeBox .btn .cancel:hover{background-color:#808080;}
+
+/* memo */
+.memoBox {color:#5A5552;background-color:#fcfcfc;}
+.memoBox .title {height:40px;line-height:40px;padding-left:10px;font-size:13px;font-weight:bold;background-color:#127CCB;color:#fff;}
+.memoBox ul {position:relative;margin:10px;height:38px;line-height:38px;border:1px solid #D5D5D5;border-top:2px solid #0E609C;}
+.memoBox ul li {float:left;width:17%;text-align:center;}
+.memoBox ul li.list {float:left;width:16%;text-align:center;}
+.memoBox ul li a {display:block;text-align:center;border-left:1px solid #D5D5D5;background:#F1F1F1;color:#4A4D4A;}
+.memoBox ul li a.on {background-color:#127CCB;color:#fff;border:1px solid #0E609C;margin-top:-1px;margin-left:-1px;}
+.memoBox ul li.none {border-right:none;}
+
+.memoBox .content {margin:10px;}
+.memoBox .content .list-btn {float:right;}
+
+.memoBox .top {height:30px;}
+.memoBox .top .textBox {font-size:11px;font-family:tahoma,dotum;}
+.memoBox .top .textBox .todayCnt {color:#127CCB;}
+.memoBox .top .textBox .tooltip-btn {display:inline-block;border:1px solid #0E609C;width:14px;height:14px;line-height:14px;text-align:center;background-color:#127CCB;color:#fff;cursor:pointer;}
+.memoBox .top .textBox .point {color:#127CCB;font-weight:bold;margin-right:1px;}
+.memoBox .top img {vertical-align:middle;}
+.memoBox .top .cnt {margin-left:5px;font-size:11px;font-weight:bold;font-family:tahoma;}
+.memoBox .top .cnt span {color:#127CCB;}
+.memoBox .top .bar {margin:0 10px;color:#c9c9c9;font-size:11px;font-family:dotum;}
+.memoBox .tooltip-content {position:absolute;border:1px solid #0E609C;background-color:#fff;width:280px;height:90px;z-index:99;padding:15px;font-size:11px;font-family:tahoma,dotum;display:none;}
+.memoBox .tooltip-content .desc {color:#888;margin-top:10px;}
+.memoBox .tooltip-content .myText {margin-top:10px;}
+.memoBox .tooltip-content .myText .levelText {color:#127CCB;font-weight:bold;}
+.memoBox .titleInputBox {position:relative;height:35px;padding:5px 5px 2px 5px;border:1px solid #D5D5D5;background-color:#EFEFEF;}
+.memoBox .titleInputBox .receiveNick {float:left;width:180px;height:28px;padding:0 5px;border:1px solid #d5d5d5;}
+.memoBox .titleInputBox .nicknameBtn {float:left;width:70px;height:28px;line-height:28px;text-align:center;display:inline-block;font-size:11px;background-color:#CE3400;border:1px solid #A22800;border-left:none;border-right:none;color:#fff;}
+.memoBox .titleInputBox .friendBtn {width:70px;height:28px;line-height:28px;text-align:center;display:inline-block;font-size:11px;background-color:#CE3400;border:1px solid #A22800;color:#fff;}
+.memoBox .titleInputBox .point {ime-mode:disabled;width:105px;height:28px;line-height:30px;float:right;text-align:right;padding:0 10px 0 35px;background:url(https://simg.powerballgame.co.kr/images/memo/point.png) #fff 3px center no-repeat;border:1px solid #d5d5d5;}
+.memoBox .contentInputBox {background-color:#fff;border:1px solid #D5D5D5;border-top:none;padding:10px;}
+.memoBox .contentInputBox .contentInput {width:100%;height:250px;overflow-y:scroll;background-color:#fff;border:none;overflow:auto;resize:none;}
+.memoBox .table {width:100%;border:1px solid #D5D5D5;}
+.memoBox .table tr {border-bottom:1px solid #eaeaea;}
+
+.memoBox .content .name-search {position:relative;padding-top:8px;}
+.memoBox .content .name-search .input {height:22px;border:1px solid #D5D5D5;padding:0 5px;}
+.memoBox .content .name-search span {float:right;}
+.memoBox .content .name-search .tooltipBox {position:absolute;top:13px;left:60px;}
+.memoBox .content .name-search .tooltipBox .tooltip-btn {position:absolute;margin-left:5px;display:inline-block;border:1px solid #0E609C;width:14px;height:14px;line-height:15px;text-align:center;background-color:#127CCB;color:#fff;cursor:pointer;}
+.memoBox .content .tooltip-content2 {position:absolute;border:1px solid #0E609C;background-color:#fff;width:280px;height:70px;z-index:99;padding:15px;font-size:11px;font-family:tahoma,dotum;display:none;}
+.memoBox .content .tooltip-content2 .desc {color:#888;margin-top:10px;}
+.memoBox .listBox ul {margin:5px 0;height:25px;background-color:#F1F1F1;}
+.memoBox .listBox ul li{float:left;width:26px;height:26px;line-height:26px;}
+.memoBox .listBox ul li.none{width:44px;}
+.memoBox .listBox ul li.black{width:82px;}
+.memoBox .listBox ul li a{height:25px;padding:0 5px;}
+
+
+.memoBox .table th {height:25px;background-color:#EFEFEF;color:#73696B;border-right:1px solid #D5D5D5;font-weight:normal;}
+.memoBox .table th.none {border-right:none;}
+.memoBox .table td {height:30px;text-align:center;background-color:#fff;}
+.memoBox .table td a {color:#5A5552;}
+.memoBox .table .read {color:#a8a8a8;}
+.memoBox .table td.left {height:30px;text-align:left;padding-left:10px;}
+.memoBox .table td img {vertical-align:middle;}
+.memoBox .page {height:25px;line-height:25px;text-align:center;margin:15px 0;}
+
+.memoBox .page a {display:inline-block;border:1px solid #d2d2d2;background-color:#fff;color:#5f5f5f;font-size:11px;font-family:tahoma,dotum;width:20px;height:20px;line-height:20px;text-align:center;margin:0 3px;}
+.memoBox .page a.on {background-color:#127CCB;color:#fff;border:1px solid #0E609C;}
+
+.memoBox .guide {font-size:11px;color:#0E609C;}
+
+.memoBox .receive {height:40px;background-color:#EFEFEF;}
+.memoBox .receive input {width:190px;height:30px;margin:4px 0 0 20px;border:1px solid #DEDFDE;padding:0 5px;}
+.memoBox .receive .guide {margin-left:10px;font-size:11px;color:#918C8A;}
+.memoBox .pointInfo {height:30px;line-height:30px;padding-left:20px;color:#5A5552;}
+.memoBox .pointInfo .point {color:#CE3400;font-weight:bold;}
+.memoBox .contentBox {width:564px;margin:0 auto;}
+.memoBox .contentBox .content {width:544px;height:180px;padding:10px;margin:0 auto;background-color:#F7F7F7;border:1px solid #DEDFDE;line-height:18px;}
+.memoBox .btnBox {width:300px;margin:0 auto;text-align:center;}
+.memoBox .btnSend {width:100px;height:30px;line-height:30px;text-align:center;margin:10px auto;background-color:#CE3400;border:1px solid #a22800;color:#fff;font-weight:bold;display:inline-block;}
+.memoBox .btnCancel {width:100px;height:30px;line-height:30px;text-align:center;margin:10px auto;background-color:#84827B;border:1px solid #62615b;color:#fff;font-weight:bold;display:inline-block;}
+.memoBox .viewTitle {position:relative;height:45px;line-height:45px;background-color:#EFEFEF;padding:0 10px;border:1px solid #D5D5D5;border-bottom:none;}
+.memoBox .viewTitle img {vertical-align:middle;}
+
+.memoBox .viewTitle .pointBox {position:absolute;top:5px;right:10px;border:1px solid #D5D5D5;width:180px;height:30px;line-height:30px;background-color:#fff;font-size:13px;font-weight:bold;font-family:tahoma;text-align:right;padding:0 10px;color:#127CCB;background:url(https://simg.powerballgame.co.kr/images/memo/point.png) #fff 3px center no-repeat ;}
+.memoBox .viewTitle .pointBox .point {width:130px;}
+.memoBox .viewTitle .pointBox .receiveBtn {position:absolute;top:-1px;right:0;display:block;width:50px;background-color:#CE3400;border:1px solid #a22800;font-size:12px;font-weight:bold;color:#fff;text-align:center;}
+.memoBox .viewTitle .pointBox .receiveBtn.disabled {background-color:#84827B;border:1px solid #62615b;cursor:default;}
+
+.memoBox .viewContent {height:300px;overflow-y:scroll;padding:5px 10px;background-color:#fff;border:1px solid #D5D5D5;}
+.memoBox .viewContent .tooltip {position:relative;height:30px;line-height:30px;padding:0 10px;background-color:#d7f2de;border:1px solid #72cf89;color:#787878;font-size:11px;font-family:tahoma,dotum;}
+.memoBox .viewContent .tooltip-ban {position:relative;height:30px;line-height:30px;padding:0 10px;background-color:#ff5353;border:1px solid #ac0004;color:#fff;font-size:11px;font-family:tahoma,dotum;}
+.memoBox .viewContent .tooltip .btn-close {position:absolute;top:2px;right:5px;width:25px;height:25px;background:url(https://simg.powerballgame.co.kr/images/memo/btn_close.png) center center no-repeat;}
+.memoBox .viewContent .tooltip-ban .btn-close {position:absolute;top:2px;right:5px;width:25px;height:25px;background:url(https://simg.powerballgame.co.kr/images/memo/btn_close2.png) center center no-repeat;}
+.memoBox .viewContent .msg {line-height:18px;padding:5px 0;font-family:tahoma,dotum;}
+
+
+/* ladderMiniView */
+#ladderResultBox {position:relative;background-color:#F8F8F8;color:#666666;width:824px;height:265px;border:3px solid #8a0d0d;}
+#ladderResultBox .title {width:15px;height:235px;font-size:13px;background-color:#cd1212;color:#fff;font-weight:bold;padding:15px 10px;;border-right:2px solid #8A0D0D;}
+#ladderResultBox .title div {margin-top:5px;}
+#ladderResultBox .title .close {position:absolute;top:-3px;right:-3px;z-index:99;width:38px;height:38px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -196px -10px;}
+#ladderResultBox .content {position:absolute;top:0;margin-left:37px;font-size:12px;background-color:#FDFDFD;}
+#ladderResultBox .content .leftBox {float:left;width:395px;height:265px;border-right:1px dotted #000;}
+#ladderResultBox .content .leftBox .link {width:166px;height:24px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -10px -10px;display:block;}
+#ladderResultBox .content .rightBox {position:relative;float:right;width:391px;height:265px;}
+#ladderResultBox .content .rightBox .tit {position:absolute;top:33px;left:28px;width:260px;height:12px;background-color:#333333;margin:0 27px;display:block;z-index:10;border:1px solid #fff;color:#fff;font-size:12px;padding:5px;text-align:center;font-weight:bold;}
+#ladderResultBox .content .rightBox .tit2 {position:absolute;top:143px;left:28px;width:260px;height:12px;background-color:#333333;margin:0 27px;display:block;z-index:10;border:1px solid #fff;color:#fff;font-size:12px;padding:5px;text-align:center;font-weight:bold;}
+
+#ladderResultBox .content .ball_blue {display:inline-block;width:45px;height:45px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -75px -119px;}
+#ladderResultBox .content .ball_red {display:inline-block;width:45px;height:45px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -75px -54px;}
+#ladderResultBox .content .ball_green {display:inline-block;width:45px;height:45px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -10px -119px;}
+#ladderResultBox .content .ball_yellow {display:inline-block;width:45px;height:45px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -10px -54px;}
+
+/* lottery box */
+#lotteryBox {position:relative;background:url(https://simg.powerballgame.co.kr/images/lottery_default.jpg) no-repeat;width:395px;height:265px;}
+#lotteryBox .play {text-align:center;display:none;}
+#lotteryBox #lotteryBall {position:absolute;width:45px;height:45px;color:#fff;font-size:22px;font-family:DINWeb-Bold;text-align:center;line-height:48px;}
+#lotteryResultBox {position:relative;background:url(https://simg.powerballgame.co.kr/images/lottery_bg.jpg) no-repeat;width:392px;height:265px;}
+#lotteryResultBox #lotteryResult {position:absolute;top:73px;left:55px;width:272px;height:45px;}
+#lotteryResultBox #lotteryResult .ballNumber {position:absolute;width:45px;height:45px;color:#fff;font-size:22px;font-family:DINWeb-Bold;text-align:center;line-height:48px;}
+
+#lotteryResultBox #beforeResult {position:absolute;top:183px;left:55px;width:272px;height:45px;}
+#lotteryResultBox #beforeResult .ballNumber {position:absolute;width:45px;height:45px;color:#fff;font-size:22px;font-family:DINWeb-Bold;text-align:center;line-height:48px;}
+
+.bettingBtn {position:absolute;left:0;width:100px;height:25px;line-height:25px;z-index:99;}
+.bettingBtn a {color:#fff;display:block;background-color:#CD1212;border:1px solid #8A0D0D;color:#fff;text-align:center;}
+
+.miniViewBtn {position:absolute;right:0;width:100px;height:25px;line-height:25px;z-index:99;}
+.miniViewBtn a {color:#fff;display:block;background-color:#CD1212;border:1px solid #8A0D0D;color:#fff;text-align:center;}
+
+.betBox {position:relative;width:826px;height:113px;border:2px solid #8A0D0D;background-color:#fafafa;margin-top:0px;}
+.betBox .title {width:15px;height:73px;position:absolute;background-color:#CD1212;font-size:13px;font-weight:bold;padding:40px 10px 0 10px;color:#fff;border-right:2px solid #8A0D0D;}
+.betBox .title div {margin-top:5px;}
+.betBox ul.betting {width:780px;padding-left:40px;margin:10px auto;text-align:center;}
+.betBox ul.betting li {display:inline-block;text-align:center;margin:0 5px;padding-top:25px;}
+.betBox ul.betting li .tit {font-weight:bold;font-size:13px;margin-bottom:10px;}
+.betBox ul.betting li span {display:inline-block;width:40px;height:30px;line-height:30px;border:1px solid #B2B2B2;text-align:center;font-weight:bold;background-color:#fff;}
+.betBox ul.betting li span.titleBox {width:80px;background-color:#1265CD;border:1px solid #0D50A3;color:#fff;}
+.betBox ul.betting li span.btn {cursor:pointer;}
+.betBox ul.betting li .point {margin-top:5px;}
+.betBox ul.betting li.btnBox {vertical-align:top;padding-top:25px;}
+.betBox ul.betting li.btnBox .left {float:left;}
+.betBox ul.betting li.btnBox .right {float:right;margin-left:5px;}
+.betBox ul.betting li.btnBox .left .pick {width:160px;height:67px;line-height:67px;}
+.betBox ul.betting li.btnBox .right .reset {width:80px;height:30px;line-height:30px;background-color:#e7e7e7;border:1px solid #B2B2B2;color:#000;cursor:pointer;font-weight:bold;}
+.betBox ul.betting li.btnBox span {width:120px;line-height:30px;background-color:#C11A20;border:1px solid #921417;color:#fff;cursor:pointer;}
+.betBox ul.betting li.btnBox span.reset {width:80px;background-color:#e7e7e7;border:1px solid #B2B2B2;color:#000;}
+.betBox ul.betting li.btnBox a.log {width:80px;height:30px;line-height:30px;display:inline-block;font-weight:bold;background-color:#e7e7e7;border:1px solid #B2B2B2;color:#000;}
+.betBox ul.betting li.btnBox .totalPoint {width:120px;border-radius:0;background-color:#fff;color:#000;border:1px solid #B2B2B2;cursor:default;}
+
+.betBox ul li .btn.on {background-color:#C11A20;border:1px solid #921417;color:#fff;}
+.betBox ul li .point .btn.on {background-color:#1265CD;border:1px solid #1059b4;color:#fff;}
+
+.bet_captchaBox {position:relative;width:826px;height:113px;border:2px solid #4c4c4c;background-color:#fafafa;margin-top:0px;display:none;z-index:99;}
+.bet_captchaBox .title {width:15px;height:73px;position:absolute;background-color:#5d5d5d;font-size:13px;font-weight:bold;padding:20px 10px;color:#fff;border-right:2px solid #4c4c4c;}
+.bet_captchaBox .title div {margin-top:5px;}
+
+.bet_captchaBox .captchaImg {border:2px solid #ccc;position:absolute;top:30px;left:70px;width:100px;height:50px;}
+
+.bet_captchaBox .inputBox {position:absolute;left:175px;}
+.bet_captchaBox .inputBox .auth_guide {width:101px;border:2px solid #cccccc;margin: 0 auto;overflow:hidden;}
+.bet_captchaBox .inputBox .auth_guide input {float:left;width:50px;height:50px;line-height: 50px;border:0;border-left:1px dashed #ccc;text-align:center;font-size:20px;font-weight:bold;}
+.bet_captchaBox .inputBox .auth_guide input:first-child {border-left: 0;}
+
+.bet_captchaBox .inputBox .form_notice {font-size:11px;color:#9f9e9e;margin:5px 0 0 0;padding:0;text-align:center;}
+.bet_captchaBox .inputBox .form_notice span {color:#000000;}
+
+.bet_captchaBox .keypadBox {position:absolute;right:125px;}
+.bet_captchaBox .keypadBox .keypad {overflow:hidden;width:306px;margin:0 auto;margin-top:15px;}
+.bet_captchaBox .keypadBox .keypad ul {margin:0;padding:0;list-style:none;}
+.bet_captchaBox .keypadBox .keypad li {float:left;font-family:tahoma; width:48px;height:42px;text-align:center;color:#555555;background:url('https://simg.powerballgame.co.kr/images/keypad_bg.png') no-repeat left top;margin:0 3px 1px 0;line-height:38px;font-size:21px;font-weight:bold;cursor:pointer;}
+.bet_captchaBox .keypadBox .keypad li.delete {background:url('https://simg.powerballgame.co.kr/images/keypad_delete.png') no-repeat left top;text-indent:-10000em;} 
+.bet_captchaBox .keypadBox .keypad li.delete.all,.bet_captchaBox .keypadBox .keypad li.reset {background:url('https://simg.powerballgame.co.kr/images/keypad_deleteAll.png') no-repeat left top;text-indent:-10000em;}
+
+.bet_captchaBox .btnBox {position:absolute;top:15px;right:20px;}
+.bet_captchaBox .btnBox .btn {width:98px;height:80px;background-color:#C11A20;border:1px solid #921417;text-align:center;line-height:80px;color:#fff;cursor:pointer;}
+
+.speedkenoBetBox {position:relative;width:826px;height:113px;border:2px solid #0E609C;background-color:#fafafa;margin-top:0px;display:none;}
+.speedkenoBetBox .title {width:15px;height:83px;position:absolute;background-color:#127CCB;font-size:13px;font-weight:bold;padding:15px 10px;color:#fff;border-right:2px solid #0E609C;}
+.speedkenoBetBox .title div {margin-top:5px;}
+.speedkenoBetBox ul.betting {width:780px;padding-left:40px;margin:12px auto;text-align:center;}
+.speedkenoBetBox ul.betting li {display:inline-block;text-align:center;margin:0 5px;padding-top:10px;}
+.speedkenoBetBox ul.betting li .tit {font-weight:bold;font-size:13px;margin-bottom:10px;}
+.speedkenoBetBox ul.betting li span {display:inline-block;width:58px;height:30px;line-height:30px;border:1px solid #B2B2B2;text-align:center;font-weight:bold;background-color:#fff;}
+.speedkenoBetBox ul.betting li span.titleBox {width:120px;background-color:#3498DB;border:1px solid #127CCB;color:#fff;}
+.speedkenoBetBox ul.betting li span.btn {cursor:pointer;}
+.speedkenoBetBox ul.betting li .point {margin-top:5px;}
+.speedkenoBetBox ul.betting li.btnBox {vertical-align:top;padding-top:10px;}
+.speedkenoBetBox ul.betting li.btnBox .left {float:left;}
+.speedkenoBetBox ul.betting li.btnBox .right {float:right;margin-left:5px;}
+.speedkenoBetBox ul.betting li.btnBox .left .pick {width:160px;height:67px;line-height:67px;}
+.speedkenoBetBox ul.betting li.btnBox .right .reset {width:80px;height:30px;line-height:30px;background-color:#e7e7e7;border:1px solid #B2B2B2;color:#000;cursor:pointer;font-weight:bold;}
+.speedkenoBetBox ul.betting li.btnBox span {width:120px;line-height:30px;background-color:#C11A20;border:1px solid #921417;color:#fff;cursor:pointer;}
+.speedkenoBetBox ul.betting li.btnBox span.reset {width:80px;background-color:#e7e7e7;border:1px solid #B2B2B2;color:#000;}
+.speedkenoBetBox ul.betting li.btnBox a.log {width:80px;height:30px;line-height:30px;display:inline-block;font-weight:bold;background-color:#e7e7e7;border:1px solid #B2B2B2;color:#000;}
+.speedkenoBetBox ul.betting li.btnBox .totalPoint {width:120px;border-radius:0;background-color:#fff;color:#000;border:1px solid #B2B2B2;cursor:default;}
+
+.speedkenoBetBox ul li .btn.odd.on {background-color:#1265CD;border:1px solid #0d50a3;color:#fff;}
+.speedkenoBetBox ul li .btn.even.on {background-color:#cd1212;border:1px solid #a30d0d;color:#fff;}
+.speedkenoBetBox ul li .point .btn.on {background-color:#1265CD;border:1px solid #1059b4;color:#fff;}
+
+/* leftBox */
+#ladderReady {position:absolute;top:85px;width:330px;height:100px;background-color:#333333;margin:0 32px;display:block;z-index:10;border:1px solid yellow;}
+#ladderReady .box {text-align:center;padding:20px;font-size:12px;}
+#ladderReady .box .time {color:#fff;font-weight:bold;line-height:20px;}
+#ladderReady .box .time em {font-style:normal;}
+#ladderReady .box .result {color:#FFFF00;line-height:20px;}
+#ladderReady #lastResult {font-size:15px;}
+
+#startPos {margin:0 auto;margin-top:0;text-align:center;}
+#startPos span {width:40px;height:40px;line-height:40px;font-size:15px;font-weight:bold;display:inline-block;background-color:#d1cdc2;border:1px solid #c7c4b8;border-radius:50%;color:#aaa697;margin:0 60px;text-align:center;}
+
+#startPos .left.on {background-color:#1265cd;border:1px solid #0d50a3;color:#fff;}
+#startPos .right.on {background-color:#cd1212;border:1px solid #a30d0d;color:#fff;}
+
+#resultPos {margin:0 auto;margin-top:140px;text-align:center;}
+#resultPos span {width:40px;height:40px;line-height:40px;font-size:15px;font-weight:bold;display:inline-block;background-color:#d1cdc2;border:1px solid #c7c4b8;border-radius:50%;color:#aaa697;margin:0 60px;text-align:center;}
+
+#resultPos .odd.on {background-color:#1265cd;border:1px solid #0d50a3;color:#fff;}
+#resultPos .even.on {background-color:#cd1212;border:1px solid #a30d0d;color:#fff;}
+
+#ladderPos {position:relative;margin:0 auto;}
+
+#ladderPos .ladder1_bg {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:block;}
+#ladderPos .ladder1_bg .line1 {position:absolute;top:0;left:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos .ladder1_bg .line2 {position:absolute;top:40px;left:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos .ladder1_bg .line3 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos .ladder1_bg .line4 {position:absolute;top:60px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos .ladder1_bg .line5 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos .ladder1_bg .line6 {position:absolute;top:80px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+
+#ladderPos .ladder1 {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:none;}
+#ladderPos .ladder1 .lstick1 {position:absolute;top:0;left:0;width:10px;background-color:#000;}
+#ladderPos .ladder1 .lstick2 {position:absolute;top:40px;left:10px;height:10px;background-color:#000;}
+#ladderPos .ladder1 .lstick3 {position:absolute;top:50px;right:0;width:10px;background-color:#000;}
+#ladderPos .ladder1 .lstick4 {position:absolute;top:60px;right:10px;height:10px;background-color:#000;}
+#ladderPos .ladder1 .lstick5 {position:absolute;top:70px;left:0;width:10px;background-color:#000;}
+#ladderPos .ladder1 .lstick6 {position:absolute;top:80px;left:10px;height:10px;background-color:#000;}
+#ladderPos .ladder1 .lstick7 {position:absolute;top:90px;right:0;width:10px;background-color:#000;}
+
+#ladderPos .ladder1 .rstick1 {position:absolute;top:0;right:0;width:10px;background-color:#000;}
+#ladderPos .ladder1 .rstick2 {position:absolute;top:40px;right:10px;height:10px;background-color:#000;}
+#ladderPos .ladder1 .rstick3 {position:absolute;top:50px;left:0;width:10px;background-color:#000;}
+#ladderPos .ladder1 .rstick4 {position:absolute;top:60px;left:10px;height:10px;background-color:#000;}
+#ladderPos .ladder1 .rstick5 {position:absolute;top:70px;right:0;width:10px;background-color:#000;}
+#ladderPos .ladder1 .rstick6 {position:absolute;top:80px;right:10px;height:10px;background-color:#000;}
+#ladderPos .ladder1 .rstick7 {position:absolute;top:90px;left:0;width:10px;background-color:#000;}
+
+#ladderPos .ladder2_bg {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:none;}
+#ladderPos .ladder2_bg .line1 {position:absolute;top:0;left:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos .ladder2_bg .line2 {position:absolute;top:30px;left:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos .ladder2_bg .line3 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos .ladder2_bg .line4 {position:absolute;top:50px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos .ladder2_bg .line5 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos .ladder2_bg .line6 {position:absolute;top:70px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos .ladder2_bg .line7 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos .ladder2_bg .line8 {position:absolute;top:90px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+
+#ladderPos .ladder2 {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:none;}
+#ladderPos .ladder2 .lstick1 {position:absolute;top:0;left:0;width:10px;background-color:#000;}
+#ladderPos .ladder2 .lstick2 {position:absolute;top:30px;left:10px;height:10px;background-color:#000;}
+#ladderPos .ladder2 .lstick3 {position:absolute;top:40px;right:0;width:10px;background-color:#000;}
+#ladderPos .ladder2 .lstick4 {position:absolute;top:50px;right:10px;height:10px;background-color:#000;}
+#ladderPos .ladder2 .lstick5 {position:absolute;top:60px;left:0;width:10px;background-color:#000;}
+#ladderPos .ladder2 .lstick6 {position:absolute;top:70px;left:10px;height:10px;background-color:#000;}
+#ladderPos .ladder2 .lstick7 {position:absolute;top:80px;right:0;width:10px;background-color:#000;}
+#ladderPos .ladder2 .lstick8 {position:absolute;top:90px;right:10px;height:10px;background-color:#000;}
+#ladderPos .ladder2 .lstick9 {position:absolute;top:100px;left:0;width:10px;background-color:#000;}
+
+#ladderPos .ladder2 .rstick1 {position:absolute;top:0;right:0;width:10px;background-color:#000;}
+#ladderPos .ladder2 .rstick2 {position:absolute;top:30px;right:10px;height:10px;background-color:#000;}
+#ladderPos .ladder2 .rstick3 {position:absolute;top:40px;left:0;width:10px;background-color:#000;}
+#ladderPos .ladder2 .rstick4 {position:absolute;top:50px;left:10px;height:10px;background-color:#000;}
+#ladderPos .ladder2 .rstick5 {position:absolute;top:60px;right:0;width:10px;background-color:#000;}
+#ladderPos .ladder2 .rstick6 {position:absolute;top:70px;right:10px;height:10px;background-color:#000;}
+#ladderPos .ladder2 .rstick7 {position:absolute;top:80px;left:0;width:10px;background-color:#000;}
+#ladderPos .ladder2 .rstick8 {position:absolute;top:90px;left:10px;height:10px;background-color:#000;}
+#ladderPos .ladder2 .rstick9 {position:absolute;top:100px;right:0;width:10px;background-color:#000;}
+
+/* rightBox */
+#startPos2 {margin:0 auto;margin-top:10px;text-align:center;}
+#startPos2 span {width:40px;height:40px;line-height:40px;font-size:15px;font-weight:bold;display:inline-block;background-color:#d1cdc2;border:1px solid #c7c4b8;border-radius:50%;color:#aaa697;margin:0 60px;text-align:center;}
+
+#startPos2 .left.on {background-color:#1265cd;border:1px solid #0d50a3;color:#fff;}
+#startPos2 .right.on {background-color:#cd1212;border:1px solid #a30d0d;color:#fff;}
+
+#resultPos2 {margin:0 auto;margin-top:140px;text-align:center;}
+#resultPos2 span {width:40px;height:40px;line-height:40px;font-size:15px;font-weight:bold;display:inline-block;background-color:#d1cdc2;border:1px solid #c7c4b8;border-radius:50%;color:#aaa697;margin:0 60px;text-align:center;}
+
+#resultPos2 .odd.on {background-color:#1265cd;border:1px solid #0d50a3;color:#fff;}
+#resultPos2 .even.on {background-color:#cd1212;border:1px solid #a30d0d;color:#fff;}
+
+#ladderPos2 {position:relative;margin:0 auto;}
+
+#ladderPos2 .ladder3_bg {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:none;}
+#ladderPos2 .ladder3_bg .line1 {position:absolute;top:0;left:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos2 .ladder3_bg .line2 {position:absolute;top:40px;left:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos2 .ladder3_bg .line3 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos2 .ladder3_bg .line4 {position:absolute;top:60px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos2 .ladder3_bg .line5 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos2 .ladder3_bg .line6 {position:absolute;top:80px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+
+#ladderPos2 .ladder3l {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:none;}
+#ladderPos2 .ladder3l .lstick1 {position:absolute;top:0;left:0;width:10px;height:50px;background-color:#000;}
+#ladderPos2 .ladder3l .lstick2 {position:absolute;top:40px;left:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder3l .lstick3 {position:absolute;top:50px;right:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder3l .lstick4 {position:absolute;top:60px;right:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder3l .lstick5 {position:absolute;top:70px;left:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder3l .lstick6 {position:absolute;top:80px;left:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder3l .lstick7 {position:absolute;top:90px;right:0;width:10px;height:40px;background-color:#000;}
+
+#ladderPos2 .ladder3r {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:none;}
+#ladderPos2 .ladder3r .rstick1 {position:absolute;top:0;right:0;width:10px;height:50px;background-color:#000;}
+#ladderPos2 .ladder3r .rstick2 {position:absolute;top:40px;right:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder3r .rstick3 {position:absolute;top:50px;left:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder3r .rstick4 {position:absolute;top:60px;left:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder3r .rstick5 {position:absolute;top:70px;right:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder3r .rstick6 {position:absolute;top:80px;right:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder3r .rstick7 {position:absolute;top:90px;left:0;width:10px;height:40px;background-color:#000;}
+
+#ladderPos2 .ladder4_bg {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:none;}
+#ladderPos2 .ladder4_bg .line1 {position:absolute;top:0;left:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos2 .ladder4_bg .line2 {position:absolute;top:30px;left:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos2 .ladder4_bg .line3 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos2 .ladder4_bg .line4 {position:absolute;top:50px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos2 .ladder4_bg .line5 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos2 .ladder4_bg .line6 {position:absolute;top:70px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+#ladderPos2 .ladder4_bg .line7 {position:absolute;top:0;right:0;width:10px;height:130px;background-color:#d6d1c7;}
+#ladderPos2 .ladder4_bg .line8 {position:absolute;top:90px;right:0;width:174px;height:10px;background-color:#d6d1c7;}
+
+#ladderPos2 .ladder4l {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:none;}
+#ladderPos2 .ladder4l .lstick1 {position:absolute;top:0;left:0;width:10px;height:40px;background-color:#000;}
+#ladderPos2 .ladder4l .lstick2 {position:absolute;top:30px;left:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder4l .lstick3 {position:absolute;top:40px;right:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder4l .lstick4 {position:absolute;top:50px;right:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder4l .lstick5 {position:absolute;top:60px;left:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder4l .lstick6 {position:absolute;top:70px;left:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder4l .lstick7 {position:absolute;top:80px;right:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder4l .lstick8 {position:absolute;top:90px;right:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder4l .lstick9 {position:absolute;top:100px;left:0;width:10px;height:30px;background-color:#000;}
+
+#ladderPos2 .ladder4r {position:absolute;top:5px;width:174px;height:130px;margin:0 110px;display:none;}
+#ladderPos2 .ladder4r .rstick1 {position:absolute;top:0;right:0;width:10px;height:40px;background-color:#000;}
+#ladderPos2 .ladder4r .rstick2 {position:absolute;top:30px;right:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder4r .rstick3 {position:absolute;top:40px;left:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder4r .rstick4 {position:absolute;top:50px;left:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder4r .rstick5 {position:absolute;top:60px;right:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder4r .rstick6 {position:absolute;top:70px;right:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder4r .rstick7 {position:absolute;top:80px;left:0;width:10px;height:20px;background-color:#000;}
+#ladderPos2 .ladder4r .rstick8 {position:absolute;top:90px;left:10px;width:164px;height:10px;background-color:#000;}
+#ladderPos2 .ladder4r .rstick9 {position:absolute;top:100px;right:0;width:10px;height:30px;background-color:#000;}
+
+/* bettingRank */
+.rankBox {width:440px;height:485px;border:3px solid #4C4C4C;background-color:#fff;}
+.rankBox .rankTitle {height:30px;line-height:27px;font-size:14px;padding-left:10px;font-weight:bold;background-color:#4C4C4C;color:#fff;}
+.rankBox .rankTitle .close {position:absolute;top:0;right:0;}
+.rankTabMenu li {width:82px;height:25px;line-height:25px;float:left;text-align:center;background-color:#EFEFEF;border:1px solid #CECFCE;color:#636563;border-bottom:none;}
+.rankBox .rankContent {padding:10px;}
+.rankTabMenu li.none {border-left:none;width:83px;}
+.rankTabMenu li.on {background-color:#fff;}
+.rankTabMenu li a {display:block;}
+.rankTable {clear:both;float:left;width:420px;border:1px solid #CECFCE;}
+.rankTable th {height:30px;background-color:#4A4D4A;color:#fff;border:1px solid #4C4C4C;}
+.rankTable td {height:30px;text-align:center;border-bottom:1px solid #EAEAEA;color:#636563}
+.rankTable td img {vertical-align:middle;}
+.rankTable td.nick {text-align:left;padding-left:10px;font-weight:bold;}
+.rankTable td.right {background-color:#EFEFEF;text-align:right;padding-right:10px;font-size:11px;}
+.rankTable td.number {font-family:DINWeb-Bold;}
+
+.rankTitleTable {clear:both;float:left;width:420px;border:1px solid #CECFCE;}
+.rankTitleTable th {height:30px;background-color:#4A4D4A;color:#fff;border:1px solid #EAEAEA;}
+.rankTitleTable td {height:30px;text-align:center;border:1px solid #EAEAEA;color:#636563;}
+.rankTitleTable td a {display:block;height:30px;line-height:30px;}
+.rankTitleTable td a.on {background-color:#4A4D4A;color:#fff;}
+
+/* ranking */
+.rankingBox .titleBox {height:30px;line-height:30px;padding-left:15px;font-size:15px;border:1px solid #0D568C;background-color:#127CCB;color:#fff;}
+.rankingBox .titleBox span {font-size:11px;color:yellow;}
+.rankingBox .menuBox {height:85px;margin-top:5px;border:1px solid #0D568C;}
+.rankingBox .menuBox .title {height:30px;padding:10px 10px 7px 10px;}
+.rankingBox .menuBox .title .left {float:left;width:400px;height:30px;line-height:30px;text-align:center;border:1px solid #939393;background-color:#F1F1F1;}
+.rankingBox .menuBox .title .right {float:right;width:399px;height:30px;line-height:30px;text-align:center;border:1px solid #939393;background-color:#F1F1F1;}
+
+.rankingBox .menuBox .leftMenu {float:left;margin:0 0 0 10px;width:402px;height:30px;}
+.rankingBox .menuBox .leftMenu .left {float:left;display:inline-block;width:196px;height:30px;line-height:30px;text-align:center;border:1px solid #127CCB;}
+.rankingBox .menuBox .leftMenu .right {float:right;display:inline-block;width:197px;height:30px;line-height:30px;text-align:center;border:1px solid #127CCB;}
+.rankingBox .menuBox .rightMenu {float:right;margin:0 10px 0 0;width:401px;height:30px;}
+.rankingBox .menuBox .rightMenu .subMenu {float:left;display:inline-block;margin-right:5px;width:128px;height:30px;line-height:30px;text-align:center;border:1px solid #127CCB;}
+.rankingBox .menuBox .rightMenu .subMenu.none{width:129px;margin-right:0;}
+.rankingBox .menuBox a {display:block;}
+.rankingBox .menuBox a.on {background-color:#127CCB;color:#fff;}
+
+.rankingBox .listBox {margin-top:5px;height:100%;border:1px solid #0D568C;}
+.rankingBox .table {width:100%;}
+.rankingBox .table th {height:40px;line-height:40px;background-color:#127CCB;color:#fff;}
+.rankingBox .table td {height:40px;line-height:40px;border-bottom:1px solid #cee8fb;}
+.rankingBox .table td.number {font-family:tahoma;text-align:center;}
+.rankingBox .table td.nick {padding-left:10px;font-weight:bold;}
+.rankingBox .table td img {vertical-align:middle;}
+
+/* attendance */
+.attendanceBox .titleBox {height:30px;line-height:30px;padding-left:15px;font-size:15px;border:1px solid #0D568C;background-color:#127CCB;color:#fff;}
+.attendanceBox .titleBox span {font-size:11px;color:yellow;}
+.attendanceBox .topBox {margin-top:5px;height:335px;border:1px solid #0D568C;}
+.attendanceBox .calendarBox {float:left;margin-left:5px;width:360px;}
+.attendanceBox .calendarBox .control {margin-top:5px;text-align:center;height:30px;line-height:30px;font-family:DINWeb-Bold;font-size:20px;background-color:#fbfeff;}
+.attendanceBox .calendarBox .control img {vertical-align:middle;}
+.attendanceBox .calendar {width:350px;padding:0;margin:0;border-collapse:collapse;margin:5px;}
+.attendanceBox .calendar th {height:40px;line-height:40px;background-color:#127CCB;color:#fff;border:1px solid #0D568C;}
+.attendanceBox .calendar td {position:relative;height:40px;line-height:40px;border:1px solid #0D568C;}
+.attendanceBox .calendar td span{position:absolute;top:-11px;;left:2px;}
+.attendanceBox .calendar td img {margin-left:8px;}
+.attendanceBox .calendar td.today {background-color:#FFFFDB;}
+.attendanceBox .calendar td span.sat {color:blue;}
+.attendanceBox .calendar td span.sun {color:red;}
+
+.attendanceBox .ladderBox {position:relative;float:right;margin-right:10px;width:450px;height:300px;margin-top:20px;}
+.attendanceBox .ladderBox .choiceBox {position:relative;height:50px;}
+.attendanceBox .ladderBox .choiceNumber {position:absolute;width:30px;height:30px;line-height:30px;top:10px;border-radius:15px;border:1px solid #8e8e8e;text-align:center;background-color:#c6c6c6;color:#000;}
+.attendanceBox .ladderBox .ladderContent {width:350px;height:200px;margin:0 50px;background:url(https://simg.powerballgame.co.kr/images/ladder.png?1) no-repeat;}
+.attendanceBox .ladderBox .win {background-color:#fa233e;color:#fff;}
+.attendanceBox .ladderBox .contentArea {position:absolute;top:57px;left:95px;width:250px;height:180px;background-color:#FFFFDB;border:3px solid #127CCB;}
+.attendanceBox .ladderBox .contentArea ul {margin:5px;}
+.attendanceBox .ladderBox .contentArea ul li {margin:5px;width:65px;height:65px;line-height:65px;border:1px solid #BEE0FA;display:inline-block;background-color:#fff;text-align:center;font-size:15px;font-weight:bold;cursor:pointer;}
+.attendanceBox .ladderBox .contentArea .text {margin-top:0px;padding-left:10px;text-align:center;}
+.attendanceBox .ladderBox .contentArea .inputBox {margin:5px 10px 10px 10px;}
+.attendanceBox .ladderBox .contentArea .input {width:230px;height:20px;border:1px solid #BEE0FA;font-size:11px;}
+.attendanceBox .ladderBox .contentArea .submit {margin:10px;width:230px;height:30px;line-height:30px;border:1px solid #BEE0FA;text-align:center;background-color:#BEE0FA;font-size:15px;font-weight:bold;cursor:pointer;}
+
+.attendanceBox .listBox {margin-top:5px;height:100%;border:1px solid #0D568C;}
+.attendanceBox .table {width:100%;}
+.attendanceBox .table th {height:30px;line-height:30px;background-color:#127CCB;color:#fff;}
+.attendanceBox .table td {height:30px;line-height:30px;border-bottom:1px solid #cee8fb;}
+.attendanceBox .table td.number {font-family:tahoma;text-align:center;}
+.attendanceBox .table td.result {text-align:center;}
+.attendanceBox .table td.txt {padding-left:10px;}
+.attendanceBox .table td.nick {padding-left:10px;font-weight:bold;}
+.attendanceBox .table td img {vertical-align:middle;}
+
+/* gift */
+.giftBox {background-color:#F8F8F8;color:#666666;}
+.giftBox .title {height:35px;line-height:35px;font-size:13px;border:1px solid #3c3c3c;background-color:#4C4C4C;color:#fff;font-weight:bold;padding-left:10px;}
+.giftBox .content {padding:10px;font-size:12px;line-height:20px;background-color:#FDFDFD;}
+.giftBox .content .userBullet {position:relative;height:40px;line-height:40px;text-indent:15px;color:#666666;background:#f7f7f7;border:1px solid #f0f0f0;}
+.giftBox .content .userBullet span {font-family:DINWeb-Bold;color:#e80000;}
+.giftBox .content .userBullet .buyBtn {position:absolute;top:6px;right:6px;width:90px;height:25px;line-height:27px;background-color:#ec0000;color:#fff;border:1px solid #cc0000;text-align:center;text-indent:0px;}
+.giftBox .content .priceBox {position:relative;border:2px solid #CCCCCC;margin-top:10px;padding:20px;font-size:18px;font-weight:bold;background-color:#fff;text-align:center;}
+.giftBox .content .priceBox .price {font-family:DINWeb-Bold;padding:0 3px 0 10px;color:#e80000;}
+.giftBox .content .priceBox .small {position:absolute;top:22px;right:30px;font-size:11px;font-weight:normal;}
+
+.giftBox .content .bulletDesc {margin:20px 0;font-size:0;}
+.giftBox .content .bulletDesc .tit {margin:5px 0 5px 10px;font-weight:bold;font-size:12px;}
+.giftBox .content .bulletDesc ul {width:390px;margin:0 auto;}
+.giftBox .content .bulletDesc ul li {font-size:12px;margin-left:10px;}
+.giftBox .content .bulletDesc ul li.small {font-size:11px;color:#A4A4A4;margin-left:20px;}
+
+.giftBox .content .bulletSelect {width:390px;border:1px solid #dbdbdb;background-color:#fafafa;margin:0 auto;padding:10px 0;}
+.giftBox .content .bulletSelect table th {text-align:left;padding-left:10px;width:130px;height:30px;}
+.giftBox .content .bulletSelect table td input {border:1px solid #D9D9D8;height:25px;padding:0 5px;vertical-align:middle;}
+.giftBox .content .bulletSelect table td input[type=radio] {border:none;padding:0;}
+.giftBox .content .bulletSelect table td label {cursor:pointer;margin-right:10px;}
+.giftBox .content .bulletSelect table td span.small {font-size:11px;color:#848484;}
+
+.giftBox .btn{height:40px;padding:15px;text-align:center;background-color:#EAEAEA;border-top:1px solid #CDCDCD;margin-top:13px;}
+.giftBox .btn .gift{display:inline-block;width:180px;height:40px;margin:0 auto;text-shadow:1px 1px 1px #2f447f;text-align:center;text-decoration:none;font-weight:bold;line-height:40px;color:#fff;font-size:16px;background-color:#CC3300;border:1px solid #9c1818;border-radius:3px;}
+.giftBox .btn .gift:hover{background-color:#b72e00;}
+.giftBox .btn .gift.stop {background-color:#b72e00 !important;}
+.giftBox .btn .cancel{display:inline-block;width:180px;height:40px;margin:0 auto;text-shadow:1px 1px 1px #2f447f;text-align:center;text-decoration:none;font-weight:bold;line-height:40px;color:#fff;font-size:16px;background-color:#8a8a8a;border:1px solid #696969;border-radius:3px;}
+.giftBox .btn .cancel:hover{background-color:#808080;}
+
+/* giftPopBox */
+.giftPopBox {background-color:#F8F8F8;color:#666666;}
+.giftPopBox .title {height:35px;line-height:35px;font-size:13px;border:1px solid #3c3c3c;background-color:#4C4C4C;color:#fff;font-weight:bold;padding-left:10px;}
+.giftPopBox .content {padding:10px;font-size:12px;line-height:20px;background-color:#FDFDFD;}
+.giftPopBox .content .tit {margin:5px 0 5px 10px;font-weight:bold;font-size:12px;}
+
+.giftPopBox .itemList {width:200px;padding:0 0 0 3px;margin:10px auto;}
+.giftPopBox .itemList li {position:relative;display:block;width:160px;height:250px;border:1px solid #C8C5C5;background-color:#fff;padding:0 15px;margin:5px 3px;}
+.giftPopBox .itemList li .edge {position:absolute;top:-10px;left:-5px;}
+.giftPopBox .itemList li img {margin:5px auto;display:block;}
+.giftPopBox .itemList li .name {font-size:13px;font-weight:bold;}
+.giftPopBox .itemList li .desc {margin:10px 0;font-size:11px;line-height:16px;height:40px;color:#8b8b8b;}
+.giftPopBox .itemList li .price {position:absolute;bottom:5px;font-family:DINWeb-Bold;margin:10px 0;color:#e80000;}
+
+.giftPopBox .content .inputBox {width:390px;border:1px solid #dbdbdb;background-color:#fafafa;margin:0 auto;padding:10px 0;}
+.giftPopBox .content .inputBox table th {text-align:left;padding-left:10px;width:130px;height:35px;}
+.giftPopBox .content .inputBox table td input {border:1px solid #D9D9D8;height:25px;padding:0 5px;vertical-align:middle;}
+.giftPopBox .content .inputBox table td label {cursor:pointer;margin-right:10px;}
+.giftPopBox .content .inputBox table td span.small {font-size:11px;color:#848484;}
+
+.giftPopBox .content .inputBox .amountSet {position:relative;float:left;width:62px;height:29px;background:url(https://simg.powerballgame.co.kr/images/bg_amount.png) no-repeat;}
+.giftPopBox .content .inputBox .amountSet input {border:none;width:45px;height:27px;line-height:27px;padding:0;margin:1px;text-align:center;}
+.giftPopBox .content .inputBox .amountSet .up {position:absolute;top:0;right:0;width:15px;height:14px;cursor:pointer;}
+.giftPopBox .content .inputBox .amountSet .down {position:absolute;bottom:0;right:0;width:15px;height:14px;cursor:pointer;}
+
+.giftPopBox > .btn{height:40px;padding:15px;text-align:center;background-color:#EAEAEA;border-top:1px solid #CDCDCD;margin-top:13px;}
+.giftPopBox > .btn .gift{display:inline-block;width:180px;height:40px;margin:0 auto;text-shadow:1px 1px 1px #2f447f;text-align:center;text-decoration:none;font-weight:bold;line-height:40px;color:#fff;font-size:16px;background-color:#CC3300;border:1px solid #9c1818;border-radius:3px;}
+.giftPopBox > .btn .gift:hover{background-color:#b72e00;}
+.giftPopBox > .btn .cancel{display:inline-block;width:180px;height:40px;margin:0 auto;text-shadow:1px 1px 1px #2f447f;text-align:center;text-decoration:none;font-weight:bold;line-height:40px;color:#fff;font-size:16px;background-color:#8a8a8a;border:1px solid #696969;border-radius:3px;}
+.giftPopBox > .btn .cancel:hover{background-color:#808080;}
+
+/* event */
+.eventBox {background-color:#F8F8F8;color:#666666;}
+.eventBox .title {height:35px;line-height:35px;font-size:12px;background-color:#aaaaaa;border:1px solid #999999;}
+.eventBox .title ul li a {float:left;padding:0 20px;border-right:1px solid #999999;color:#333;text-decoration:none;}
+.eventBox .title ul li a.on {display:block;background-color:#4C4C4C;color:#fff;font-weight:bold;border:1px solid #3c3c3c;height:35px;margin:-1px 0 0 -1px;}
+.eventBox .content {padding:10px;font-size:12px;line-height:20px;border:1px solid #CECECE;border-top:none;}
+
+/* powerballPickBox */
+.powerballPickBox{border:1px solid #151515;}
+.powerballPickBox th.title {background-color:#2B2B2B;color:#fff;}
+.powerballPickBox .subTitle th {height:30px;background-color:#4C4C4C;color:#C6C6C6;border:1px solid #151515;font-weight:normal;}
+.powerballPickBox .thirdTitle th {height:30px;background-color:#717171;color:#C6C6C6;border:1px solid #151515;font-weight:normal;}
+.powerballPickBox td {border:1px solid #adadad;font-size:11px;}
+.powerballPickBox .none td {border:none;border-bottom:1px solid #adadad;}
+.powerballPickBox .none td.none {border:none;}
+.powerballPickBox .oddBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_odd2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .evenBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_even2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .overBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_over2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .underBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_under2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .leftBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_left2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .rightBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_right2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .threeBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_three2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .fourBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_four2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .left3evenBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_left3even2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .left4oddBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_left4odd2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .right3oddBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_right3odd2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+.powerballPickBox .right4evenBox{height:36px;background:url(https://simg.powerballgame.co.kr/images/data_right4even2.png) no-repeat center center;text-align:center;vertical-align:middle;color:#fff;line-height:36px;}
+
+.powerballPickBox .oddColor{color:#1265cd;}
+.powerballPickBox .evenColor{color:#cd1212;}
+.powerballPickBox .oddText{color:#1265cd;font-family:DINWeb-Bold;}
+.powerballPickBox .evenText{color:#cd1212;font-family:DINWeb-Bold;}
+.powerballPickBox .date{font-family:DINWeb-Bold;}
+.powerballPickBox .periodPick {font-size:13px;font-weight:bold;}
+
+.powerballPickBox .odd {width:20px;height:15px;border-radius:20px;background-color:#156AEA;border:1px solid #1156bd;color:#fff;text-align:center;padding-top:5px;}
+.powerballPickBox .even {width:20px;height:15px;border-radius:20px;background-color:#D6412B;border:1px solid #992e1e;color:#fff;text-align:center;padding-top:5px;}
+
+.memoCntBox {position:absolute;top:8px;left:198px;width:20px;height:20px;background-color:#EC0000;border:1px solid #CC0000;border-radius:10px;color:#fff;z-index:99;line-height:20px;display:none;}
+.itemCntBox {position:absolute;top:8px;left:298px;width:20px;height:20px;background-color:#EC0000;border:1px solid #CC0000;border-radius:10px;color:#fff;z-index:99;line-height:20px;display:none;}
+
+/* chatRoomPointBet */
+.chatRoomPointBetBox {position:relative;width:100%;height:169px;background-color:#F7F7F7;border-top:1px solid #0D513A;}
+.chatRoomPointBetBox .title {border:1px solid #127CCB;background-color:#fcfefd;height:30px;line-height:30px;margin:6px 6px 4px 6px;font-size:11px;color:#737373;padding:0 10px;font-weight:bold;}
+.chatRoomPointBetBox .title .point {font-family:tahoma;font-weight:bold;font-size:12px;color:#127CCB;}
+.chatRoomPointBetBox .title .bar {color:#d0d0d0;margin:0 5px;}
+.chatRoomPointBetBox .title .txt {font-weight:normal;}
+.chatRoomPointBetBox .title .txt .important {text-decoration:underline;color:#127CCB;}
+
+.chatRoomPointBetBox .content {border:1px solid #B2B2B2;background-color:#fff;margin:0 6px 6px 6px;}
+
+.chatRoomPointBetBox .content ul {width:100%;margin:10px auto;text-align:center;}
+.chatRoomPointBetBox .content ul li {display:inline-block;text-align:center;margin:0 0;}
+.chatRoomPointBetBox .content ul li .tit {font-weight:bold;font-size:12px;margin-bottom:10px;}
+.chatRoomPointBetBox .content ul li span {display:inline-block;width:40px;height:30px;line-height:30px;border:1px solid #B2B2B2;text-align:center;font-weight:bold;background-color:#fff;}
+.chatRoomPointBetBox .content ul li span.titleBox {width:80px;background-color:#1265CD;border:1px solid #0D50A3;color:#fff;}
+.chatRoomPointBetBox .content ul li span.btn {cursor:pointer;}
+.chatRoomPointBetBox .content ul li .point {margin-top:5px;}
+.chatRoomPointBetBox .content ul li.btnBox {vertical-align:top;padding-top:25px;}
+.chatRoomPointBetBox .content ul li.btnBox span {width:120px;line-height:30px;background-color:#C11A20;border:1px solid #921417;color:#fff;cursor:pointer;}
+.chatRoomPointBetBox .content ul li.btnBox .left {float:left;}
+.chatRoomPointBetBox .content ul li.btnBox .right {float:right;margin-left:5px;}
+.chatRoomPointBetBox .content ul li.btnBox .left .pick {width:160px;height:67px;line-height:67px;}
+.chatRoomPointBetBox .content ul li.btnBox .right .reset {width:60px;height:30px;line-height:30px;background-color:#e7e7e7;border:1px solid #B2B2B2;color:#000;cursor:pointer;font-weight:bold;}
+.chatRoomPointBetBox .content ul li.btnBox span.reset {width:60px;background-color:#e7e7e7;border:1px solid #B2B2B2;color:#000;}
+.chatRoomPointBetBox .content ul li.btnBox a.log {width:60px;height:30px;line-height:30px;display:inline-block;font-weight:bold;background-color:#e7e7e7;border:1px solid #B2B2B2;color:#000;}
+.chatRoomPointBetBox .content ul li.btnBox .totalPoint {width:120px;border-radius:0;background-color:#fff;color:#000;border:1px solid #B2B2B2;cursor:default;}
+
+.chatRoomPointBetBox .content ul li .btn.on {background-color:#C11A20;border:1px solid #921417;color:#fff;}
+.chatRoomPointBetBox .content ul li .point .btn.on {background-color:#1265CD;border:1px solid #1059b4;color:#fff;}
+
+/* chatRoomList */
+.chatRoomLobby {position:relative;width:42px;height:38px;line-height:18px;padding-top:4px;margin-bottom:2px;text-align:center;border:1px solid #0E609C;font-weight:bold;background-color:#127CCB;}
+.chatRoomLobby a {color:#fff;display:block;}
+
+.chatRoomList {position:relative;}
+.chatRoomList li {position:relative;margin-bottom:2px;width:46px;}
+.chatRoomList li .thumb {position:relative;width:42px;border:1px solid #2c6f42;cursor:pointer;}
+.chatRoomList li .thumb.black {border:1px solid #000;}
+.chatRoomList li .thumb.blue {border:1px solid #0D50A3;}
+.chatRoomList li .thumb.red {border:1px solid #A30D0D;}
+
+.chatRoomList li .thumb.black .winFixCnt {position:absolute;bottom:-1px;right:-1px;width:15px;height:15px;background-color:#000;color:#fff;text-align:center;line-height:15px;font-size:11px;}
+.chatRoomList li .thumb.blue .winFixCnt {position:absolute;bottom:-1px;right:-1px;width:15px;height:15px;background-color:#0D50A3;color:#fff;text-align:center;line-height:15px;font-size:11px;}
+.chatRoomList li .thumb.red .winFixCnt {position:absolute;bottom:-1px;right:-1px;width:15px;height:15px;background-color:#A30D0D;color:#fff;text-align:center;line-height:15px;font-size:11px;}
+
+.chatRoomList li .thumb img {width:42px;height:42px;}
+.chatRoomList li .info {position:absolute;top:0px;left:46px;width:314px;height:42px;background-color:#127CCB;border:1px solid #0E609C;line-height:42px;padding:0 10px;color:#fff;display:none;z-index:99;}
+.chatRoomList li .info a {float:left;color:#fff;}
+.chatRoomList li .info .bar {font-size:10px;color:#3e9f5e;margin:0 5px;}
+.chatRoomList li .info .cnt {float:right;font-family:tahoma,dotum;font-size:11px;}
+
+/* layer */
+.layerPop{position:absolute;top:0;left:0;width:565px;background:#fff;z-index:110;}
+.layerPop .close{position:absolute;top:8px;right:20px;z-index:10;}
+.layerPop .close img{padding:8px;}
+.layerPop .close:hover img{padding:8px;background:url('https://simg.powerballgame.co.kr/images/btn_popClose_on.gif') no-repeat 0 0;}
+.layerPop h1{padding:15px 20px;font-family:'Gulim';font-weight:normal;font-size:18px;}
+.layerPop h1 .num{vertical-align:top;color:#989898;}
+
+/* modalLayer */
+.modalLayer {position:fixed;top:0;left:0;width:100%;height:100%;background:url(https://simg.powerballgame.co.kr/images/bg_mask.png);z-index:9999;display:none;}
+.modalLayer .profileImg {position:relative;width:530px;border:1px solid #0c4935;background-color:#fafafa;display:block;}
+.modalLayer .profileImg .tit {position:relative;height:35px;border-bottom:1px solid #0E578D;background-color:#127CCB;}
+.modalLayer .profileImg .tit h2 {padding-left:10px;line-height:35px;font-size:12px;font-family:'굴림',Gulim;color:#fff;}
+.modalLayer .profileImg .tit .close {position:absolute;top:9px;right:9px;background:url(https://simg.powerballgame.co.kr/images/btn_close.png);width:16px;height:16px;}
+.modalLayer .profileImg .contentBox {padding:15px;border-bottom:1px dotted #e1e1e1;}
+.modalLayer .profileImg .contentBox input {margin:20px auto 5px auto;display:block;padding:0 5px;width:120px;height:30px;line-height:30px;font-size:20px;border:1px solid #d4d4d4;text-align:center;}
+.modalLayer .profileImg .contentBox p {text-align:center;color:#666;padding-top:10px;font-size:11px;}
+.modalLayer .profileImg .btn {height:60px;text-align:center;}
+.modalLayer .profileImg .btn .btn_confirm {margin-top:9px;border:1px solid #151515;background-color:#4C4C4C;color:#fff;padding:7px;text-align:center;display:inline-block;}
+.modalLayer .profileImg .btn .btn_confirm:hover {background-color:#151515;}
+.modalLayer .profileImg .btn .btn_cancel {margin-top:9px;border:1px solid #959595;background-color:#a7a7a7;color:#fff;padding:7px;text-align:center;display:inline-block;}
+.modalLayer .profileImg .btn .btn_cancel:hover {background-color:#959595;}
+
+/* lotto */
+.lotto1 {display:inline-block;width:20px;height:15px;border-radius:20px;background-color:#FEB500;border:1px solid #D59A00;color:#fff;text-align:center;padding-top:5px;}
+.lotto2 {display:inline-block;width:20px;height:15px;border-radius:20px;background-color:#007AF6;border:1px solid #0066CC;color:#fff;text-align:center;padding-top:5px;}
+.lotto3 {display:inline-block;width:20px;height:15px;border-radius:20px;background-color:#EE0000;border:1px solid #C40000;color:#fff;text-align:center;padding-top:5px;}
+.lotto4 {display:inline-block;width:20px;height:15px;border-radius:20px;background-color:#666666;border:1px solid #505050;color:#fff;text-align:center;padding-top:5px;}
+.lotto5 {display:inline-block;width:20px;height:15px;border-radius:20px;background-color:#32810C;border:1px solid #235909;color:#fff;text-align:center;padding-top:5px;}
+
+/* qtip */
+.tooltip_dark {
+	background-color: #505050;
+	border-color: #303030;
+	color: #fff;
+	font-family:dotum;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
+	-moz-box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
+	box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* paging */
+.pagingBox {text-align:center;margin:10px auto;}
+.pagingBox a {display:inline-block;border:1px solid #d2d2d2;background-color:#fff;color:#5f5f5f;font-size:11px;font-family:tahoma,dotum;width:20px;height:20px;line-height:20px;text-align:center;margin:0 3px;}
+.pagingBox a.on {background-color:#127CCB;color:#fff;border:1px solid #0E609C;}
+
+/* banner */
+.skyBanner2 {position:absolute;top:610px;}
+.skyFixedBanner {position:fixed;top:10px;}
+
+/* best pickster */
+#bestPicksterList {position:absolute;top:45px;left:56px;width:265px;background-color:#fff;border:2px solid #127CCB;box-shadow: 0 0 10px 1px #0D568C;display:none;z-index:99;}
+#bestPicksterList .title {width:265px;height:30px;line-height:30px;text-align:center;background-color:#127CCB;color:#fff;font-size:12px;display:block;}
+#bestPicksterList .highlight {color:#0D568C;}
+#bestPicksterList .guide {padding:8px;color:#999999;font-size:11px;}
+
+#bestPicksterList li {position:relative;list-style:none;width:265px;height:45px;line-height:45px;border-bottom:1px dotted #cecece;}
+#bestPicksterList li.rank1 {background-color:#FFFFD9;}
+#bestPicksterList li.rank2 {background-color:#FFECEC;}
+#bestPicksterList li.rank3 {background-color:#F0FDFF;}
+#bestPicksterList li img {vertical-align:middle;}
+#bestPicksterList li .rank {width:30px;display:inline-block;text-align:center;font-family:DINWeb-Bold;padding-left:5px;}
+#bestPicksterList li .profile {margin:0 5px;}
+#bestPicksterList li .profileImg {width:32px;border-radius:20px;}
+#bestPicksterList li .level {margin:0 5px;}
+#bestPicksterList li .rankType {position:absolute;top:20px;right:22px;}
+#bestPicksterList li .rankTypeNum {position:absolute;top:0px;right:10px;text-align:rignt;font-size:11px;font-family:tahoma;}
+#bestPicksterList li .up {color:#CE0400;}
+#bestPicksterList li .down {color:#1871E7;}
+#bestPicksterList li .new {color:#CE0400;}
+
+/* prison */
+.categoryTit ul {width:828px;height:30px;padding:0;margin:0 0 5px 0;border:1px solid #dddddd;border-top:2px solid #0E609C;background-color:#F1F1F1;}
+.categoryTit ul li {list-style:none;float:left;width:90px;text-align:center;border-right:1px solid #dddddd;}
+.categoryTit ul li a {display:block;height:30px;line-height:30px;text-decoration:none;}
+.categoryTit ul li a.on {background-color:#127CCB;border-top:none;margin-top:-1px;border:1px solid #0E609C;color:#fff;}
+
+.prisonBox {position:relative;width:100%;margin-top:10px;font-size:11px;}
+.prisonBox .content .table {clear:both;width:100%;}
+.prisonBox .content .table th {height:30px;background-color:#127CCB;color:#fff;font-weight:normal;font-size:11px;}
+.prisonBox .content .table td {height:30px;text-align:center;border-bottom:1px solid #EAEAEA;color:#636563}
+.prisonBox .content .table td img {vertical-align:middle;}
+.prisonBox .content .table td.nick {text-align:left;padding-left:10px;font-weight:bold;}
+.prisonBox .content .table td.memo {text-align:left;padding-left:10px;}
+.prisonBox .content .table td.tit {text-align:left;padding-left:10px;background-color:#FCFCFC;font-size:11px;}
+.prisonBox .content .table td.reason {text-align:left;padding-left:10px;font-size:11px;}
+.prisonBox .content .border {border:1px solid #DDDDDD;}
+.prisonBox .content .page {text-align:center;height:30px;line-height:30px;}
+
+.siteLink {font-size:11px;}
+.siteLink a {font-weight:bold;margin-left:2px;color:#127CCB;}
+.siteLink a:hover {color:#0D568C;text-decoration:underline;}
+a.titleCopy {display:inline !important;height:15px !important;line-height:15px !important;font-weight:bold !important;margin-left:2px !important;color:#127CCB !important;padding:0 !important;}
+a.titleCopy:hover {color:#0D568C !important;text-decoration:underline !important;}
+
+.scrollTop {position:fixed;bottom:20px;right:20px;width:50px;height:50px;background-color:#127CCB;border-radius:100px;z-index:99;opacity: 0.5;display:none;line-height:65px;text-align:center;font-size:35px;color:#fff;}
+.scrollTop:hover {opacity:1;}
