@@ -85,6 +85,12 @@ $routes->get('loginip', 'Home::loginip');
 
 $routes->get('lottery/getDrawResult', 'Lottery::getDrawResult');
 
+// 전체 분석 데이터 (dayLog용) GET /json/powerballAnalyse/20260316.json
+$routes->get('json/powerballAnalyse/(:segment)', 'Home::powerballAnalyse/$1');
+
+// 5분 정각 추첨 실행 (cron용; CRON_DRAW_KEY 쿼리 필수)
+$routes->get('cron/draw', 'Cron::draw');
+
 /**
  * --------------------------------------------------------------------
  * Additional Routing

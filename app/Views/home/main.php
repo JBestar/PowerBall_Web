@@ -12,8 +12,9 @@
     <meta property="og:url" content="<?php echo site_furl(''); ?>" />
     <link rel="canonical" href="<?php echo site_furl(''); ?>" />
     <?php $cdn = 'https://static.powerballgame.co.kr'; $local = rtrim(site_furl(''), '/'); $cssVer = ($_ENV['CI_ENVIRONMENT'] ?? '') == (defined('ENV_PRODUCTION') ? ENV_PRODUCTION : 'production') ? '1' : time(); ?>
-    <!-- 선배님 CDN 우선, 실패 시 로컬 -->
+    <!-- 선배님 CDN 우선, 실패 시 로컬 + 폰트만 로컬 강제 -->
     <link rel="stylesheet" href="<?php echo $cdn; ?>/css/common.css?v=201905194" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/common.css?v=<?php echo $cssVer; ?>';" />
+    <link rel="stylesheet" href="<?php echo $local; ?>/css/font-local.css?v=<?php echo $cssVer; ?>" />
     <style>
         /* 보드 메뉴 4개(유머/포토/분석픽공유/자유) 한 줄 유지 - float 줄바꿈 방지 */
         .boardBox ul.menu { display: flex; flex-wrap: nowrap; }
@@ -66,13 +67,12 @@
         #wrap #container { position: relative; z-index: 2; }
         #wrap .inner-right { position: relative; z-index: 3; }
     </style>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-149467684-1"></script>
+    <!-- Google Analytics (analytics.js, 선배님과 동일) -->
+    <script async src="https://www.google-analytics.com/analytics.js"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'UA-149467684-1');
+        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments);};ga.l=+new Date;
+        ga('create', 'UA-149467684-1', 'auto');
+        ga('send', 'pageview');
     </script>
 </head>
 

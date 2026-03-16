@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+/* 로컬 서버 폰트 강제 사용 (DINWeb-Bold) */
+@font-face {
+    font-family: DINWeb-Bold;
+    src: local(※), url(/font/DINWeb-Bold.eot);
+}
+@font-face {
+    font-family: DINWeb-Bold;
+    src: local(※), url(/font/DINWeb-Bold.woff) format('woff');
+}
+

@@ -6,6 +6,7 @@ function ladderResultTimer(divId)
 		var roundNum = parseInt($('#timeRound').text(), 10) + 1;
 		$('#timeRound').text(roundNum);
 		$('.nextRound').text(roundNum);
+		// 추첨 결과 조회 후 공 애니메이션
 		var drawUrl = (window.POWERBALL_BASE_URL || window.POWERBALL_AJAX_URL || '').replace(/\/$/, '') + '/lottery/getDrawResult';
 		$.getJSON(drawUrl).done(function(data){
 			if(data && (data.round != null || data.ball1 != null)){
@@ -19,6 +20,7 @@ function ladderResultTimer(divId)
 
 	remainTime--;
 
+	// 추첨 10초 전부터 .play 표시 (레일 재생) — 10 이하일 때마다 적용해 로드 시점이 9초 등이어도 표시
 	if(remainTime <= 10 && remainTime >= 0){
 		$('#lotteryBox .play').css('display', 'block').show();
 		$('#ladderReady').hide();
@@ -56,6 +58,8 @@ function updateResult(data)
 		ballArr[i] = two;
 		numberList += (i ? ', ' : '') + two;
 	}
+
+	/* 당첨 파워볼번호(시안), 숫자합(흰색) - 선배님처럼 class="b" + 인라인 스타일 */
 	var pb = parseInt(data.powerball,10);
 	var sum = data.ball_sum != null ? data.ball_sum : data.numberSum;
 	numberList += ', <span style="color:#66ffff;" class="b">'+pb+'</span>, <span style="color:#fff;" class="b">'+sum+'</span>';
@@ -105,8 +109,10 @@ function showNumber(num, index)
 	}, delay);
 }
 
+// 추첨 결과 번호(1~28)에 따라 공 색상 매핑. 결과에 따라 동적으로 바뀜.
 function ballColorSel(num)
 {
+	var ballColor = 'blue';
 	switch(num)
 	{
 		case '01':
@@ -153,12 +159,13 @@ function ballColorSel(num)
 		case '20':
 		case '24':
 		case '28':
-			var ballColor = 'blue';
+			ballColor = 'blue';
 			break;
 	}
 	return ballColor;
 }
 
+// PHP에서 그린 공들은 줄바꿈/들여쓰기로 인해 inline-block 사이 공백이 생김. 공백 없이 한 번에 다시 그려 6개 한 행 유지.
 function rebuildBallsNoWhitespace(containerId, includeId) {
 	var $container = $('#' + containerId);
 	var $spans = $container.children('span[class^="ball_"]');
@@ -179,6 +186,7 @@ $(document).ready(function(){
 	rebuildBallsNoWhitespace('lotteryResult', true);
 	rebuildBallsNoWhitespace('beforeResult', false);
 
+	// 로드 시점에 이미 10초 이하면 .play 즉시 표시
 	if(remainTime <= 10 && remainTime >= 0){
 		$('#lotteryBox .play').css('display', 'block').show();
 		$('#ladderReady').hide();
@@ -245,7 +253,7 @@ function powerballBetting()
 		$.ajax({
 			type:'POST',
 			dataType:'json',
-			url:'/',
+			url: window.POWERBALL_AJAX_URL || '/',
 			data:$('#bettingForm').serialize(),
 			success:function(data,textStatus){
 				if(data.state == 'success')
@@ -259,7 +267,7 @@ function powerballBetting()
 					{
 						$('#betBox').hide();
 						$('#captchaBox').show();
-						$('#captchaImg').html('<img src="/captcha.php?type=pointBet&time='+new Date().getTime()+'">');
+						$('#captchaImg').html('<img src="' + (window.POWERBALL_BASE_URL || '') + '/captcha.php?type=pointBet&time='+new Date().getTime()+'">');
 					}
 					else
 					{
@@ -422,7 +430,7 @@ function runCaptcha()
 		$.ajax({
 			type:'POST',
 			dataType:'json',
-			url:'/',
+			url: window.POWERBALL_AJAX_URL || '/',
 			data:$('#captchaForm').serialize(),
 			success:function(data,textStatus){
 				if(data.state == 'success')
@@ -441,7 +449,7 @@ function runCaptcha()
 						//alert(data.msg);
 						modalMsg(data.msg);
 
-						$('#captchaImg img').attr('src','/captcha.php?type=pointBet&time='+new Date().getTime());
+						$('#captchaImg img').attr('src', (window.POWERBALL_BASE_URL || '') + '/captcha.php?type=pointBet&time='+new Date().getTime());
 						$('.pad li.reset').click();
 					}
 					else

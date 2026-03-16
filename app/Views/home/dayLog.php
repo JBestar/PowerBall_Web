@@ -44,9 +44,43 @@
 	var today = '<?= date('Y-m-d') ?>';
 	var dateDiff = <?= isset($date) ? (strtotime($date) - strtotime('today')) / 86400 : 0 ?>;
 
+	// mainFrame 높이: 표시 행 수에 따라 동적 계산 (실제 행 높이 측정, 더보기 시 확장 / 30행 미만이면 그만큼 작게)
+	var dayLogBaseHeight = 0;
+	var dayLogRowHeightPx = 0;  // DOM에서 측정한 행당 높이 (border·padding 포함)
+	var DAYLOG_ROW_HEIGHT_FALLBACK = 48;  // td 40 + border 등 여유
+	var DAYLOG_MIN_HEIGHT = 500;
+	function heightResize() {
+		var $rows = $('#powerballLogBox tbody.content tr');
+		var rowCount = $rows.length;
+		// 행이 있으면 첫 번째 tr의 실제 높이 측정 (border 포함)
+		if (rowCount > 0 && dayLogRowHeightPx === 0) {
+			dayLogRowHeightPx = Math.ceil($rows.first().outerHeight(true)) || DAYLOG_ROW_HEIGHT_FALLBACK;
+		}
+		var rowHeight = dayLogRowHeightPx > 0 ? dayLogRowHeightPx : DAYLOG_ROW_HEIGHT_FALLBACK;
+		if (dayLogBaseHeight === 0 && rowCount > 0) {
+			dayLogBaseHeight = Math.max(DAYLOG_MIN_HEIGHT, $('body').height() - (rowCount * rowHeight));
+		}
+		if (dayLogBaseHeight === 0) {
+			dayLogBaseHeight = DAYLOG_MIN_HEIGHT;
+		}
+		var totalHeight = dayLogBaseHeight + (rowCount * rowHeight);
+		totalHeight = Math.max(DAYLOG_MIN_HEIGHT, Math.round(totalHeight));
+		try {
+			// 부모에 frameAutoResize가 있으면 사용, 없으면 부모 DOM에서 mainFrame 높이 직접 설정 (main.php는 default.js 미로드)
+			if (window.parent && window.parent.frameAutoResize) {
+				window.parent.frameAutoResize('mainFrame', totalHeight);
+			} else if (window.parent && window.parent.document) {
+				var frame = window.parent.document.getElementById('mainFrame');
+				if (frame) frame.style.height = totalHeight + 'px';
+			}
+		} catch (e) {}
+	}
+
 	$(document).ready(function(){
 
 		moreClick();
+		// 전체 분석 데이터 (해당 날짜 집계) 초기 로드
+		refreshAnalyse();
 
 		setInterval(function(){
 			ladderTimer('dayLogTimer');
@@ -119,7 +153,8 @@
 			loading = true;
 
 			$('#pageDiv').show();
-			var page = parseInt($('#pageDiv').attr('pageVal')) + 1;
+			var page = parseInt($('#pageDiv').attr('pageVal'), 10);
+			if(isNaN(page)) page = 0;
 
 			$.ajax({
 				type:'POST',
@@ -129,28 +164,48 @@
 					view:'action',
 					action:'ajaxPowerballLog',
 					actionType:'dayLog',
-					date:'2026-03-10',
+					date:curDate,
 					page:page
 				},
 				success:function(data,textStatus){
-					if(data)
+					if(data && data.content && data.content.length)
 					{
 						$('#powerballLogBox tbody.content').append($('#tmpl_dayLog').tmpl(data));
 					}
-					if(data.endYN == 'Y')
+					else if(data && data.content)
+					{
+						$('#powerballLogBox tbody.content').append($('#tmpl_dayLog').tmpl(data));
+					}
+					// 첫 페이지(0)일 때 30개 초과 시 30개만 유지
+					if(page === 0){
+						var $content = $('#powerballLogBox tbody.content');
+						if($content.find('tr').length > 30){
+							$content.find('tr').slice(30).remove();
+						}
+					}
+					if(data && data.endYN == 'Y')
 					{
 						$('.moreBox').hide();
 					}
+					else if(data && data.endYN == 'N')
+					{
+						$('.moreBox').show();
+					}
+					if(data && data.round != null)
+					{
+						$('#pageDiv').attr('round', data.round);
+					}
 
 					$('#pageDiv').hide();
-					$('#pageDiv').attr('pageVal',page);
+					$('#pageDiv').attr('pageVal', page + 1);
 
 					loading = false;
 
 					heightResize();
 				},
 				error:function (xhr,textStatus,errorThrown){
-					//alert('error'+(errorThrown?errorThrown:xhr.status));
+					loading = false;
+					$('#pageDiv').hide();
 				}
 			});
 		}
@@ -186,7 +241,7 @@
 					view:'action',
 					action:'ajaxPowerballLog',
 					actionType:'refreshLog',
-					date:'2026-03-10',
+					date:curDate,
 					round:round
 				},
 				success:function(data,textStatus){
@@ -204,9 +259,9 @@
 
 							$('#powerballLogBox tbody.content').prepend($('#tmpl_dayLog').tmpl(data));
 
-							if($('#powerballLogBox tbody.content').find('tr').length > 30)
-							{
-								$('#powerballLogBox tbody.content').find('tr:last').remove();
+							var $content = $('#powerballLogBox tbody.content');
+							if($content.find('tr').length > 30){
+								$content.find('tr').slice(30).remove();
 							}
 
 							if(data.powerballOddEven)
@@ -252,10 +307,11 @@
 
 	function refreshAnalyse()
 	{
+		var dateStr = curDate.replace(/-/g, '');
 		$.ajax({
 			type:'GET',
 			cache:false,
-			url:'/json/powerballAnalyse/20260310.json',
+			url:'/json/powerballAnalyse/'+dateStr+'.json?_='+(Date.now()),
 			dataType:'json',
 			timeout:1000,
 			success:function(data,textStatus){
@@ -348,8 +404,8 @@
 		alert('코드가 복사되었습니다. 원하시는 곳에 Ctrl + v 로 붙여넣기 하세요.');
 	}
 
-	// ladderTimer
-	var remainTime = 208;
+	// ladderTimer (서버에서 다음 추첨까지 남은 초·다음 회차로 초기화)
+	var remainTime = <?= (int)($remain_seconds ?? 300) ?>;
 
 	$(window).load(function(){
 		if(getCookie('MINIVIEWLAYER') == 'Y')
@@ -428,14 +484,12 @@
 				//]]>
 			</script>
 			
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-149467684-1"></script>
+	<!-- Google Analytics (analytics.js, 선배님과 동일) -->
+	<script async src="https://www.google-analytics.com/analytics.js"></script>
 	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'UA-149467684-1');
+		window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments);};ga.l=+new Date;
+		ga('create', 'UA-149467684-1', 'auto');
+		ga('send', 'pageview');
 	</script>
 
 		</head>
@@ -497,7 +551,8 @@
 
 		<div class="timeBox">
 			<div class="left">
-				<span class="time" id="dayLogTimer"><strong><span class="minute"></span>분 <span class="second"></span>초</strong> 후 <span class="round"><strong id="timeRound">1568765</strong> 회차</span> 데이터가 갱신됩니다.</span>
+				<?php $rsec = (int)($remain_seconds ?? 300); $rmin = (int)floor($rsec / 60); $rs = (int)($rsec % 60); ?>
+				<span class="time" id="dayLogTimer"><strong><span class="minute"><?= $rmin ?></span>분 <span class="second"><?= $rs < 10 ? '0'.$rs : $rs ?></span>초</strong> 후 <span class="round"><strong id="timeRound"><?= (int)($next_round ?? 1) ?></strong> 회차</span> 데이터가 갱신됩니다.</span>
 			</div>
 			<div class="refresh"><a href="/?view=dayLog">데이터 새로고침</a></div>
 		</div>
@@ -688,7 +743,7 @@
 		</tbody>
 	</table>
 
-	<div class="displayNone center" id="pageDiv" pageVal="0" round="1568764"><img src="https://simg.powerballgame.co.kr/images/loading2.gif" width="50" height="50"></div>
+	<div class="displayNone center" id="pageDiv" pageVal="0" round="<?= max(0, (int)($next_round ?? 1) - 1) ?>"><img src="https://simg.powerballgame.co.kr/images/loading2.gif" width="50" height="50"></div>
 	<div class="moreBox"><a href="#" onclick="moreClick();return false;">더보기</a></div>
 
 	<!-- tmpl -->

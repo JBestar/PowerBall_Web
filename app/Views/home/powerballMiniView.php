@@ -5,8 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>실시간 파워볼게임 미니뷰</title>
     <?php $cdn = 'https://static.powerballgame.co.kr'; $local = rtrim(site_furl(''), '/'); ?>
-    <link rel="stylesheet" href="<?php echo $cdn; ?>/css/common.css?v=201905194" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/common.css?v=201905194'"/>
+    <link rel="stylesheet" href="https://powerballgame.co.kr/css/common.css?v=2019012107" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/common.css?v=201905194'"/>
     <link rel="stylesheet" href="<?php echo $cdn; ?>/css/sprites.css?201905194" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/sprites.css?v=201905194'"/>
+    <link rel="stylesheet" href="<?php echo $local; ?>/css/font-local.css" type="text/css"/>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/jquery-ui.css'"/>
 </head>
 <body>
@@ -15,7 +16,7 @@
         <div>실시간</div>
         <div>파워볼게임</div>
         <div>미니뷰</div>
-        <a href="#" onclick="toggleMiniView(); return false;" class="close">닫기</a>
+        <a href="#" onclick="toggleMiniView(); return false;" class="close"></a>
     </div>
     <div class="content">
         <div class="leftBox">
@@ -25,27 +26,61 @@
             <div id="ladderReady" style="display:block;">
                 <div class="box">
                     <div class="time" id="ladderTimer">
-                        <em class="minute">5</em>분 <em class="second">0</em>초 후 <span id="timeRound"><?= (int)($time_round ?? 0) ?></span> 회차 결과 발표
+                        <?php $remain_min = (int)floor(($remain_time ?? 0) / 60); $remain_sec = (int)(($remain_time ?? 0) % 60); ?>
+                        <em class="minute"><?= $remain_min ?></em>분 <em class="second"><?= $remain_sec ?></em>초 후 <span id="timeRound"><?= (int)($time_round ?? 0) ?></span> 회차 결과 발표
                     </div>
-                </div>
-                <div class="result" style="color:#FFFF00;line-height:20px;font-size:12px;">
-                    [<span id="lastRound"><?= esc($last_round ?? '') ?></span>회차] 결과는<br>
-                    [<span id="lastResult" style="font-size:15px;"><?= esc($last_result ?? '-') ?></span>] 입니다.
-                </div>
+                    <div class="result">
+                        [<span id="lastRound"><?= esc($last_round ?? '') ?></span>회차] 결과는<br>
+                        [<span id="lastResult" style="font-size:15px;"><?= esc($last_result ?? '-') ?></span>] 입니다.
+                    </div>
+                </div>               
             </div>
             <!-- 추첨결과에 따라 공 번호·색상은 JS(updateResult/showNumber/ballColorSel)에서 동적 생성 -->
-            <div id="lotteryBox" style="display:none;">
-                <div id="lotteryBall" style="display:none;"></div>
+            <div id="lotteryBox">
+                <div id="lotteryBall"></div>
                 <div class="play" style="display:none;"><img src="https://simg.powerballgame.co.kr/images/lottery_play.gif" height="265" alt="" onerror="this.src='<?php echo rtrim(site_furl(""), "/"); ?>/images/lottery_play.gif';"></div>
             </div>
         </div>
+        <?php
+        // PHP에서도 선배님 JS(ballColorSel)와 동일한 색상 매핑을 사용해 초기 화면을 그린다.
+        if (!function_exists('mini_ball_color')) {
+            function mini_ball_color(int $n): string {
+                switch ($n) {
+                    case 1: case 5: case 9: case 13: case 17: case 21: case 25:
+                        return 'red';
+                    case 2: case 6: case 10: case 14: case 18: case 22: case 26:
+                        return 'yellow';
+                    case 3: case 7: case 11: case 15: case 19: case 23: case 27:
+                        return 'green';
+                    default:
+                        return 'blue';
+                }
+            }
+        }
+        $currentBalls = isset($current_balls) && is_array($current_balls) ? $current_balls : [];
+        $prevBalls    = isset($prev_balls) && is_array($prev_balls) ? $prev_balls : [];
+        ?>
         <div class="rightBox">
             <div class="tit"><span class="lastRound" id="lastRoundTit"><?= esc($last_round ?? '') ?></span> 회차 결과</div>
             <div id="lotteryResultBox">
-                <div id="lotteryResult"></div>
+                <div id="lotteryResult">
+                    <?php if (!empty($currentBalls)): ?>
+                        <?php foreach ($currentBalls as $idx => $n): ?>
+                            <?php $nInt = (int)$n; ?>
+                            <span class="ball_<?= mini_ball_color($nInt) ?>"><span class="ballNumber"><?= sprintf('%02d', $nInt) ?></span></span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>            
+                <div class="tit2">이전 회차 결과</div>
+                <div id="beforeResult">
+                    <?php if (!empty($prevBalls)): ?>
+                        <?php foreach ($prevBalls as $idx => $n): ?>
+                            <?php $nInt = (int)$n; ?>
+                            <span class="ball_<?= mini_ball_color($nInt) ?>"><span class="ballNumber"><?= sprintf('%02d', $nInt) ?></span></span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </div>
-            <div class="tit2">이전 회차 결과</div>
-            <div id="beforeResult"></div>
         </div>
     </div>
 </div>
@@ -157,7 +192,7 @@ function getCookie(n){ var m = document.cookie.match(new RegExp('(^| )'+n+'=([^;
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-ui.js';document.body.appendChild(s);"></script>
 <script>window.jQuery && !$.fn.number && ($.number = function(n){ return n == null ? '0' : String(n); });</script>
 <script src="<?php echo $cdn; ?>/js/TweenMax.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/TweenMax.min.js';document.body.appendChild(s);"></script>
-<script src="<?php echo $cdn; ?>/js/powerballMiniView.js?2019012107" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/powerballMiniView.js';document.body.appendChild(s);"></script>
+<script src="<?php echo $local; ?>/js/powerballMiniView.js"></script>
 <script>
 $(function(){
     window.showLadderResultBox = function(){

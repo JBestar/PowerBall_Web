@@ -18,6 +18,15 @@ class Home extends BaseController
             return $this->frameDayLog();
         }
 
+        // dayLog 회차별 분석 데이터: POST view=action, action=ajaxPowerballLog
+        if ($this->request->getMethod() === 'post') {
+            $view   = $this->request->getPost('view');
+            $action = $this->request->getPost('action');
+            if ($view === 'action' && $action === 'ajaxPowerballLog') {
+                return $this->ajaxPowerballLog();
+            }
+        }
+
         $this->setLanguage();
         $headInfo = $this->getSiteConf();
         $headInfo['lang'] = $this->session->lang;
@@ -37,7 +46,7 @@ class Home extends BaseController
             } else {
                 $dayLogDate = date('Y-m-d');
             }
-            $dayLogData = array_merge($headInfo, [
+            $dayLogData = array_merge($headInfo, $this->getDrawTimerInfo(), [
                 'site_title' => ($headInfo['site_name'] ?? '파워볼게임').' : 실시간 파워볼 분석 커뮤니티',
                 'date' => $dayLogDate,
             ]);
@@ -50,7 +59,7 @@ class Home extends BaseController
             if (!$dayLogDate || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dayLogDate)) {
                 $dayLogDate = date('Y-m-d');
             }
-            $dayLogData = array_merge($headInfo, [
+            $dayLogData = array_merge($headInfo, $this->getDrawTimerInfo(), [
                 'site_title' => ($headInfo['site_name'] ?? '파워볼게임').' : 실시간 파워볼 분석 커뮤니티',
                 'date' => $dayLogDate,
                 'frame_mainFrame' => true,
@@ -60,12 +69,54 @@ class Home extends BaseController
         }
         // 2-3. 미니뷰 iframe 전용 (dayLog 내 "미니뷰 열기" 시 로드)
         else if($this->request->getGet('view') === 'powerballMiniView'){
-            $headInfo = $this->getSiteConf();
+            $headInfo   = $this->getSiteConf();
+            $lastRound  = '';
+            $lastResult = '-';
+            $time_round = 1;
+            $currentBalls = [];
+            $prevBalls    = [];
+            try {
+                $drawModel = new \App\Models\PowerballDraw_Model();
+                $latest    = $drawModel->getOrGenerate(time());
+                $two       = $drawModel->orderBy('round', 'DESC')->findAll(2);
+                $prev      = isset($two[1]) ? $two[1] : null;
+
+                if ($latest) {
+                    $lastRound  = (string) ($latest->round ?? '');
+                    $time_round = (int) ($latest->round ?? 0) + 1;
+                    $nums = [
+                        (int)($latest->ball1 ?? 0),
+                        (int)($latest->ball2 ?? 0),
+                        (int)($latest->ball3 ?? 0),
+                        (int)($latest->ball4 ?? 0),
+                        (int)($latest->ball5 ?? 0),
+                    ];
+                    $pb  = (int)($latest->powerball ?? 0);
+                    $sum = (int)($latest->ball_sum ?? 0);
+                    $lastResult  = implode(', ', $nums) . ', ' . $pb . ', ' . $sum;
+                    $currentBalls = array_merge($nums, [$pb]);
+                }
+                if ($prev) {
+                    $pnums = [
+                        (int)($prev->ball1 ?? 0),
+                        (int)($prev->ball2 ?? 0),
+                        (int)($prev->ball3 ?? 0),
+                        (int)($prev->ball4 ?? 0),
+                        (int)($prev->ball5 ?? 0),
+                    ];
+                    $ppb = (int)($prev->powerball ?? 0);
+                    $prevBalls = array_merge($pnums, [$ppb]);
+                }
+            } catch (\Throwable $e) {
+                // DB/테이블 미생성 시 빈 값 유지
+            }
             $miniViewData = array_merge($headInfo, [
-                'remain_time' => 300,
-                'time_round'  => 0,
-                'last_round'  => '',
-                'last_result' => '',
+                'remain_time'    => $this->getRemainSecondsUntilNextDraw(),
+                'time_round'     => $time_round,
+                'last_round'     => $lastRound,
+                'last_result'    => $lastResult,
+                'current_balls'  => $currentBalls,
+                'prev_balls'     => $prevBalls,
             ]);
             echo view('home/powerballMiniView', $miniViewData);
             return;
@@ -107,6 +158,267 @@ class Home extends BaseController
     }
 
     /**
+     * 다음 추첨 시각까지 남은 초 (5분 단위: XX:00, XX:05, XX:10, … XX:55 기준)
+     * 예: 23:23:32 → 다음 23:25:00 까지 88초
+     */
+    protected function getRemainSecondsUntilNextDraw(): int
+    {
+        $now = time();
+        $minute = (int) date('i', $now);
+        $hour = (int) date('H', $now);
+        $month = (int) date('n', $now);
+        $day = (int) date('j', $now);
+        $year = (int) date('Y', $now);
+
+        $nextSlotMinute = (floor($minute / 5) + 1) * 5;
+        if ($nextSlotMinute >= 60) {
+            $nextDrawTs = mktime($hour + 1, 0, 0, $month, $day, $year);
+        } else {
+            $nextDrawTs = mktime($hour, $nextSlotMinute, 0, $month, $day, $year);
+        }
+        $remain = (int) ($nextDrawTs - $now);
+        return max(0, min(300, $remain));
+    }
+
+    /**
+     * 전체 분석 데이터 JSON (dayLog refreshAnalyse용)
+     * GET /json/powerballAnalyse/20260316.json
+     * 해당 날짜 draw_results 기준으로 파워볼/숫자합/대중소 집계 및 연속 횟수 반환
+     */
+    public function powerballAnalyse(string $segment = '')
+    {
+        $segment = preg_replace('/\.json$/i', '', $segment);
+        if (!preg_match('/^\d{8}$/', $segment)) {
+            return $this->response->setJSON(['state' => 'error', 'msg' => 'Invalid date']);
+        }
+        $date = substr($segment, 0, 4) . '-' . substr($segment, 4, 2) . '-' . substr($segment, 6, 2);
+        $dateFrom = $date . ' 00:00:00';
+        $dateTo   = $date . ' 23:59:59';
+
+        $drawModel = new \App\Models\PowerballDraw_Model();
+        $rows = $drawModel
+            ->where('drawn_at >=', $dateFrom)
+            ->where('drawn_at <=', $dateTo)
+            ->orderBy('round', 'ASC')
+            ->findAll();
+
+        $total = count($rows);
+        $cnt = [
+            'powerballOdd' => 0, 'powerballEven' => 0, 'powerballUnder' => 0, 'powerballOver' => 0,
+            'numberOdd' => 0, 'numberEven' => 0, 'numberUnder' => 0, 'numberOver' => 0,
+            'numberBig' => 0, 'numberMiddle' => 0, 'numberSmall' => 0,
+        ];
+        $types = []; // 각 회차별 분류 (연속 계산용)
+        foreach ($rows as $draw) {
+            $pb = (int) ($draw->powerball ?? 0);
+            $sum = (int) ($draw->ball_sum ?? 0);
+            $pbOdd = ($pb % 2 === 1);
+            $pbUnder = ($pb <= 4);
+            $numOdd = ($sum % 2 === 1);
+            $numUnder = ($sum <= 72);
+            if ($sum <= 64) {
+                $numSize = 'small';
+            } elseif ($sum <= 80) {
+                $numSize = 'middle';
+            } else {
+                $numSize = 'big';
+            }
+            $cnt['powerballOdd']   += $pbOdd ? 1 : 0;
+            $cnt['powerballEven']  += $pbOdd ? 0 : 1;
+            $cnt['powerballUnder'] += $pbUnder ? 1 : 0;
+            $cnt['powerballOver']  += $pbUnder ? 0 : 1;
+            $cnt['numberOdd']      += $numOdd ? 1 : 0;
+            $cnt['numberEven']     += $numOdd ? 0 : 1;
+            $cnt['numberUnder']    += $numUnder ? 1 : 0;
+            $cnt['numberOver']     += $numUnder ? 0 : 1;
+            $cnt['numberBig']      += ($numSize === 'big') ? 1 : 0;
+            $cnt['numberMiddle']   += ($numSize === 'middle') ? 1 : 0;
+            $cnt['numberSmall']    += ($numSize === 'small') ? 1 : 0;
+            $types[] = [
+                'pbOdd' => $pbOdd, 'pbUnder' => $pbUnder,
+                'numOdd' => $numOdd, 'numUnder' => $numUnder, 'numSize' => $numSize,
+            ];
+        }
+
+        $per = [];
+        foreach ($cnt as $k => $v) {
+            $per[$k] = $total > 0 ? (string) round($v / $total * 100) : '0';
+        }
+
+        // 연속 횟수: 해당 날짜 추첨 자료 가운데 같은 타입이 연속 나온 회수 중 최대값
+        $row = [
+            'powerballOdd' => 0, 'powerballEven' => 0, 'powerballUnder' => 0, 'powerballOver' => 0,
+            'numberOdd' => 0, 'numberEven' => 0, 'numberUnder' => 0, 'numberOver' => 0,
+            'numberBig' => 0, 'numberMiddle' => 0, 'numberSmall' => 0,
+        ];
+        $maxConsecutive = static function (array $types, string $key, $value) {
+            $max = 0;
+            $cur = 0;
+            foreach ($types as $t) {
+                $v = $key === 'numSize' ? $t['numSize'] : $t[$key];
+                if ($v === $value) {
+                    $cur++;
+                    $max = max($max, $cur);
+                } else {
+                    $cur = 0;
+                }
+            }
+            return $max;
+        };
+        if (count($types) > 0) {
+            $row['powerballOdd']   = $maxConsecutive($types, 'pbOdd', true);
+            $row['powerballEven']  = $maxConsecutive($types, 'pbOdd', false);
+            $row['powerballUnder'] = $maxConsecutive($types, 'pbUnder', true);
+            $row['powerballOver']  = $maxConsecutive($types, 'pbUnder', false);
+            $row['numberOdd']      = $maxConsecutive($types, 'numOdd', true);
+            $row['numberEven']     = $maxConsecutive($types, 'numOdd', false);
+            $row['numberUnder']    = $maxConsecutive($types, 'numUnder', true);
+            $row['numberOver']     = $maxConsecutive($types, 'numUnder', false);
+            $row['numberBig']      = $maxConsecutive($types, 'numSize', 'big');
+            $row['numberMiddle']   = $maxConsecutive($types, 'numSize', 'middle');
+            $row['numberSmall']    = $maxConsecutive($types, 'numSize', 'small');
+        }
+
+        return $this->response->setJSON([
+            'state' => 'success',
+            'powerballOddCnt'   => (string) $cnt['powerballOdd'],
+            'powerballEvenCnt'  => (string) $cnt['powerballEven'],
+            'powerballUnderCnt' => (string) $cnt['powerballUnder'],
+            'powerballOverCnt'  => (string) $cnt['powerballOver'],
+            'numberOddCnt'      => (string) $cnt['numberOdd'],
+            'numberEvenCnt'     => (string) $cnt['numberEven'],
+            'numberUnderCnt'     => (string) $cnt['numberUnder'],
+            'numberOverCnt'     => (string) $cnt['numberOver'],
+            'numberBigCnt'      => (string) $cnt['numberBig'],
+            'numberMiddleCnt'   => (string) $cnt['numberMiddle'],
+            'numberSmallCnt'    => (string) $cnt['numberSmall'],
+            'powerballOddPer'   => $per['powerballOdd'],
+            'powerballEvenPer'  => $per['powerballEven'],
+            'powerballUnderPer' => $per['powerballUnder'],
+            'powerballOverPer'  => $per['powerballOver'],
+            'numberOddPer'      => $per['numberOdd'],
+            'numberEvenPer'     => $per['numberEven'],
+            'numberUnderPer'    => $per['numberUnder'],
+            'numberOverPer'     => $per['numberOver'],
+            'numberBigPer'      => $per['numberBig'],
+            'numberMiddlePer'   => $per['numberMiddle'],
+            'numberSmallPer'    => $per['numberSmall'],
+            'powerballOddRow'   => (string) $row['powerballOdd'],
+            'powerballEvenRow'  => (string) $row['powerballEven'],
+            'powerballUnderRow' => (string) $row['powerballUnder'],
+            'powerballOverRow'  => (string) $row['powerballOver'],
+            'numberOddRow'      => (string) $row['numberOdd'],
+            'numberEvenRow'     => (string) $row['numberEven'],
+            'numberUnderRow'    => (string) $row['numberUnder'],
+            'numberOverRow'     => (string) $row['numberOver'],
+            'numberBigRow'      => (string) $row['numberBig'],
+            'numberMiddleRow'   => (string) $row['numberMiddle'],
+            'numberSmallRow'    => (string) $row['numberSmall'],
+        ]);
+    }
+
+    /**
+     * dayLog 회차별 분석 데이터: ajaxPowerballLog (actionType: dayLog 페이지네이션, refreshLog 추첨 후 1건 추가)
+     */
+    public function ajaxPowerballLog()
+    {
+        $actionType = $this->request->getPost('actionType');
+        $drawModel  = new \App\Models\PowerballDraw_Model();
+
+        if ($actionType === 'dayLog') {
+            $date = $this->request->getPost('date');
+            if (!$date || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+                $date = date('Y-m-d');
+            }
+            $page = (int) $this->request->getPost('page');
+            if ($page < 0) {
+                $page = 0;
+            }
+            $perPage = 30;
+            $offset  = $page * $perPage;
+
+            $dateFrom = $date . ' 00:00:00';
+            $dateTo   = $date . ' 23:59:59';
+            $rows = $drawModel
+                ->where('drawn_at >=', $dateFrom)
+                ->where('drawn_at <=', $dateTo)
+                ->orderBy('round', 'DESC')
+                ->limit($perPage, $offset)
+                ->findAll();
+
+            $content = [];
+            foreach ($rows as $i => $draw) {
+                $content[] = \App\Models\PowerballDraw_Model::formatForDayLogRow($draw, $offset + $i);
+            }
+            // 한 번에 최대 30개만 반환 (31개 이상 방지)
+            $content = \array_slice($content, 0, $perPage);
+
+            $latest = $drawModel->where('drawn_at >=', $dateFrom)->where('drawn_at <=', $dateTo)->orderBy('round', 'DESC')->first();
+            $round  = $latest ? (int) $latest->round : 0;
+
+            return $this->response->setJSON([
+                'content' => $content,
+                'endYN'   => count($content) < $perPage ? 'Y' : 'N',
+                'pageVal' => $page,
+                'round'   => $round,
+            ]);
+        }
+
+        if ($actionType === 'refreshLog') {
+            $date = $this->request->getPost('date');
+            if (!$date || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+                $date = date('Y-m-d');
+            }
+            $afterRound = (int) $this->request->getPost('round');
+
+            $dateFrom = $date . ' 00:00:00';
+            $dateTo   = $date . ' 23:59:59';
+            $draw = $drawModel
+                ->where('drawn_at >=', $dateFrom)
+                ->where('drawn_at <=', $dateTo)
+                ->where('round >', $afterRound)
+                ->orderBy('round', 'ASC')
+                ->first();
+
+            if (!$draw) {
+                return $this->response->setJSON(['state' => 'success', 'round' => $afterRound, 'content' => []]);
+            }
+
+            $row = \App\Models\PowerballDraw_Model::formatForDayLogRow($draw, 0);
+            return $this->response->setJSON([
+                'state'   => 'success',
+                'round'   => (int) $draw->round,
+                'content' => [$row],
+                'powerballOddEven'   => $row['powerballOddEven'],
+                'powerballUnderOver' => $row['powerballUnderOver'],
+                'numberOddEven'      => $row['numberOddEven'],
+                'numberUnderOver'    => $row['numberUnderOver'],
+            ]);
+        }
+
+        return $this->response->setJSON(['state' => 'error', 'msg' => 'Invalid actionType']);
+    }
+
+    /**
+     * dayLog 타이머용: 다음 회차 번호, 다음 추첨까지 남은 초(0~300, 5분 단위 기준)
+     */
+    protected function getDrawTimerInfo(): array
+    {
+        $next_round = 1;
+        try {
+            $drawModel = new \App\Models\PowerballDraw_Model();
+            $latest = $drawModel->getOrGenerate(time());
+            if ($latest && isset($latest->round)) {
+                $next_round = (int) $latest->round + 1;
+            }
+        } catch (\Throwable $e) {
+            // draw_results 미생성 시 기본값 유지
+        }
+        $remain_seconds = $this->getRemainSecondsUntilNextDraw();
+        return ['next_round' => $next_round, 'remain_seconds' => $remain_seconds];
+    }
+
+    /**
      * iframe(mainFrame) 전용 — dayLog만 반환 (메인 헤더/레이아웃 없음)
      * 라우트: get('frame/dayLog', 'Home::frameDayLog')
      */
@@ -119,7 +431,7 @@ class Home extends BaseController
         if (!$dayLogDate || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dayLogDate)) {
             $dayLogDate = date('Y-m-d');
         }
-        $dayLogData = array_merge($headInfo, [
+        $dayLogData = array_merge($headInfo, $this->getDrawTimerInfo(), [
             'site_title' => ($headInfo['site_name'] ?? '파워볼게임') . ' : 실시간 파워볼 분석 커뮤니티',
             'date' => $dayLogDate,
             'frame_mainFrame' => true,

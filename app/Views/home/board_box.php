@@ -104,7 +104,7 @@ $list_photo = $list_photo ?? [];
             <ul class="list">
                 <?php foreach ($leftList as $row) : ?>
                 <li>
-                    <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
+                    <img src="<?php echo site_furl('/images/icon_text.png'); ?>" width="30" height="26" alt="">
                     <a href="/bbs/board.php?bo_table=<?= $bo ?>&wr_id=<?= (int)$row->wr_id ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
                     <span class="comment">[<?= (int)($row->comment_count ?? 0) ?>]</span>
                 </li>
@@ -116,7 +116,7 @@ $list_photo = $list_photo ?? [];
             <ul class="list">
                 <?php foreach ($rightList as $row) : ?>
                 <li>
-                    <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
+                    <img src="<?php echo site_furl('/images/icon_text.png'); ?>" width="30" height="26" alt="">
                     <a href="/bbs/board.php?bo_table=<?= $bo ?>&wr_id=<?= (int)$row->wr_id ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
                     <span class="comment">[<?= (int)($row->comment_count ?? 0) ?>]</span>
                 </li>
@@ -161,7 +161,7 @@ $list_photo = $list_photo ?? [];
 <!-- inner-right (선배님 구조: 파란색으로 선택된 핵심 영역 = 이 주석 아래 중첩 div.inner-right) -->
 <div class="inner-right">
     <!-- 메인프레임만. powerballMiniViewDiv 제거 → 메인헤더 중복 원인 제거 -->
-    <iframe name="mainFrame" id="mainFrame" src="<?php echo site_furl('frame/dayLog'); ?>?t=<?php echo time(); ?>" scrolling="no" style="width:100%; height:600px; border:1px solid #ddd; overflow:hidden;"></iframe>
+    <iframe name="mainFrame" id="mainFrame" src="<?php echo site_furl('frame/dayLog'); ?>?t=<?php echo time(); ?>" frameborder="0" scrolling="no" style="width:830px; height: 1844px;"></iframe>
 </div>
 <!-- //inner-right -->
 <!-- tmpl -->
