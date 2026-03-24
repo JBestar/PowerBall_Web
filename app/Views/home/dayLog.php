@@ -15,18 +15,18 @@
 			<meta property="og:image" content="https://www.powerballgame.co.kr/images/logo.gif">
 			<meta property="og:url" content="https://www.powerballgame.co.kr/">
 			<link rel="canonical" href="http://www.powerballgame.co.kr/">
-			<?php $cdn = 'https://static.powerballgame.co.kr'; $local = rtrim(site_furl(''), '/'); ?>
-			<link rel="stylesheet" href="<?php echo $cdn; ?>/css/jquery.qtip.min.css" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/jquery.qtip.min.css'"/>
-			<link rel="stylesheet" href="<?php echo $cdn; ?>/css/common.css?v=201905194" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/common.css?v=201905194'"/>
-			<link rel="stylesheet" href="<?php echo $cdn; ?>/css/sprites.css?201905194" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/sprites.css?v=201905194'"/>
-			<link rel="stylesheet" href="<?php echo $cdn; ?>/css/jquery-ui.css" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/jquery-ui.css'"/>
+			<?php $local = rtrim(site_furl(''), '/'); ?>
+			<link rel="stylesheet" href="<?php echo $local; ?>/css/jquery.qtip.min.css" type="text/css"/>
+			<link rel="stylesheet" href="<?php echo $local; ?>/css/common.css?v=<?php echo time(); ?>" type="text/css"/>
+			<link rel="stylesheet" href="<?php echo $local; ?>/css/sprites.css?v=<?php echo time(); ?>" type="text/css"/>
+			<link rel="stylesheet" href="<?php echo $local; ?>/css/jquery-ui.css?v=<?= @filemtime(FCPATH.'css/jquery-ui.css') ?: time() ?>" type="text/css"/>
 			<link rel="shortcut icon" href="favicon.ico"/>
-			<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-1.11.2.min.js';document.body.appendChild(s);"></script>
-			<script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery-ui.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-ui.js';document.body.appendChild(s);"></script>
-			<script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery.qtip.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery.qtip.min.js';document.body.appendChild(s);"></script>
+			<script type="text/javascript" src="<?php echo $local; ?>/js/jquery-1.11.2.min.js"></script>
+			<script type="text/javascript" src="<?php echo $local; ?>/js/jquery-ui.js"></script>
+			<script type="text/javascript" src="<?php echo $local; ?>/js/jquery.qtip.min.js"></script>
 			<script type="text/javascript" src="<?php echo $local; ?>/js/default.js?v=<?php echo time(); ?>"></script>
-			<script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery.number.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery.number.min.js';document.body.appendChild(s);"></script>
-			<script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery.tmpl.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery.tmpl.min.js';document.body.appendChild(s);"></script>
+			<script type="text/javascript" src="<?php echo $local; ?>/js/jquery.number.min.js"></script>
+			<script type="text/javascript" src="<?php echo $local; ?>/js/jquery.tmpl.min.js"></script>
 			<script type="text/javascript">
 				//<![CDATA[
 				
@@ -43,11 +43,16 @@
 	var curDate = '<?= isset($date) ? esc($date) : date('Y-m-d') ?>';
 	var today = '<?= date('Y-m-d') ?>';
 	var dateDiff = <?= isset($date) ? (strtotime($date) - strtotime('today')) / 86400 : 0 ?>;
+	// iframe에서도 AJAX가 앱 루트로 가도록 (회차별 분석·육매 패턴 등 초기 로드 정상화)
+	var actionBaseUrl = '<?= rtrim(esc(site_furl("")), "/") ?>/';
+	window.ACTION_BASE_URL = actionBaseUrl;
 
 	// mainFrame 높이: 실제 문서 높이로 조절 (육매/패턴 영역·더보기 포함해 잘리지 않도록)
 	var DAYLOG_MIN_HEIGHT = 500;
+	var _dayLogDebug = false; // 디버그 로그 (원인 파악 후 false로)
 	function heightResize() {
 		function setFrameHeight(h) {
+			if (_dayLogDebug) console.log('[dayLog] heightResize setFrameHeight', h);
 			try {
 				if (window.parent && window.parent.frameAutoResize) {
 					window.parent.frameAutoResize('mainFrame', h);
@@ -58,20 +63,38 @@
 			} catch (e) {}
 		}
 		function measureAndSet() {
+			var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
 			var totalHeight = DAYLOG_MIN_HEIGHT;
 			var moreBox = document.querySelector('.moreBox');
+			// .moreBox가 보일 때만 그 위치 사용 (숨기면 getBoundingClientRect가 0이라 500으로 고정되는 문제 방지)
 			if (moreBox) {
-				var rect = moreBox.getBoundingClientRect();
-				var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 0;
-				totalHeight = rect.bottom + scrollTop;
-				try {
-					var mb = parseFloat(window.getComputedStyle(moreBox).marginBottom) || 0;
-					totalHeight += mb;
-				} catch (e) {}
-			} else {
-				totalHeight = document.body.scrollHeight || document.documentElement.scrollHeight || document.body.offsetHeight || DAYLOG_MIN_HEIGHT;
+				var style = window.getComputedStyle(moreBox);
+				var isVisible = style.display !== 'none' && style.visibility !== 'hidden' && style.height !== '0px';
+				if (isVisible) {
+					var rect = moreBox.getBoundingClientRect();
+					if (rect.height > 0) {
+						totalHeight = rect.bottom + scrollTop;
+						try {
+							var mb = parseFloat(style.marginBottom) || 0;
+							totalHeight += mb;
+						} catch (e) {}
+					}
+				}
 			}
-			totalHeight = Math.max(DAYLOG_MIN_HEIGHT, Math.ceil(totalHeight));
+			// 문서 전체 높이와 비교해 더 큰 값 사용 (회차별 분석 테이블이 항상 보이도록)
+			var docHeight = document.body.scrollHeight || document.documentElement.scrollHeight || document.body.offsetHeight || 0;
+			// 회차별 분석 테이블(#powerballLogBox)의 실제 바닥까지 포함
+			// (행이 1개로 매우 짧을 때 iframe 높이가 딱 떨어져 테두리 하단이 잘리는 현상 방지)
+			var powerballLogBox = document.getElementById('powerballLogBox');
+			if(powerballLogBox && powerballLogBox.getBoundingClientRect)
+			{
+				var boxRect = powerballLogBox.getBoundingClientRect();
+				if(boxRect && typeof boxRect.bottom === 'number')
+					totalHeight = Math.max(totalHeight, boxRect.bottom + scrollTop);
+			}
+			totalHeight = Math.max(DAYLOG_MIN_HEIGHT, totalHeight, docHeight);
+			// 테이블 border/레이아웃 반올림 오차 보정
+			totalHeight = Math.ceil(totalHeight) + 6;
 			setFrameHeight(totalHeight);
 		}
 		if (window.requestAnimationFrame) {
@@ -82,14 +105,25 @@
 	}
 
 	$(document).ready(function(){
-
-		moreClick();
+		if (_dayLogDebug) console.log('[dayLog] document.ready, scheduling moreClick(50ms)');
+		// 회차별 분석 데이터: iframe 로드 직후에도 DOM/템플릿 준비되도록 약간 지연 후 요청
+		setTimeout(function(){ moreClick(); }, 50);
 		// 전체 분석 데이터 (해당 날짜 집계) 초기 로드
 		refreshAnalyse();
 
 		setInterval(function(){
 			ladderTimer('dayLogTimer');
 		},1000);
+
+		// 미니뷰가 닫혀 있어도 신규 회차를 빠르게 감지해 회차별 분석 데이터 갱신
+		// (dataRefresh()는 round 비교로 신규 데이터만 prepend 하므로 주기 호출해도 안전)
+		setInterval(function(){
+			try{
+				if(curDate == today && !document.hidden){
+					dataRefresh();
+				}
+			}catch(e){}
+		},10000);
 
 /*
 		$('.defaultTable .menu').mouseover(function(){
@@ -153,18 +187,19 @@
 
 	function moreClick()
 	{
+		var page = parseInt($('#pageDiv').attr('pageVal'), 10);
+		if(isNaN(page)) page = 0;
+		if (_dayLogDebug) console.log('[dayLog] moreClick called', { loading: loading, page: page });
+
 		if(loading == false)
 		{
 			loading = true;
-
 			$('#pageDiv').show();
-			var page = parseInt($('#pageDiv').attr('pageVal'), 10);
-			if(isNaN(page)) page = 0;
 
 			$.ajax({
 				type:'POST',
 				dataType:'json',
-				url:'/',
+				url: actionBaseUrl,
 				data:{
 					view:'action',
 					action:'ajaxPowerballLog',
@@ -173,44 +208,52 @@
 					page:page
 				},
 				success:function(data,textStatus){
-					if(data && data.content && data.content.length)
+					var $tbody = $('#powerballLogBox tbody.content');
+					var contentLen = (data && data.content) ? data.content.length : -1;
+					if (_dayLogDebug) console.log('[dayLog] ajax success', { page: page, hasData: !!data, contentLen: contentLen, endYN: data && data.endYN });
+
+					// 첫 페이지(0)일 때만 기존 내용 비우고 채움 (비우는 건 채울 내용이 확정된 뒤에만 해서 깜빡임/사라짐 방지)
+					if(page === 0 && data && data.content)
 					{
-						$('#powerballLogBox tbody.content').append($('#tmpl_dayLog').tmpl(data));
-					}
-					else if(data && data.content)
-					{
-						$('#powerballLogBox tbody.content').append($('#tmpl_dayLog').tmpl(data));
-					}
-					// 첫 페이지(0)일 때 30개 초과 시 30개만 유지
-					if(page === 0){
+						$tbody.empty();
+						if(data.content.length)
+							$tbody.append($('#tmpl_dayLog').tmpl(data));
+						else
+							$tbody.append('<tr class="trOdd"><td colspan="12" height="50" align="center" style="color:#888;">당일 추첨 결과가 없습니다.</td></tr>');
 						var $content = $('#powerballLogBox tbody.content');
-						if($content.find('tr').length > 30){
+						if($content.find('tr').length > 30)
 							$content.find('tr').slice(30).remove();
-						}
+						if (_dayLogDebug) console.log('[dayLog] after page0 fill, tr count=', $content.find('tr').length);
+					}
+					else if(page !== 0 && data && data.content && data.content.length)
+					{
+						$tbody.append($('#tmpl_dayLog').tmpl(data));
 					}
 					if(data && data.endYN == 'Y')
-					{
 						$('.moreBox').hide();
-					}
 					else if(data && data.endYN == 'N')
-					{
 						$('.moreBox').show();
-					}
 					if(data && data.round != null)
-					{
 						$('#pageDiv').attr('round', data.round);
-					}
 
 					$('#pageDiv').hide();
 					$('#pageDiv').attr('pageVal', page + 1);
-
 					loading = false;
-
 					heightResize();
 				},
 				error:function (xhr,textStatus,errorThrown){
+					if (_dayLogDebug) console.log('[dayLog] ajax error', { status: xhr && xhr.status, statusText: textStatus, error: errorThrown });
 					loading = false;
 					$('#pageDiv').hide();
+					var pageErr = parseInt($('#pageDiv').attr('pageVal'), 10);
+					if(isNaN(pageErr)) pageErr = 0;
+					// 첫 로드(page 0) 실패 시에도 회차별 분석 영역 보이게 빈 테이블 + heightResize
+					if(pageErr === 0){
+						var $tbody = $('#powerballLogBox tbody.content');
+						if($tbody.find('tr').length === 0)
+							$tbody.append('<tr class="trOdd"><td colspan="12" height="50" align="center" style="color:#888;">데이터를 불러올 수 없습니다.</td></tr>');
+						heightResize();
+					}
 				}
 			});
 		}
@@ -221,6 +264,7 @@
 
 	function dataRefresh()
 	{
+		if (_dayLogDebug) console.log('[dayLog] dataRefresh called', { dataRefresh_process: dataRefresh_process });
 		if(dataRefresh_process == false)
 		{
 			// auto refresh
@@ -241,7 +285,7 @@
 			$.ajax({
 				type:'POST',
 				dataType:'json',
-				url:'/',
+				url: actionBaseUrl,
 				data:{
 					view:'action',
 					action:'ajaxPowerballLog',
@@ -250,6 +294,7 @@
 					round:round
 				},
 				success:function(data,textStatus){
+					if (_dayLogDebug) console.log('[dayLog] dataRefresh ajax success', { state: data && data.state, round: data && data.round, hasContent: !!(data && data.content) });
 
 					dataRefresh_process = false;
 
@@ -260,6 +305,7 @@
 
 						if(data && $('#pageDiv').attr('round') != data.round)
 						{
+							if (_dayLogDebug) console.log('[dayLog] dataRefresh prepend new round', data.round);
 							$('#pageDiv').attr('round',data.round);
 
 							$('#powerballLogBox tbody.content').prepend($('#tmpl_dayLog').tmpl(data));
@@ -316,7 +362,7 @@
 		$.ajax({
 			type:'GET',
 			cache:false,
-			url:'/json/powerballAnalyse/'+dateStr+'.json?_='+(Date.now()),
+			url: actionBaseUrl + 'json/powerballAnalyse/'+dateStr+'.json?_='+(Date.now()),
 			dataType:'json',
 			timeout:1000,
 			success:function(data,textStatus){
@@ -455,6 +501,7 @@
 
 		});
 
+		// 기본값: 육매 분석 데이터는 로드하지 않음 (탭 클릭 시에만 표시)
 	});
 
 	$(document).ready(function(){
@@ -529,12 +576,28 @@
 		<tr>
 			
 		<th class="menu on" style="position:relative;"><a href="/?view=dayLog" class="tab1 on">일자별 분석<div style="position:absolute;top:5px;left:20px;"><img src="/images/realtime_bt.gif" width="37" height="19"></div></a></th>
+		<?php if (!empty($can_access_analysis)): ?>
+		<th class="menu"><a href="/?view=latestLog" class="tab2">최근 분석<div style="position:absolute;top:5px;left:20px;"><img src="/images/realtime_bt.gif" width="37" height="19"></div></a></th>
+		<?php else: ?>
 		<th class="menu"><a href="#" onclick="alert('로그인 후 이용가능합니다.');return false;" class="tab2">최근 분석<div style="position:absolute;top:5px;left:20px;"><img src="/images/realtime_bt.gif" width="37" height="19"></div></a></th>
+		<?php endif; ?>
+		<?php if (!empty($can_access_analysis)): ?>
+		<th class="menu"><a href="/?view=periodLog" class="tab3">기간별 분석</a></th>
+		<?php else: ?>
 		<th class="menu"><a href="#" onclick="alert('로그인 후 이용가능합니다.');return false;" class="tab3">기간별 분석</a></th>
+		<?php endif; ?>
+		<?php if (!empty($can_access_analysis)): ?>
+		<th class="menu"><a href="/?view=patternAnalyze" class="tab5">패턴별 분석</a></th>
+		<?php else: ?>
 		<th class="menu"><a href="#" onclick="alert('로그인 후 이용가능합니다.');return false;" class="tab5">패턴별 분석</a></th>
+		<?php endif; ?>
 
 		</tr>
 	</table>
+
+	<?php if (!empty($flash_message)): ?>
+	<div style="padding:10px 15px;margin:10px 0;background:#fff3cd;border:1px solid #ffc107;color:#856404;font-size:12px;"><?= esc($flash_message) ?></div>
+	<?php endif; ?>
 
 	<?php
 		$logDate = isset($date) ? $date : date('Y-m-d');

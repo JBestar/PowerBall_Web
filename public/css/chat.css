@@ -30,13 +30,13 @@ hr{display:none;}
 
 #powerballPointBetGraph {position:relative;width:100%;height:40px;}
 #powerballPointBetGraph .oddChart{position:relative;float:left;width:50%;height:40px;margin-left:-16px;}
-#powerballPointBetGraph .oddBar{position:absolute;background:url(../../simg.powerballgame.co.kr/images/blue_bar.png) repeat-x 0 0;display:block;width:0;height:20px;top:10px;right:-10px;}
+#powerballPointBetGraph .oddBar{position:absolute;background:url(/images/blue_bar.png) repeat-x 0 0;display:block;width:0;height:20px;top:10px;right:-10px;}
 #powerballPointBetGraph .oddPer{position:absolute;top:15px;right:113px;width:35px;text-align:right;display:block;color:#1265cd;font-family:DINWeb-Bold;}
 
-#powerballPointBetGraph .vsChart{position:absolute;left:50%;top:5px;margin-left:-16px;width:32px;height:32px;background:url(../../simg.powerballgame.co.kr/images/vs_icon.png) repeat-x 0 0;border-radius:20px;z-index:1;}
+#powerballPointBetGraph .vsChart{position:absolute;left:50%;top:5px;margin-left:-16px;width:32px;height:32px;background:url(/images/vs_icon.png) repeat-x 0 0;border-radius:20px;z-index:1;}
 
 #powerballPointBetGraph .evenChart{position:relative;float:right;width:50%;height:40px;margin-right:-16px;}
-#powerballPointBetGraph .evenBar{position:absolute;background:url(../../simg.powerballgame.co.kr/images/red_bar.png) repeat-x right 0;display:block;width:0;height:20px;top:10px;left:-10px;}
+#powerballPointBetGraph .evenBar{position:absolute;background:url(/images/red_bar.png) repeat-x right 0;display:block;width:0;height:20px;top:10px;left:-10px;}
 #powerballPointBetGraph .evenPer{position:absolute;top:15px;left:113px;width:35px;text-align:left;display:block;color:#cd1212;font-family:DINWeb-Bold;}
 
 .box-chatting{width:100%;position:relative;z-index:10;border-top:2px solid #71757b;border-bottom:1px solid #71757b;background:#fff;}
@@ -62,7 +62,7 @@ hr{display:none;}
 .box-chatting .input-chatting .input-1{width:100%;height:20px;line-height:20px;border:1px solid #949494;color:#949494;padding:0 5px;}/* 20140816 width ¼öÁ¤ */
 .box-chatting .input-chatting .input-2{position:absolute;top:2px;right:2px;*top:3px;border:none;}
 .box-chatting .input-chatting .label {position:absolute;top:5px;left:6px;color:#949494;}
-.box-chatting .input-chatting .scrollBottom {position:fixed;bottom:40px;right:35px;width:40px;height:40px;background-color:#127CCB;border-radius:80px;z-index:99;opacity:0.5;display:none;background:#127CCB url(../../simg.powerballgame.co.kr/images/bg_scrollbottom.png) center center no-repeat;}
+.box-chatting .input-chatting .scrollBottom {position:fixed;bottom:40px;right:35px;width:40px;height:40px;background-color:#127CCB;border-radius:80px;z-index:99;opacity:0.5;display:none;background:#127CCB url(/images/bg_scrollbottom.png) center center no-repeat;}
 .box-chatting .input-chatting .scrollBottom:hover {opacity:1;}
 
 .box-chatting .list-connect {position:relative;overflow:auto;border-left:1px solid #cecece;border-right:1px solid #cecece;padding:0;overflow-x:hidden;overflow-y:scroll;}
@@ -152,7 +152,7 @@ hr{display:none;}
 #msgBox li.present div a {font-weight:bold;color:#A22B2B;}
 #msgBox li.present div strong {color:#A22B2B;}
 
-#msgBox.gasBg {background:url(../../simg.powerballgame.co.kr/images/bg_gas.gif) bottom center;z-index:-2;}
+#msgBox.gasBg {background:url(/images/bg_gas.gif) bottom center;z-index:-2;}
 
 #fixNoticeBox {display:none;position:absolute;width:100%;background-color:#000;height:25px;line-height:25px;color:yellow;font-weight:bold;z-index:100;}
 
@@ -197,11 +197,11 @@ hr{display:none;}
 #ruleBox .borderBox ul {margin-top:5px;margin-left:5px;font-size:11px;line-height:18px;}
 
 /* modal layer */
-.modalLayer {position:absolute;top:0;left:0;width:100%;height:100%;background:url(../../simg.powerballgame.co.kr/images/bg_mask.png);z-index:9999;display:none;}
+.modalLayer {position:absolute;top:0;left:0;width:100%;height:100%;background:url(/images/bg_mask.png);z-index:9999;display:none;}
 .modalLayer .passwdInput {position:relative;width:250px;border:1px solid #2d2d2d;background-color:#fafafa;display:none;}
 .modalLayer .passwdInput .tit {position:relative;height:35px;border-bottom:1px solid #2d2d2d;background-color:#5a5a5a;}
 .modalLayer .passwdInput .tit h2 {padding-left:10px;line-height:35px;font-size:12px;font-family:'±¼¸²',Gulim;color:#fff;}
-.modalLayer .passwdInput .tit .close {position:absolute;top:9px;right:9px;background:url(../../simg.powerballgame.co.kr/images/btn_close.png);width:16px;height:16px;}
+.modalLayer .passwdInput .tit .close {position:absolute;top:9px;right:9px;background:url(/images/btn_close.png);width:16px;height:16px;}
 .modalLayer .passwdInput .content {padding:5px 30px;border-bottom:1px dotted #e1e1e1;}
 .modalLayer .passwdInput .content input {margin:20px auto 5px auto;display:block;padding:0 5px;width:120px;height:30px;line-height:30px;font-size:15px;border:1px solid #a5a5a5;text-align:center;}
 .modalLayer .passwdInput .content p {text-align:center;color:#470c0c;padding-bottom:10px;font-size:11px;}
@@ -325,3 +325,6 @@ div.ticker ul li a {color:#fff;}
 .sp-target {width:84px;height:109px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -550px -10px;margin:0 auto;}
 .sp-profile {width:40px;height:40px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -475px -370px;}
 .sp-lock {width:40px;height:40px;background:url(../../simg.powerballgame.co.kr/images/sp_chat.png) -415px -370px;margin:0 auto;}
+
+/* local asset override (sprite) */
+[class^="sp-"], [class*=" sp-"] { background-image:url(/images/sp_chat.png) !important; }

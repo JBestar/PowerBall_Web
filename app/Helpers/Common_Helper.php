@@ -1,17 +1,21 @@
 <?php
 
-  	function is_login($checkCookie = false){ 
+  	function is_login($checkCookie = false){
+      $hasSession = isset($_SESSION['logged_in']);
+      $sessionVal = $hasSession ? json_encode($_SESSION['logged_in']) : 'not set';
+      $hasCookie = isset($_COOKIE['logged']);
+      $cookieVal = $hasCookie ? $_COOKIE['logged'] : 'not set';
+      writeLog("[is_login] checkCookie=" . ($checkCookie ? '1' : '0') . " session(logged_in)=" . $sessionVal . " cookie(logged)=" . $cookieVal);
 
-      // writeLog("<is_login> logged=".isset($_COOKIE['logged']));
-      if(!isset($_SESSION['logged_in']))
+      if(!$hasSession)
         return false;
-      else if($checkCookie && !isset($_COOKIE['logged']))
+      else if($checkCookie && !$hasCookie)
         return false;
-      else if($checkCookie && $_COOKIE['logged'] !== 'yes')
+      else if($checkCookie && $cookieVal !== 'yes')
         return false;
-      else if( $_SESSION['logged_in']==TRUE)
+      else if($_SESSION['logged_in'] == TRUE)
         return true;
-      else return false;  
+      else return false;
   	}
 
     function is_Mobile(){

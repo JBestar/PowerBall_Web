@@ -617,9 +617,6 @@ div.time-box img.refresh {position:absolute;right:10px;top:2px;}
 
 /* pattern table */
 .patternTable {background-color:#fff;border:1px solid #9b9b9b;}
-/* 컬럼별 행 수가 다를 때 각 컬럼 높이를 독립적으로 표시 (flex, align-items: flex-start) */
-.patternTable.patternTable--cols {display:flex;flex-direction:row;align-items:flex-start;flex-wrap:nowrap;}
-.patternTable.patternTable--cols .patternTable-col {flex:0 0 auto;}
 .patternTable .innerTable {background-color:#fff;}
 .patternTable .innerTable th {height:30px;font-size:12px;font-family:dotum;background-color:#EFEFEF;border-right:1px solid #9b9b9b;border-bottom:1px solid #9b9b9b;}
 .patternTable .innerTable td {width:30px;height:30px;border-top:1px solid #e4e4e4;border-right:1px solid #e4e4e4;text-align:center;}
@@ -1043,24 +1040,24 @@ div.time-box img.refresh {position:absolute;right:10px;top:2px;}
 #ladderResultBox {position:relative;background-color:#F8F8F8;color:#666666;width:824px;height:265px;border:3px solid #8a0d0d;}
 #ladderResultBox .title {width:15px;height:235px;font-size:13px;background-color:#cd1212;color:#fff;font-weight:bold;padding:15px 10px;;border-right:2px solid #8A0D0D;}
 #ladderResultBox .title div {margin-top:5px;}
-#ladderResultBox .title .close {position:absolute;top:-3px;right:-3px;z-index:99;width:38px;height:38px;background:url(/images/sp_miniview.png) -196px -10px;}
+#ladderResultBox .title .close {position:absolute;top:-3px;right:-3px;z-index:99;width:38px;height:38px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -196px -10px;}
 #ladderResultBox .content {position:absolute;top:0;margin-left:37px;font-size:12px;background-color:#FDFDFD;}
 #ladderResultBox .content .leftBox {float:left;width:395px;height:265px;border-right:1px dotted #000;}
-#ladderResultBox .content .leftBox .link {width:166px;height:24px;background:url(/images/sp_miniview.png) -10px -10px;display:block;}
+#ladderResultBox .content .leftBox .link {width:166px;height:24px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -10px -10px;display:block;}
 #ladderResultBox .content .rightBox {position:relative;float:right;width:391px;height:265px;}
 #ladderResultBox .content .rightBox .tit {position:absolute;top:33px;left:28px;width:260px;height:12px;background-color:#333333;margin:0 27px;display:block;z-index:10;border:1px solid #fff;color:#fff;font-size:12px;padding:5px;text-align:center;font-weight:bold;}
 #ladderResultBox .content .rightBox .tit2 {position:absolute;top:143px;left:28px;width:260px;height:12px;background-color:#333333;margin:0 27px;display:block;z-index:10;border:1px solid #fff;color:#fff;font-size:12px;padding:5px;text-align:center;font-weight:bold;}
 
-#ladderResultBox .content .ball_blue {display:inline-block;width:45px;height:45px;background:url(/images/sp_miniview.png) -75px -119px;}
-#ladderResultBox .content .ball_red {display:inline-block;width:45px;height:45px;background:url(/images/sp_miniview.png) -75px -54px;}
-#ladderResultBox .content .ball_green {display:inline-block;width:45px;height:45px;background:url(/images/sp_miniview.png) -10px -119px;}
-#ladderResultBox .content .ball_yellow {display:inline-block;width:45px;height:45px;background:url(/images/sp_miniview.png) -10px -54px;}
+#ladderResultBox .content .ball_blue {display:inline-block;width:45px;height:45px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -75px -119px;}
+#ladderResultBox .content .ball_red {display:inline-block;width:45px;height:45px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -75px -54px;}
+#ladderResultBox .content .ball_green {display:inline-block;width:45px;height:45px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -10px -119px;}
+#ladderResultBox .content .ball_yellow {display:inline-block;width:45px;height:45px;background:url(https://simg.powerballgame.co.kr/images/sp_miniview.png) -10px -54px;}
 
 /* lottery box */
-#lotteryBox {position:relative;background:url(/images/lottery_default.jpg) no-repeat;width:395px;height:265px;}
+#lotteryBox {position:relative;background:url(https://simg.powerballgame.co.kr/images/lottery_default.jpg) no-repeat;width:395px;height:265px;}
 #lotteryBox .play {text-align:center;display:none;}
 #lotteryBox #lotteryBall {position:absolute;width:45px;height:45px;color:#fff;font-size:22px;font-family:DINWeb-Bold;text-align:center;line-height:48px;}
-#lotteryResultBox {position:relative;background:url(/images/lottery_bg.jpg) no-repeat;width:392px;height:265px;}
+#lotteryResultBox {position:relative;background:url(https://simg.powerballgame.co.kr/images/lottery_bg.jpg) no-repeat;width:392px;height:265px;}
 #lotteryResultBox #lotteryResult {position:absolute;top:73px;left:55px;width:272px;height:45px;}
 #lotteryResultBox #lotteryResult .ballNumber {position:absolute;width:45px;height:45px;color:#fff;font-size:22px;font-family:DINWeb-Bold;text-align:center;line-height:48px;}
 

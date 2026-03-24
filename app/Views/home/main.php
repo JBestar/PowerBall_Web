@@ -11,9 +11,13 @@
     <meta property="og:image" content="<?php echo site_furl('images/main_logo.gif'); ?>" />
     <meta property="og:url" content="<?php echo site_furl(''); ?>" />
     <link rel="canonical" href="<?php echo site_furl(''); ?>" />
-    <?php $cdn = 'https://static.powerballgame.co.kr'; $local = rtrim(site_furl(''), '/'); $cssVer = ($_ENV['CI_ENVIRONMENT'] ?? '') == (defined('ENV_PRODUCTION') ? ENV_PRODUCTION : 'production') ? '1' : time(); ?>
-    <!-- 선배님 CDN 우선, 실패 시 로컬 + 폰트만 로컬 강제 -->
-    <link rel="stylesheet" href="<?php echo $cdn; ?>/css/common.css?v=201905194" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/common.css?v=<?php echo $cssVer; ?>';" />
+    <?php $local = rtrim(site_furl(''), '/'); $cssVer = ($_ENV['CI_ENVIRONMENT'] ?? '') == (defined('ENV_PRODUCTION') ? ENV_PRODUCTION : 'production') ? '1' : time(); ?>
+    <!-- 로컬 common CSS (로그인 여부에 따라 common / common_logged) -->
+    <?php if (is_login(false)) : ?>
+    <link rel="stylesheet" href="<?php echo $local; ?>/css/common_logged.css?v=<?php echo $cssVer; ?>" />
+    <?php else : ?>
+    <link rel="stylesheet" href="<?php echo $local; ?>/css/common.css?v=<?php echo $cssVer; ?>" />
+    <?php endif; ?>
     <link rel="stylesheet" href="<?php echo $local; ?>/css/font-local.css?v=<?php echo $cssVer; ?>" />
     <style>
         /* 보드 메뉴 4개(유머/포토/분석픽공유/자유) 한 줄 유지 - float 줄바꿈 방지 */
@@ -118,7 +122,7 @@
                     
                     <!-- 2. 픽 (로그인 체크 로직 포함) -->
                     <li>
-                        <a href="#" onclick="<?php echo is_login(true) ? 'location.href=\'/pick\'' : 'alert(\'로그인 후 이용가능합니다.\');'; ?> return false;">픽</a>
+                        <a href="#" onclick="<?php echo is_login(false) ? 'location.href=\'/pick\'' : 'alert(\'로그인 후 이용가능합니다.\');'; ?> return false;">픽</a>
                     </li>
 
                     <!-- 3. 커뮤니티 -->
@@ -126,7 +130,7 @@
 
                     <!-- 4. 마켓 (로그인 체크) -->
                     <li>
-                        <a href="#" onclick="<?php echo is_login(true) ? 'location.href=\'/market\'' : 'alert(\'로그인 후 이용가능합니다.\');'; ?> return false;">마켓</a>
+                        <a href="#" onclick="<?php echo is_login(false) ? 'location.href=\'/market\'' : 'alert(\'로그인 후 이용가능합니다.\');'; ?> return false;">마켓</a>
                     </li>
 
                     <!-- 5. 방채팅 -->
@@ -147,29 +151,72 @@
             <div id="box-ct">             
                 <!-- [inner-left] 메인 분석판 및 게시판이 들어갈 자리 -->
                 <div class="inner-left">
-                    <!-- [box-login] 로그인 버튼 영역 -->
+                    <!-- [box-login] 로그인 버튼 영역 (선배님 구조: 로그인 시 padding 없이 height:150px 블록 + notice 직속) -->
                     <div class="box-login">
+                            <?php if(!is_login(false)) : ?>
                         <div style="padding:15px 25px 10px 15px;">
-                            <!-- 로그인 여부에 따라 버튼 동작 분기 -->
-                            <?php if(!is_login(true)) : ?>
                                 <a href="/login" class="btn_login">파워볼게임 로그인</a>
                                 <div class="login_menu">
                                     <a href="/?view=simpleJoin">회원가입</a>
                                     <span class="right">
-                                        <a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">아이디</a> 
-                                        <span>&middot</span> 
+                                        <a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">아이디</a>
+                                        <span>&middot</span>
                                         <a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame">비밀번호 찾기</a>
                                     </span>
                                 </div>
-                            <?php else : ?>
-                                <!-- 로그인 시 유저 정보 표시 (선배님 스타일) -->
-                                <div style="text-align:center; padding: 10px 0;">
-                                    <strong style="color:#0056b3;"><?= isset($objMember) ? esc($objMember->mb_nickname) : '' ?></strong>님 환영합니다.
-                                    <div style="margin-top:5px;"><a href="/logout" style="font-size:11px; color:#999;">[로그아웃]</a></div>
-                                </div>
-                            <?php endif; ?>
                         </div>
-                        <!-- [notice] 공지사항 롤링 영역 -->
+                            <?php else : ?>
+                                <?php
+                                    $uid = isset($objMember) ? (string)($objMember->mb_uid ?? '') : '';
+                                    $nickname = isset($objMember) ? (string)($objMember->mb_nickname ?? '') : '';
+                                    $grade = isset($objMember) ? (int)($objMember->mb_grade ?? 1) : 1;
+                                    if ($grade < 0) $grade = 0;
+                                    if ($grade > 20) $grade = 20;
+                                    $classImg = site_furl('images/class/M' . $grade . '.gif');
+
+                                    $coin = isset($objMember) ? (int)allMoney($objMember) : 0;
+                                    $bullet = isset($objMember) ? (int)($objMember->mb_point ?? 0) : 0;
+                                    $egg = isset($objMember) ? (int)allEgg($objMember) : 0;
+
+                                    $expNow = $bullet;
+                                    $expMax = max(100, (int)(ceil($expNow / 100) * 100));
+                                    $expPct = $expMax > 0 ? min(100, max(0, ($expNow / $expMax) * 100)) : 0;
+                                ?>
+                        <div style="height:150px;">
+                            <div class="loginUserInfo">
+                                <ul>
+                                    <li class="b" style="position:relative;"><img src="<?= esc($classImg) ?>" width="23" height="23" alt=""> <?= esc($uid !== '' ? $uid : $nickname) ?> <a href="/logout" class="logout">로그아웃</a></li>
+                                    <li class="level">계급 : <a href="/mypage?tab=level" target="mainFrame" style="color:#7F7F7F;"><?= esc($nickname !== '' ? $nickname : '마이페이지') ?></a></li>
+                                    <li class="exp">경험치 :
+                                        <div style="position:absolute;top:58px;left:58px;">
+                                            <div style="background:#aaa url('<?= site_furl('images/lv_line.png') ?>') no-repeat;width:100px;height:16px;">
+                                                <div style="background:url('<?= site_furl('images/lv_bar.png') ?>') no-repeat;width:<?= esc(number_format($expPct, 2)) ?>%;height:16px;line-height:19px;padding-left:6px;color:#000;" class="numberFont">
+                                                    <div style="position:absolute;top:0;left:5px;"><?= esc($expNow) ?> / <?= esc($expMax) ?></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="loginCoinInfo">
+                                <ul>
+                                    <li>코인 <a href="/market" target="mainFrame" class="charge">충전</a> <a href="/market" target="mainFrame"><?= esc($coin) ?></a></li>
+                                    <li>총알 <a href="/mypage" target="mainFrame"><span><?= esc($bullet) ?></span>개</a></li>
+                                    <li class="none">건빵 <a href="/mypage" target="mainFrame"><span><?= esc($egg) ?></span>개</a></li>
+                                </ul>
+                            </div>
+
+                            <div style="position:absolute;top:89px;left:-1px;width:314px;height:25px;line-height:25px;border-bottom:1px solid #CECECE;background-color:#127CCB;color:#747379;padding-left:20px;font-size:11px;color:#fff;border:1px solid #0D568C;"><span style="color:yellow;">마켓에서 다양한 아이템을 확인하세요. </span><a href="/market" target="mainFrame" style="color:#fff;">[구매하러 가기]</a></div>
+
+                            <ul class="btn">
+                                <li><a href="/mypage" target="mainFrame" style="background:url(<?= site_furl('images/icon_myhome.png') ?>) center top no-repeat;">마이홈</a></li>
+                                <li><a href="#" onclick="windowOpen('<?= site_furl('/') ?>?view=memo','memo',600,600,'auto');return false;" style="background:url(<?= site_furl('images/icon_memo.png') ?>) center top no-repeat;">쪽지</a><span class="memoCntBox" id="memoCnt" style="display: none;"></span></li>
+                                <li class="none"><a href="/mypage" target="mainFrame" style="background:url(<?= site_furl('images/icon_item.png') ?>) center top no-repeat;">아이템</a><span class="itemCntBox" id="itemCnt" style="display: none;"></span></li>
+                            </ul>
+                        </div>
+                            <?php endif; ?>
+
                         <div class="notice">
                             <!-- 공지 아이콘 이미지 (이미지 소스 경로) -->
                             <img src="<?php echo site_furl('images/text_notice.jpg'); ?>" alt="공지">
@@ -203,7 +250,7 @@
                             src="<?php echo site_furl('home/chat'); ?>" id="chatFrame">
                         </iframe>
                         <!-- 분석판 위에 떠 있는 퀵 메뉴 버튼들 -->
-                        <div class="top_banner" style="top:-217px; left:-46px;">
+                        <div class="top_banner" style="top:-280px; left:-46px;">
                             <div class="lb1">
                                 <a href="/bbs/board.php?bo_table=custom&wr_id=4" target="mainFrame">매뉴얼</a>
                             </div>
@@ -245,11 +292,7 @@
 
                             <!-- 방채팅 대기실 버튼 (이미지 소스 그대로) -->
                             <div style="margin-top:4px;">
-                                <div class="chatRoomLobby">
-                                    <a href="#" onclick="openChatRoom(); return false;">
-                                        방채팅<br>대기실
-                                    </a>
-                                </div>
+                                <div class="chatRoomLobby"><a href="#" onclick="openChatRoom();return false;">방채팅<br>대기실</a></div>
                                 <!-- 채팅방 리스트 (스페셜 & 일반) -->
                                 <ul class="chatRoomList" id="speciallist"></ul>
                                 <ul class="chatRoomList" id="chatRoomList">
@@ -313,8 +356,8 @@
         
     </div>
     
-    <!-- 선배님의 jQuery 로드 -->
-    <script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery-1.11.2.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-1.11.2.min.js';document.body.appendChild(s);"></script>
+    <!-- jQuery 로드 (로컬) -->
+    <script type="text/javascript" src="<?php echo $local; ?>/js/jquery-1.11.2.min.js"></script>
     <script>
     (function(){
         "use strict";

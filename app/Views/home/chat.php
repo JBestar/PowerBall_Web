@@ -7,70 +7,74 @@
     
     <?php $cdn = 'https://static.powerballgame.co.kr'; $local = rtrim(site_furl(''), '/'); ?>
     <!-- 선배님 CDN 우선, 실패 시 로컬 -->
-    <link rel="stylesheet" href="<?php echo $cdn; ?>/css/chat.css?2019012103" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/chat.css';" />
+    <link rel="stylesheet" href="<?php echo $local; ?>/css/chat.css?v=<?php echo time(); ?>" type="text/css" />
     <script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery-1.11.2.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-1.11.2.min.js';document.body.appendChild(s);"></script>
     <script type="text/javascript" src="<?php echo $cdn; ?>/js/jquery.number.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery.number.min.js';document.body.appendChild(s);"></script>
     <script type="text/javascript" src="<?php echo $local; ?>/js/jquery.jplayer.min.2.9.2.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
-    <script type="text/javascript" src="<?php echo $local; ?>/js/chat.js"></script>
+    <script type="text/javascript" src="<?php echo $local; ?>/js/chat_simple.js?v=<?php echo time(); ?>"></script>
 
     <!-- 2. 로그인 정보 및 설정 (PHP 자동 연동) -->
     <script type="text/javascript">
-        var socket = null;
-        var userToken = '<?= esc($userToken ?? '') ?>'; 
-        var useridKey = '<?= is_login(true) && isset($objMember) ? esc($objMember->mb_uid) : "guest_" . rand(1000, 9999) ?>'; 
-        var roomIdx   = 'channel1'; 
-        var is_admin  = <?= (isset($objMember) && isset($objMember->mb_level) && $objMember->mb_level >= 10) ? 'true' : 'false' ?>;
-        var is_scroll_lock = false;
-
-        // 페이지 로드 시 서버 연결 실행
-        $(document).ready(function() {
-            if(typeof connect === 'function') connect();
-        });
+        window.ACTION_BASE_URL = '<?= rtrim(esc(site_furl("")), "/") ?>/';
+        window.CHAT_USER_ID = '<?= is_login(true) && isset($objMember) ? esc($objMember->mb_uid) : "" ?>';
+        window.CHAT_IS_ADMIN = <?= (isset($objMember) && isset($objMember->mb_level) && (int)$objMember->mb_level >= 100) ? 'true' : 'false' ?>;
     </script>
+    <style>
+        /* chat.css 우선 사용, 여기선 chat.css에 없는 최소 보완만 적용 */
+        #debug-icon-link, #debug-bar, #debug-toolbar-container, .debug-bar, [id^="debug-"] { display:none !important; }
+        * { box-sizing: border-box; }
+        #roomInputWrap { position: relative; }
+        #roomMsg {
+            width: 100%;
+            min-height: 22px;
+            height: 22px;
+            max-height: 58px; /* 3줄 */
+            resize: none;
+            box-sizing: border-box;
+            color: #000;
+            line-height: 17px;
+            padding: 2px 5px;
+            border: 1px solid #949494;
+            background: #fff;
+            overflow-y: auto;
+        }
+        #roomSendBtn {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 48px;
+            height: 22px;
+            border: 1px solid #0e609c;
+            background: #127ccb;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #roomList li { height: auto; min-height: 24px; line-height: 1.5; }
+        #roomList li > div { white-space: pre-wrap; word-break: break-word; }
+    </style>
 </head>
 
 <body>
-
-    <!-- [상단] 타이머 및 그래프 영역 -->
-    <!-- [분포도 영역] 타이머 바 상세 조립 -->
-    <div id="chatTimer" style="height:25px; line-height:25px; background-color:#4C4C4C; color:#fff; text-align:center; border:1px solid #151515;">
-        
-        <!-- 1. 분 표시 (JS가 여기에 숫자를 넣습니다) -->
-        <b class="minute">03</b>분 
-        
-        <!-- 2. 초 표시 (JS가 여기에 숫자를 넣습니다) -->
-        <b class="second">59</b>초 후 
-        
-        <!-- 3. 회차 정보 강조 구역 -->
-        <b>
-            <span id="timerRound">1567897</span>회차 
-        </b>
-        
-        결과 발표
-    </div>
-    <!-- [실시간 그래프 영역] -->
-    <div style="position:relative; height:40px; border-left:1px solid #CECECE; border-right:1px solid #CECECE; border-bottom:1px solid #676767;">        
-        <!-- 1. 좌측 상단 깃발 아이콘 -->
-        <div style="position:absolute; top:0; left:-1px;">
-            <img src="/images/graphFlag_p.png" width="27" height="27" alt="깃발">
+    <div style="width:100%;margin-bottom:5px;">
+		<div style="height:25px;line-height:25px;background-color:#4C4C4C;color:#fff;text-align:center;border:1px solid #151515;" id="chatTimer"><b class="minute">01</b>분 <b class="second">54</b>초 후 <b><span id="timeRound">1572973</span>회차</b> 결과 발표
         </div>
-        <!-- 2. 실제 그래프 몸통 (id="powerballPointBetGraph") -->
-        <div id="powerballPointBetGraph">          
-            <!-- [홀 그래프] JS가 실시간으로 width(%)를 조절합니다 -->
-            <div class="oddChart">
-                <span class="oddBar" style="width: 0px;"></span>
-                <span class="oddPer" style="right: 0px;">0%</span>
-            </div>
-            <!-- [중앙 구분선] VS 표시 -->
-            <div class="vsChart"></div>
-            <!-- [짝 그래프] 현재 이미지에서는 100%로 가득 찬 상태네요 -->
-            <div class="evenChart">
-                <span class="evenBar" style="width: 100px;"></span>
-                <span class="evenPer" style="left: 100px;">100%</span>
-            </div>
+		<div style="position:relative;height:40px;border-left:1px solid #CECECE;border-right:1px solid #CECECE;border-bottom:1px solid #676767;">
+		<div style="position:absolute;top:0;left:-1px;"><img src="<?= site_furl('images/graphFlag_p.png') ?>" width="27" height="27">
         </div>
-    </div>
+		<div id="powerballPointBetGraph">
+		    <div class="oddChart">
+		    	<span class="oddBar" style="width: 100px;"></span>
+		    	<span class="oddPer" style="right: 100px;">100%</span>
+		    </div>
+		    <div class="vsChart"></div>
+		        <div class="evenChart">
+			        <span class="evenBar" style="width: 0px;"></span>
+			        <span class="evenPer" style="left: 0px;">0%</span>
+		        </div>
+	    	</div>
+		</div>
+	</div>
     <!-- [채팅 본문 영역] 유저들의 대화와 각종 목록이 담기는 곳 -->
     <div class="box-chatting">
         <!-- 1. 상단 정보 및 컨트롤러 영역 -->
@@ -78,7 +82,7 @@
             <!-- 접속자 수 표시 (아이콘 + 숫자) -->
             <span class="cnt">
                 <div class="sp-bl_pp"></div> <!-- 사람 모양 아이콘 (Sprite 이미지) -->
-                <span id="connectUserCnt" rel="744">744</span> 명 
+                <span id="connectUserCnt" rel="0">0</span> 명 
                 <span id="loginUserCnt"></span> <!-- 로그인한 유저 수 (필요시 출력) -->
             </span>
 
@@ -114,11 +118,11 @@
             <ul class="ul-1" id="channelList">                 
                 <!-- 1. 연병장 (메인 채널, 현재 활성화 'on') -->
                 <li class="channel1">
-                    <a href="#channel1" type="channel1" class="on">연병장</a>
+                    <a href="#channel1" type="channel1">연병장</a>
                 </li>
                 <!-- 2. 방채팅 (개별 개설된 방 목록) -->
                 <li class="roomList">
-                    <a href="#roomList" type="roomList">방채팅</a>
+                    <a href="#roomList" type="roomList" class="on">방채팅</a>
                 </li>
                 <!-- 3. 접속자 (현재 채널 접속 유저 리스트) -->
                 <li class="connectList">
@@ -132,7 +136,7 @@
             </ul>
         </div>
         <!-- 3. [채팅 목록] 실제 메시지가 쏟아지는 메인 광장 -->
-        <div id="chatListBox" style="position:relative;">
+        <div id="chatListBox" style="position:relative; display:none;">
             <!-- 1. 뉴스 티커 (상단에 공지가 흘러가는 곳) -->
             <div id="news-ticker-slide" class="ticker" style="height: 15px;">
                 <ul>
@@ -158,23 +162,23 @@
             </p>
         </div>
         <!-- 4. [접속자 목록] 현재 채팅방에 누가 있는지 보여주는 곳 -->
-        <div id="connectListBox">
+        <div id="connectListBox" style="display:none;">
             <ul class="list-connect" id="connectList" style="height: 574px;">
                 <!-- JS로 접속자 리스트가 채워집니다 -->
             </ul>
         </div>
         <!-- 5. [방 목록] 다른 채널이나 대화방으로 이동하는 리스트 -->
         <div id="roomListBox">
-            <!-- 상단 회색 바 (채팅방 개설/대기실 버튼 영역) -->
-            <div style="background-color:#F5F5F5; height:25px; line-height:25px; border:1px solid #CECECE; border-top:none; text-align:right; padding-right:5px; font-weight:bold; font-size:12px;">
-                <!-- 클릭 시 채팅 대기실을 여는 함수 호출 -->
-                <a href="#" onclick="openChatRoom(); return false;">채팅대기실</a>
-            </div>
-
             <!-- 하단 채팅방 리스트 영역 -->
-            <ul class="list-room" id="roomList" style="height: 548px;">
+            <ul class="list-chatting" id="roomList" style="height:520px;">
                 <!-- 여기에 실시간으로 방 목록이 추가됩니다 -->
             </ul>
+
+            <!-- 방채팅 전용 입력창 -->
+            <p id="roomInputWrap" class="input-chatting" style="display:block;">
+                <textarea name="roomMsg" id="roomMsg" autocomplete="off" placeholder="내용을 입력해 주세요."></textarea>
+                <input type="button" id="roomSendBtn" value="전송">
+            </p>
         </div>
 
         <!-- 6. [규정 안내] 채팅방 이용 규칙 및 제재 안내 -->
@@ -224,6 +228,58 @@
     <div id="powerballResultSound" style="width:0; height:0;">
         <audio id="jp_audio_0" preload="metadata" src="https://powerballgame.co.kr"></audio>
     </div>
+
+    <script type="text/javascript">
+        (function () {
+            function applyChatViewportCompensation() {
+                // 내부 스크롤은 숨기고, 부족 높이는 부모 iframe 높이로 보상
+                document.documentElement.style.overflowY = 'hidden';
+                document.body.style.overflowY = 'hidden';
+                document.documentElement.style.overflowX = 'hidden';
+                document.body.style.overflowX = 'hidden';
+
+                // 부모(top_banner) 오버레이가 iframe 상단을 침범하면 그만큼만 보상
+                var extraTop = 0;
+                try {
+                    if (window.parent && window.parent !== window && window.parent.document) {
+                        var frameEl = window.parent.document.getElementById('chatFrame');
+                        var topBannerEl = window.parent.document.querySelector('#guide_banner .top_banner');
+                        if (frameEl && topBannerEl && frameEl.getBoundingClientRect && topBannerEl.getBoundingClientRect) {
+                            var frameRect = frameEl.getBoundingClientRect();
+                            var bannerRect = topBannerEl.getBoundingClientRect();
+                            extraTop = Math.max(0, Math.ceil(bannerRect.bottom - frameRect.top));
+                        }
+                    }
+                } catch (e) {}
+
+                document.body.style.paddingTop = extraTop + 'px';
+
+                // 내용이 잘리지 않도록 부모 chatFrame 높이를 현재 내용 기준으로 확장
+                try {
+                    if (window.parent && window.parent !== window && window.parent.document) {
+                        var frameEl2 = window.parent.document.getElementById('chatFrame');
+                        if (frameEl2) {
+                            var bodyH = Math.max(
+                                document.body.scrollHeight || 0,
+                                document.documentElement.scrollHeight || 0
+                            );
+                            var targetH = Math.max(575, Math.ceil(bodyH));
+                            frameEl2.style.height = targetH + 'px';
+                        }
+                    }
+                } catch (e2) {}
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', applyChatViewportCompensation);
+            } else {
+                applyChatViewportCompensation();
+            }
+            window.addEventListener('resize', applyChatViewportCompensation);
+            setTimeout(applyChatViewportCompensation, 80);
+            setTimeout(applyChatViewportCompensation, 250);
+        })();
+    </script>
 
 </body>
 </html>

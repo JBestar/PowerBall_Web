@@ -76,6 +76,7 @@ $routes->get('frame/dayLog', 'Home::frameDayLog');
 // route since we don't have to scan directories.
 $routes->get('/', 'Home::index');
 $routes->get('home/chat', 'Home::chat');
+$routes->get('login', 'Home::loginPage');
 $routes->get('logout', 'Home::logout');
 $routes->get('mypage', 'Home::mypage');
 $routes->get('domain', 'Home::domain');

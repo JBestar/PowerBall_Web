@@ -109,13 +109,15 @@ function ajaxPattern(type,date,division,update)
 
 		$.ajax({
 			type:'POST',
-			url:'/',
+			url: (window.ACTION_BASE_URL || '/'),
 			data:{
 				view:'action',
 				action:'ajaxPattern',
 				actionType:type,
 				division:division,
-				date:date
+				date:date,
+				mode: (window.ANALYSIS_MODE || ''),
+				roundCnt: (window.LATEST_ROUND_CNT || 0)
 			},
 			dataType:'json',
 			success:function (data,textStatus){
@@ -180,14 +182,16 @@ function ajaxSixPattern(cnt,type,date,division,update)
 
 		$.ajax({
 			type:'POST',
-			url:'/',
+			url: (window.ACTION_BASE_URL || '/'),
 			data:{
 				view:'action',
 				action:'ajaxSixPattern',
 				actionType:type,
 				patternCnt:cnt,
 				division:division,
-				date:date
+				date:date,
+				mode: (window.ANALYSIS_MODE || ''),
+				roundCnt: (window.LATEST_ROUND_CNT || 0)
 			},
 			dataType:'json',
 			success:function (data,textStatus){
@@ -255,13 +259,12 @@ function giftPop(itemCode,chargeType,itemCnt)
 }
 
 $(document).ready(function(){
-	$('.rollover').live({
-		mouseover:function(){
-			$(this).addClass('on');
-		},
-		mouseout:function(){
-			$(this).removeClass('on');
-		}
+	// .live()는 jQuery 1.9에서 제거됨 → .on(위임)으로 대체
+	$(document).on('mouseenter', '.rollover', function(){
+		$(this).addClass('on');
+	});
+	$(document).on('mouseleave', '.rollover', function(){
+		$(this).removeClass('on');
 	});
 });
 

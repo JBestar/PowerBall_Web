@@ -38,6 +38,17 @@ Events::on('pre_system', function () {
 	if (ENVIRONMENT !== 'production')
 	{
 		Events::on('DBQuery', 'CodeIgniter\Debug\Toolbar\Collectors\Database::collect');
-		Services::toolbar()->respond();
+		try {
+			Services::toolbar()->respond();
+		} catch (\Throwable $e) {
+			// debugbar_time 요청 시 format() 등에서 예외 나면 500 대신 404로 응답 (툴바 로드 실패만 처리)
+			if (Services::request()->getGet('debugbar_time') !== null) {
+				http_response_code(404);
+				header('Content-Type: application/json');
+				echo json_encode(['error' => 'debugbar not found']);
+				exit;
+			}
+			throw $e;
+		}
 	}
 });

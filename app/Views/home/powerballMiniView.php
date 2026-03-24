@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>실시간 파워볼게임 미니뷰</title>
-    <?php $cdn = 'https://static.powerballgame.co.kr'; $local = rtrim(site_furl(''), '/'); ?>
-    <link rel="stylesheet" href="https://powerballgame.co.kr/css/common.css?v=2019012107" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/common.css?v=201905194'"/>
-    <link rel="stylesheet" href="<?php echo $cdn; ?>/css/sprites.css?201905194" type="text/css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/sprites.css?v=201905194'"/>
+    <?php $local = rtrim(site_furl(''), '/'); ?>
+    <link rel="stylesheet" href="<?php echo $local; ?>/css/common.css?v=<?php echo time(); ?>" type="text/css"/>
+    <link rel="stylesheet" href="<?php echo $local; ?>/css/sprites.css?v=<?php echo time(); ?>" type="text/css"/>
     <link rel="stylesheet" href="<?php echo $local; ?>/css/font-local.css" type="text/css"/>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" onerror="this.onerror=null;this.href='<?php echo $local; ?>/css/jquery-ui.css'"/>
+    <link rel="stylesheet" href="<?php echo $local; ?>/css/jquery-ui.css?v=<?= @filemtime(FCPATH.'css/jquery-ui.css') ?: time() ?>" type="text/css"/>
 </head>
 <body>
 <div id="ladderResultBox" style="display:none;">
@@ -188,10 +188,10 @@ var remainTime = <?= (int)($remain_time ?? 300) ?>;
 function setCookie(n,v){ try{ document.cookie = n+'='+v+'; path=/'; } catch(e){} }
 function getCookie(n){ var m = document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m ? m[2] : ''; }
 </script>
-<script src="<?php echo $cdn; ?>/js/jquery-1.11.2.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-1.11.2.min.js';document.body.appendChild(s);"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/jquery-ui.js';document.body.appendChild(s);"></script>
+<script src="<?php echo $local; ?>/js/jquery-1.11.2.min.js"></script>
+<script src="<?php echo $local; ?>/js/jquery-ui.js"></script>
 <script>window.jQuery && !$.fn.number && ($.number = function(n){ return n == null ? '0' : String(n); });</script>
-<script src="<?php echo $cdn; ?>/js/TweenMax.min.js" onerror="this.onerror=null;var s=document.createElement('script');s.src='<?php echo $local; ?>/js/TweenMax.min.js';document.body.appendChild(s);"></script>
+<script src="<?php echo $local; ?>/js/TweenMax.min.js"></script>
 <script src="<?php echo $local; ?>/js/powerballMiniView.js"></script>
 <script>
 $(function(){

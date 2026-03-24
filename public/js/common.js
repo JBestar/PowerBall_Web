@@ -601,9 +601,9 @@ $(function(){
         }
     });
 
-    $("textarea#wr_content[maxlength]").live("keyup change", function() {
+    $(document).on("keyup change", "textarea#wr_content[maxlength]", function() {
         var str = $(this).val()
-        var mx = parseInt($(this).attr("maxlength"))
+        var mx = parseInt($(this).attr("maxlength"), 10)
         if (str.length > mx) {
             $(this).val(str.substr(0, mx));
             return false;
