@@ -7,29 +7,82 @@ $list_humor = $list_humor ?? [];
 $list_pick  = $list_pick ?? [];
 $list_free  = $list_free ?? [];
 $list_photo = $list_photo ?? [];
+$is_humor_admin = $is_humor_admin ?? false;
 ?>
 <div class="boardBox" id="boardBox">
     <ul class="menu">
-        <li class="on" rel="humor">유머</li>
-        <li rel="photo">포토</li>
+        <li class="on" rel="humor">
+            유머<?php if ($is_humor_admin): ?>
+                <a href="#" onclick="window.open('/?view=humorRegister','humorRegister','width=600,height=650'); return false;"
+                   style="margin-left:10px; display:inline-block; padding:2px 10px; border:1px solid #0e609c; background:#127CCB; color:#fff; font-weight:bold; border-radius:3px; font-size:11px; line-height:16px; vertical-align:middle;">
+                    등록
+                </a>
+            <?php endif; ?>
+        </li>
+        <li rel="photo">
+            포토<?php if ($is_humor_admin): ?>
+                <a href="#" onclick="window.open('/?view=photoRegister','photoRegister','width=600,height=520'); return false;"
+                   style="margin-left:10px; display:inline-block; padding:2px 10px; border:1px solid #0e609c; background:#127CCB; color:#fff; font-weight:bold; border-radius:3px; font-size:11px; line-height:16px; vertical-align:middle;">
+                    등록
+                </a>
+            <?php endif; ?>
+        </li>
         <li rel="pick">분석픽공유</li>
         <li class="none" rel="free">자유</li>
     </ul>
     <?php
     $list = $list_humor;
-    $half = (int)ceil(count($list) / 2);
+    // 최신순(id DESC)에서 앞 6개는 왼쪽(1~6), 뒤 6개는 오른쪽(7~12) 표시
+    $half = (int) ceil(count($list) / 2);
     $leftList = array_slice($list, 0, $half);
     $rightList = array_slice($list, $half);
-    $bo = 'humor';
+
+    // 유머 리스트를 "표"처럼 % 기반 열(column)로 나누기
+    $iconColWidth = '10%';
+    // 관리자: icon 10 + title 42 + meta 28 + actions 20 = 100
+    // 유저: icon 10 + title 68 + meta 22 = 100
+    $metaColWidth = $is_humor_admin ? '27%' : '25%';
+    $titleColWidth = $is_humor_admin ? '41%' : '65%';
+    $actionsColWidth = $is_humor_admin ? '22%' : '0%'; // 관리자일 때만 사용
+    $titleMaxLen = $is_humor_admin ? 8 : 12;
     ?>
     <div class="listBox" id="list_humor" style="display:block;">
         <div class="left">
             <ul class="list">
                 <?php foreach ($leftList as $row) : ?>
-                <li>
-                    <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
-                    <a href="/bbs/board.php?bo_table=<?= $bo ?>&wr_id=<?= (int)$row->wr_id ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
-                    <span class="comment">[<?= (int)($row->comment_count ?? 0) ?>]</span>
+                <?php
+                    $humorTitle = (string) ($row->title ?? '');
+                    if (mb_strlen($humorTitle) > $titleMaxLen) $humorTitle = mb_substr($humorTitle, 0, $titleMaxLen) . '...';
+                ?>
+                <li style="display:flex; align-items:center; width:100%; box-sizing:border-box; overflow:hidden;">
+                    <span style="flex:0 0 <?= esc($iconColWidth) ?>; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                        <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
+                    </span>
+                    <span style="flex:0 0 <?= esc($titleColWidth) ?>; min-width:0; overflow:hidden; white-space:nowrap;">
+                        <a href="#"
+                           onclick="window.open('/?view=humorDetail&id=<?= (int)($row->id ?? 0) ?>','humorDetail','width=600,height=650'); return false;"
+                           title="<?= esc($row->title) ?>"
+                           style="display:block; width:100%; max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; vertical-align:middle;">
+                           <?= esc($humorTitle) ?>
+                        </a>
+                    </span>
+                    <span class="comment" style="flex:0 0 <?= esc($metaColWidth) ?>; min-width:0; overflow:hidden; white-space:nowrap; display:flex; align-items:center; font-size:11px; line-height:14px;">
+                        <?php $cc = (int)($row->comment_count ?? 0); ?>
+                        <?php if ($cc > 0): ?>[<?= $cc ?>]<?php endif; ?>
+                        <?php if (!empty($row->created_at)): ?>[<?= esc(date('Y.m.d', strtotime($row->created_at))) ?>]<?php endif; ?>
+                    </span>
+                    <?php if ($is_humor_admin): ?>
+                        <span style="flex:0 0 <?= esc($actionsColWidth) ?>; min-width:0; display:flex; gap:2px; align-items:center; justify-content:flex-start; white-space:nowrap; overflow:hidden; max-width:100%; margin-right:0;">
+                            <a href="#" onclick="window.open('/?view=humorEdit&id=<?= (int)($row->id ?? 0) ?>','humorEdit','width=600,height=650'); return false;"
+                               style="display:inline-block; padding:1px 2px; border:1px solid #0e609c; color:#0e609c; font-weight:bold; font-size:10px; line-height:12px; border-radius:3px; background:#fff;">
+                                수정
+                            </a>
+                            <a href="#" onclick="if(!confirm('정말 삭제하시겠습니까?')) return false; location.href='/?view=humorDelete&id=<?= (int)($row->id ?? 0) ?>'; return false;"
+                               style="display:inline-block; padding:1px 2px; border:1px solid #c11a20; color:#c11a20; font-weight:bold; font-size:10px; line-height:12px; border-radius:3px; background:#fff;">
+                                삭제
+                            </a>
+                        </span>
+                    <?php endif; ?>
                 </li>
                 <?php endforeach; ?>
             </ul>
@@ -38,27 +91,48 @@ $list_photo = $list_photo ?? [];
         <div class="right">
             <ul class="list">
                 <?php foreach ($rightList as $row) : ?>
-                <li>
-                    <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
-                    <a href="/bbs/board.php?bo_table=<?= $bo ?>&wr_id=<?= (int)$row->wr_id ?>" target="mainFrame" title="<?= esc($row->title) ?>"><?= esc($row->title) ?></a>
-                    <span class="comment">[<?= (int)($row->comment_count ?? 0) ?>]</span>
+                <?php
+                    $humorTitle = (string) ($row->title ?? '');
+                    if (mb_strlen($humorTitle) > $titleMaxLen) $humorTitle = mb_substr($humorTitle, 0, $titleMaxLen) . '...';
+                ?>
+                <li style="display:flex; align-items:center; width:100%; box-sizing:border-box; overflow:hidden;">
+                    <span style="flex:0 0 <?= esc($iconColWidth) ?>; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                        <img src="<?php echo site_furl('images/icon_text.png'); ?>" width="30" height="26" alt="">
+                    </span>
+                    <span style="flex:0 0 <?= esc($titleColWidth) ?>; min-width:0; overflow:hidden; white-space:nowrap;">
+                        <a href="#"
+                           onclick="window.open('/?view=humorDetail&id=<?= (int)($row->id ?? 0) ?>','humorDetail','width=600,height=650'); return false;"
+                           title="<?= esc($row->title) ?>"
+                           style="display:block; width:100%; max-width:100%; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; vertical-align:middle;">
+                           <?= esc($humorTitle) ?>
+                        </a>
+                    </span>
+                    <span class="comment" style="flex:0 0 <?= esc($metaColWidth) ?>; min-width:0; overflow:hidden; white-space:nowrap; display:flex; align-items:center; font-size:11px; line-height:14px;">
+                        <?php $cc = (int)($row->comment_count ?? 0); ?>
+                        <?php if ($cc > 0): ?>[<?= $cc ?>]<?php endif; ?>
+                        <?php if (!empty($row->created_at)): ?>[<?= esc(date('Y.m.d', strtotime($row->created_at))) ?>]<?php endif; ?>
+                    </span>
+                    <?php if ($is_humor_admin): ?>
+                        <span style="flex:0 0 <?= esc($actionsColWidth) ?>; min-width:0; display:flex; gap:2px; align-items:center; justify-content:flex-start; white-space:nowrap; overflow:hidden; max-width:100%; margin-right:0;">
+                            <a href="#" onclick="window.open('/?view=humorEdit&id=<?= (int)($row->id ?? 0) ?>','humorEdit','width=600,height=650'); return false;"
+                               style="display:inline-block; padding:1px 2px; border:1px solid #0e609c; color:#0e609c; font-weight:bold; font-size:10px; line-height:12px; border-radius:3px; background:#fff;">
+                                수정
+                            </a>
+                            <a href="#" onclick="if(!confirm('정말 삭제하시겠습니까?')) return false; location.href='/?view=humorDelete&id=<?= (int)($row->id ?? 0) ?>'; return false;"
+                               style="display:inline-block; padding:1px 2px; border:1px solid #c11a20; color:#c11a20; font-weight:bold; font-size:10px; line-height:12px; border-radius:3px; background:#fff;">
+                                삭제
+                            </a>
+                        </span>
+                    <?php endif; ?>
                 </li>
                 <?php endforeach; ?>
             </ul>
         </div>
     </div>
     <div class="listBox" id="list_photo" style="display:none;">
-        <ul class="list">
-            <?php foreach ($list_photo as $row) :
-                $imgSrc = !empty($row->file_path) ? site_furl('uploads/photos/'.$row->file_path) : site_furl('images/transparent.png');
-            ?>
-            <li class="photo">
-                <a href="/bbs/board.php?bo_table=photo&wr_id=<?= (int)$row->wr_id ?>" target="mainFrame" title="<?= esc($row->title) ?>">
-                    <span class="image"><img src="<?= esc($imgSrc) ?>" alt="<?= esc($row->title) ?>"></span>
-                </a>
-            </li>
-            <?php endforeach; ?>
-        </ul>
+        <ul class="list"><?php foreach ($list_photo as $row) :
+            $imgSrc = !empty($row->file_path) ? site_furl('uploads/photos/'.$row->file_path) : site_furl('images/transparent.png');
+        ?><li class="photo" style="vertical-align:top; line-height:0;"><img src="<?= esc($imgSrc) ?>" class="image" alt="<?= esc($row->title) ?>"></li><?php endforeach; ?></ul>
     </div>
     <?php
     $list = $list_pick;
@@ -133,16 +207,37 @@ $list_photo = $list_photo ?? [];
         var menuItems = box.querySelectorAll('ul.menu li');
         var listBoxes = box.querySelectorAll('.listBox');
         if (!menuItems.length || !listBoxes.length) return;
+
+        function activateTab(rel) {
+            if (!rel) return;
+            for (var j = 0; j < menuItems.length; j++) menuItems[j].classList.remove('on');
+            for (var k = 0; k < menuItems.length; k++) {
+                if (menuItems[k].getAttribute('rel') === rel) {
+                    menuItems[k].classList.add('on');
+                }
+            }
+            for (var i = 0; i < listBoxes.length; i++) {
+                listBoxes[i].style.display = (listBoxes[i].id === 'list_' + rel) ? 'block' : 'none';
+            }
+        }
+
+        // photoRegister 팝업에서 "등록 직후" 새로고침 후 포토 탭을 자동 활성화하기 위한 플래그
+        try {
+            if (sessionStorage.getItem('forcePhotoTab') === '1') {
+                sessionStorage.removeItem('forcePhotoTab');
+                activateTab('photo');
+            }
+        } catch (e) {}
+
         for (var i = 0; i < menuItems.length; i++) {
             menuItems[i].addEventListener('click', function(e) {
+                // 메뉴 안쪽의 링크(등록 버튼 등) 클릭은 탭 전환 로직을 스킵
+                var tag = e && e.target && e.target.tagName ? String(e.target.tagName).toLowerCase() : '';
+                if (tag === 'a') return;
                 var rel = this.getAttribute('rel');
                 if (!rel) return;
                 e.preventDefault();
-                for (var j = 0; j < menuItems.length; j++) menuItems[j].classList.remove('on');
-                this.classList.add('on');
-                for (var k = 0; k < listBoxes.length; k++) {
-                    listBoxes[k].style.display = (listBoxes[k].id === 'list_' + rel) ? 'block' : 'none';
-                }
+                activateTab(rel);
             });
         }
     }

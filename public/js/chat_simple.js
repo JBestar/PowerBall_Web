@@ -29,6 +29,7 @@
 	function renderMessages(messages, stickBottom) {
 		var $roomList = $('#roomList');
 		if (!$roomList.length) return;
+		var prevTop = $roomList.scrollTop();
 
 		$roomList.empty();
 		var rows = messages || [];
@@ -53,8 +54,8 @@
 		if (stickBottom) {
 			$roomList.scrollTop($roomList.prop('scrollHeight'));
 		} else {
-			// 최근글을 위에서부터 보이게
-			$roomList.scrollTop(0);
+			// 자동 갱신 시 사용자가 보던 스크롤 위치 유지
+			$roomList.scrollTop(prevTop);
 		}
 	}
 
@@ -90,15 +91,43 @@
 				message: val
 			}
 		}).done(function (resp) {
-			if (!resp || resp.state !== 'success') return;
+			if (!resp || resp.state !== 'success') {
+				if (resp && resp.message === 'notlogin') {
+					alert('로그인 후 이용가능합니다.');
+				}
+				return;
+			}
 			$msg.val('');
 			autoResizeRoomMsg();
-			loadChatList(true);
+			// 전송 후에는 사용자가 보고 있던 스크롤 위치를 보존
+			loadChatList(false);
 		});
 	}
 
 	function syncInputLabel() {
 		// placeholder 사용으로 별도 label 토글 불필요
+	}
+
+	var frameResizeRaf = 0;
+	function requestParentFrameResize() {
+		if (frameResizeRaf) return;
+		frameResizeRaf = window.requestAnimationFrame(function () {
+			frameResizeRaf = 0;
+			try {
+				if (!(window.parent && window.parent !== window && window.parent.document)) return;
+				var frameEl = window.parent.document.getElementById('chatFrame');
+				if (!frameEl) return;
+				var h = Math.max(
+					document.body.scrollHeight || 0,
+					document.documentElement.scrollHeight || 0
+				);
+				var target = Math.max(575, Math.ceil(h) + 6);
+				var current = parseInt(frameEl.style.height || frameEl.getAttribute('height') || '575', 10);
+				if (isNaN(current) || Math.abs(current - target) > 1) {
+					frameEl.style.height = target + 'px';
+				}
+			} catch (e) {}
+		});
 	}
 
 	function autoResizeRoomMsg() {
@@ -107,7 +136,9 @@
 		el.style.height = '22px';
 		var nextH = Math.max(22, Math.min(el.scrollHeight, 58)); // 1~3줄
 		el.style.height = nextH + 'px';
+		el.style.overflowY = el.scrollHeight > 58 ? 'auto' : 'hidden';
 		adjustRoomLayout();
+		requestParentFrameResize();
 	}
 
 	function adjustRoomLayout() {
@@ -120,6 +151,7 @@
 		var inputH = $input.outerHeight(true) || 30;
 		var listH = Math.max(220, total - inputH);
 		$list.css('height', listH + 'px');
+		requestParentFrameResize();
 	}
 
 	function deleteMessage(id) {
@@ -187,7 +219,7 @@
 				sendMessage();
 			}
 		});
-		$('#roomMsg').on('input keyup change focus blur', function () {
+		$('#roomMsg').on('input', function () {
 			autoResizeRoomMsg();
 			syncInputLabel();
 		});

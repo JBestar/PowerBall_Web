@@ -25,7 +25,7 @@
         * { box-sizing: border-box; }
         #roomInputWrap { position: relative; }
         #roomMsg {
-            width: 100%;
+            width: calc(100% - 54px);
             min-height: 22px;
             height: 22px;
             max-height: 58px; /* 3줄 */
@@ -57,7 +57,7 @@
 
 <body>
     <div style="width:100%;margin-bottom:5px;">
-		<div style="height:25px;line-height:25px;background-color:#4C4C4C;color:#fff;text-align:center;border:1px solid #151515;" id="chatTimer"><b class="minute">01</b>분 <b class="second">54</b>초 후 <b><span id="timeRound">1572973</span>회차</b> 결과 발표
+		<div style="height:25px;line-height:25px;background-color:#4C4C4C;color:#fff;text-align:center;border:1px solid #151515;" id="chatTimer"><b class="minute"><?= sprintf('%02d', (int) floor(((int)($remain_time ?? 300)) / 60)) ?></b>분 <b class="second"><?= sprintf('%02d', ((int)($remain_time ?? 300)) % 60) ?></b>초 후 <b><span id="timeRound"><?= (int)($time_round ?? 1) ?></span>회차</b> 결과 발표
         </div>
 		<div style="position:relative;height:40px;border-left:1px solid #CECECE;border-right:1px solid #CECECE;border-bottom:1px solid #676767;">
 		<div style="position:absolute;top:0;left:-1px;"><img src="<?= site_furl('images/graphFlag_p.png') ?>" width="27" height="27">
@@ -169,16 +169,15 @@
         </div>
         <!-- 5. [방 목록] 다른 채널이나 대화방으로 이동하는 리스트 -->
         <div id="roomListBox">
-            <!-- 하단 채팅방 리스트 영역 -->
-            <ul class="list-chatting" id="roomList" style="height:520px;">
-                <!-- 여기에 실시간으로 방 목록이 추가됩니다 -->
-            </ul>
-
             <!-- 방채팅 전용 입력창 -->
             <p id="roomInputWrap" class="input-chatting" style="display:block;">
                 <textarea name="roomMsg" id="roomMsg" autocomplete="off" placeholder="내용을 입력해 주세요."></textarea>
                 <input type="button" id="roomSendBtn" value="전송">
             </p>
+            <!-- 하단 채팅방 리스트 영역 -->
+            <ul class="list-chatting" id="roomList" style="height:520px;">
+                <!-- 여기에 실시간으로 방 목록이 추가됩니다 -->
+            </ul>
         </div>
 
         <!-- 6. [규정 안내] 채팅방 이용 규칙 및 제재 안내 -->
@@ -231,6 +230,95 @@
 
     <script type="text/javascript">
         (function () {
+            var remainSeconds = 0;
+            var timerStarted = false;
+            var syncInFlight = false;
+            var lastServerSyncAt = 0;
+
+            function parseIntSafe(v, d) {
+                var n = parseInt(v, 10);
+                return isNaN(n) ? d : n;
+            }
+
+            function initChatTimerState() {
+                var $timer = document.getElementById('chatTimer');
+                if (!$timer) return;
+
+                var minEl = $timer.querySelector('.minute');
+                var secEl = $timer.querySelector('.second');
+                var m = parseIntSafe(minEl ? minEl.textContent : '', 0);
+                var s = parseIntSafe(secEl ? secEl.textContent : '', 0);
+                remainSeconds = Math.max(0, (m * 60) + s);
+
+                // 값이 비어있거나 비정상이면 기본 5분으로 시작
+                if (remainSeconds <= 0) remainSeconds = 300;
+            }
+
+            function syncChatTimerFromServer(force) {
+                var now = Date.now();
+                if (!force && now - lastServerSyncAt < 5000) return;
+                if (syncInFlight) return;
+                syncInFlight = true;
+                $.ajax({
+                    type: 'POST',
+                    url: (window.ACTION_BASE_URL || '/'),
+                    dataType: 'json',
+                    data: { view: 'action', action: 'ajaxChatTimer' }
+                }).done(function (resp) {
+                    if (!resp || resp.state !== 'success') return;
+                    var srvRound = parseIntSafe(resp.time_round, 1);
+                    var srvRemain = parseIntSafe(resp.remain_seconds, 300);
+                    if (srvRound > 0) {
+                        var rEl = document.getElementById('timeRound');
+                        if (rEl) rEl.textContent = String(srvRound);
+                    }
+                    remainSeconds = Math.max(0, srvRemain);
+                    renderChatTimer();
+                    lastServerSyncAt = Date.now();
+                }).always(function () {
+                    syncInFlight = false;
+                });
+            }
+
+            function renderChatTimer() {
+                var $timer = document.getElementById('chatTimer');
+                if (!$timer) return;
+
+                var minEl = $timer.querySelector('.minute');
+                var secEl = $timer.querySelector('.second');
+                if (!minEl || !secEl) return;
+
+                var m = Math.floor(remainSeconds / 60);
+                var s = remainSeconds % 60;
+                minEl.textContent = (m < 10 ? '0' : '') + m;
+                secEl.textContent = (s < 10 ? '0' : '') + s;
+            }
+
+            function tickChatTimer() {
+                if (remainSeconds <= 0) {
+                    remainSeconds = 300;
+                    var roundEl = document.getElementById('timeRound');
+                    if (roundEl) {
+                        var roundNo = parseIntSafe(roundEl.textContent, 0);
+                        if (roundNo > 0) roundEl.textContent = String(roundNo + 1);
+                    }
+                }
+
+                remainSeconds -= 1;
+                if (remainSeconds < 0) remainSeconds = 0;
+                renderChatTimer();
+                syncChatTimerFromServer(false);
+            }
+
+            function startChatTimer() {
+                if (timerStarted) return;
+                timerStarted = true;
+                initChatTimerState();
+                renderChatTimer();
+                syncChatTimerFromServer(true);
+                setInterval(tickChatTimer, 1000);
+            }
+
             function applyChatViewportCompensation() {
                 // 내부 스크롤은 숨기고, 부족 높이는 부모 iframe 높이로 보상
                 document.documentElement.style.overflowY = 'hidden';
@@ -271,8 +359,12 @@
             }
 
             if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', applyChatViewportCompensation);
+                document.addEventListener('DOMContentLoaded', function () {
+                    startChatTimer();
+                    applyChatViewportCompensation();
+                });
             } else {
+                startChatTimer();
                 applyChatViewportCompensation();
             }
             window.addEventListener('resize', applyChatViewportCompensation);

@@ -341,6 +341,7 @@
                         'list_pick'  => $list_pick ?? [],
                         'list_free'  => $list_free ?? [],
                         'list_photo' => $list_photo ?? [],
+                        'is_humor_admin' => $is_humor_admin ?? false,
                     ]) ?>
                 </div>
 

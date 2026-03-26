@@ -6,9 +6,16 @@ use App\Models\MemConf_Model;
 use App\Models\Domain_Model;
 use App\Models\BoardWrite_Model;
 use App\Models\BoardPhoto_Model;
+use App\Models\HumorPost_Model;
 
 class Home extends BaseController
 {
+    private function redirectWithMessage(string $url, string $message)
+    {
+        $this->session->setFlashdata('message', $message);
+        return $this->response->redirect($url);
+    }
+
     public function index()
     {
         // Debug Toolbar가 ?debugbar_time= 요청으로 데이터를 가져올 때 메인 로직을 타지 않도록 (500 방지)
@@ -54,6 +61,9 @@ class Home extends BaseController
             if ($view === 'action' && $action === 'ajaxChatDelete') {
                 return $this->ajaxChatDelete();
             }
+            if ($view === 'action' && $action === 'ajaxChatTimer') {
+                return $this->ajaxChatTimer();
+            }
             if ($view === 'action' && $action === 'login') {
                 return $this->doLogin();
             }
@@ -90,7 +100,7 @@ class Home extends BaseController
         // 2-1-2. 최근 분석 (로그인 시에만 이용)
         else if ($this->request->getGet('view') === 'latestLog') {
             if (!is_login(false)) {
-                return $this->response->redirect(site_furl('/?view=dayLog'))->with('message', '로그인 후 이용가능합니다.');
+                return $this->redirectWithMessage(site_furl('/?view=dayLog'), '로그인 후 이용가능합니다.');
             }
             $roundCnt = (int) $this->request->getGet('roundCnt');
             if ($roundCnt < 50 || $roundCnt > 2000) {
@@ -109,7 +119,7 @@ class Home extends BaseController
         // 2-1-3. 기간별 분석 (로그인 시에만 이용)
         else if ($this->request->getGet('view') === 'periodLog') {
             if (!is_login(false)) {
-                return $this->response->redirect(site_furl('/?view=dayLog'))->with('message', '로그인 후 이용가능합니다.');
+                return $this->redirectWithMessage(site_furl('/?view=dayLog'), '로그인 후 이용가능합니다.');
             }
 
             $today = date('Y-m-d');
@@ -166,7 +176,7 @@ class Home extends BaseController
         // 2-1-4. 패턴별 분석 (로그인 시에만 이용)
         else if ($this->request->getGet('view') === 'patternAnalyze') {
             if (!is_login(false)) {
-                return $this->response->redirect(site_furl('/?view=dayLog'))->with('message', '로그인 후 이용가능합니다.');
+                return $this->redirectWithMessage(site_furl('/?view=dayLog'), '로그인 후 이용가능합니다.');
             }
 
             $patternAnalyzeData = array_merge($headInfo, [
@@ -175,9 +185,217 @@ class Home extends BaseController
             echo view('home/patternAnalyze', $patternAnalyzeData);
             return;
         }
+        // 2-1-4-1. 유머 등록 (관리자)
+        else if ($this->request->getGet('view') === 'humorRegister') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {}
+
+            if (!$objMember || (int)($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 등록 가능합니다.');
+            }
+
+            $humorModel = new HumorPost_Model();
+            $humorModel->ensureTable();
+
+            if ($this->request->getMethod() === 'post') {
+                $title = trim((string) $this->request->getPost('title'));
+                $content = trim((string) $this->request->getPost('content'));
+
+                if ($title === '' || $content === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=humorRegister'), '제목과 내용을 입력해주세요.');
+                }
+
+                if (mb_strlen($title) > 200) $title = mb_substr($title, 0, 200);
+                if (mb_strlen($content) > 5000) $content = mb_substr($content, 0, 5000);
+
+                $mb_uid = (string) ($objMember->mb_uid ?? '');
+                if ($mb_uid === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=humorRegister'), '등록자 정보가 없습니다.');
+                }
+
+                $data = [
+                    'mb_uid' => $mb_uid,
+                    'title' => $title,
+                    'content' => $content,
+                    'comment_count' => 0,
+                    'created_at' => date('Y-m-d H:i:s'),
+                ];
+                $humorModel->insert($data);
+                $newId = (int) $humorModel->getInsertID();
+                return $this->response->redirect(site_furl('/?view=humorDetail&id=' . $newId));
+            }
+
+            return view('home/humorRegister');
+        }
+
+        // 2-1-4-2. 유머 상세 (모두)
+        else if ($this->request->getGet('view') === 'humorDetail') {
+            $id = (int) $this->request->getGet('id');
+            $humorModel = new HumorPost_Model();
+            $post = $humorModel->findById($id);
+            return view('home/humorDetail', ['post' => $post]);
+        }
+        // 2-1-4-3. 유머 수정 (관리자)
+        else if ($this->request->getGet('view') === 'humorEdit') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {}
+
+            if (!$objMember || (int)($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 수정 가능합니다.');
+            }
+
+            $id = (int) $this->request->getGet('id');
+            $humorModel = new HumorPost_Model();
+            $post = $humorModel->findById($id);
+            if (!$post) {
+                return $this->redirectWithMessage(site_furl('/'), '유머 글을 찾을 수 없습니다.');
+            }
+
+            if ($this->request->getMethod() === 'post') {
+                $title = trim((string) $this->request->getPost('title'));
+                $content = trim((string) $this->request->getPost('content'));
+                if ($title === '' || $content === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=humorEdit&id=' . $id), '제목/내용을 입력하세요.');
+                }
+                if (mb_strlen($title) > 200) $title = mb_substr($title, 0, 200);
+                if (mb_strlen($content) > 5000) $content = mb_substr($content, 0, 5000);
+
+                $ok = $humorModel->updateById($id, [
+                    'title' => $title,
+                    'content' => $content,
+                    // 작성자/created_at은 유지
+                    'comment_count' => (int) ($post->comment_count ?? 0),
+                    'mb_uid' => (string) ($post->mb_uid ?? ($objMember->mb_uid ?? '')),
+                    'created_at' => (string) ($post->created_at ?? date('Y-m-d H:i:s')),
+                ]);
+
+                return $this->response->redirect(site_furl('/?view=humorDetail&id=' . $id));
+            }
+
+            return view('home/humorEdit', ['post' => $post]);
+        }
+
+        // 2-1-4-4. 유머 삭제 (관리자)
+        else if ($this->request->getGet('view') === 'humorDelete') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {}
+
+            if (!$objMember || (int)($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 삭제 가능합니다.');
+            }
+
+            $id = (int) $this->request->getGet('id');
+            $humorModel = new HumorPost_Model();
+            $humorModel->deleteById($id);
+            return $this->response->redirect(site_furl('/'));
+        }
         // 2-1-5. 채팅방
         else if ($this->request->getGet('view') === 'chatRoom') {
             return $this->chat();
+        }
+        // 2-1-6. 포토 등록 (관리자)
+        else if ($this->request->getGet('view') === 'photoRegister') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {}
+
+            if (!$objMember || (int)($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 등록 가능합니다.');
+            }
+
+            $photoModel = new BoardPhoto_Model();
+            $photoModel->ensureTable();
+
+            if ($this->request->getMethod() === 'post') {
+                $title = trim((string) $this->request->getPost('title'));
+                if ($title === '') $title = '포토';
+                if (mb_strlen($title) > 200) $title = mb_substr($title, 0, 200);
+
+                $file = $this->request->getFile('photo_file');
+                if (!$file || !$file->isValid()) {
+                    return $this->redirectWithMessage(site_furl('/?view=photoRegister'), '이미지 파일을 선택해주세요.');
+                }
+
+                $ext = strtolower((string)$file->getExtension());
+                $allowExt = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                if (!in_array($ext, $allowExt, true)) {
+                    return $this->redirectWithMessage(site_furl('/?view=photoRegister'), '지원하지 않는 이미지 형식입니다.');
+                }
+
+                $tmpPath = $file->getTempName();
+                $imgInfo = @getimagesize($tmpPath);
+                if (!$imgInfo || !isset($imgInfo[0], $imgInfo[1])) {
+                    return $this->redirectWithMessage(site_furl('/?view=photoRegister'), '이미지 정보를 읽을 수 없습니다.');
+                }
+                $w = (int)$imgInfo[0];
+                $h = (int)$imgInfo[1];
+
+                $uploadDir = FCPATH . 'uploads/photos';
+                if (!is_dir($uploadDir)) {
+                    @mkdir($uploadDir, 0775, true);
+                }
+
+                $newName = $file->getRandomName();
+                if (!$file->move($uploadDir, $newName, true)) {
+                    return $this->redirectWithMessage(site_furl('/?view=photoRegister'), '파일 저장에 실패했습니다.');
+                }
+                // 어떤 비율/크기의 이미지든 서버에서 200x200으로 중앙 크롭+리사이즈
+                try {
+                    $savedPath = $uploadDir . DIRECTORY_SEPARATOR . $newName;
+                    \Config\Services::image()
+                        ->withFile($savedPath)
+                        ->fit(200, 200, 'center')
+                        ->save($savedPath);
+                } catch (\Throwable $e) {
+                    @unlink($uploadDir . DIRECTORY_SEPARATOR . $newName);
+                    return $this->redirectWithMessage(site_furl('/?view=photoRegister'), '이미지 변환에 실패했습니다.');
+                }
+
+                $photoModel->insert([
+                    'wr_id' => 0,
+                    'title' => $title,
+                    'file_path' => $newName,
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'mb_uid' => (int)($objMember->mb_fid ?? 0),
+                ]);
+                $newId = (int)$photoModel->getInsertID();
+                if ($newId > 0) {
+                    $photoModel->update($newId, ['wr_id' => $newId]);
+                }
+                // 등록 직후 메인(부모) 페이지를 갱신해서 포토 탭에 즉시 반영
+                return view('home/photoRegisterSuccess', [
+                    'title' => $title,
+                ]);
+            }
+
+            return view('home/photoRegister');
         }
         // 2-2. iframe(mainFrame)에서 전체 레이아웃이 아닌 내용만 표시 — 헤더 중복 방지
         else if($this->request->getGet('frame') === 'mainFrame'){
@@ -268,11 +486,17 @@ class Home extends BaseController
             }
             // 리스트박스용 게시 목록 (유머/분석픽공유/자유) - DB 조회
             $boardWriteModel = new BoardWrite_Model();
-            $list_humor = $boardWriteModel->getListForMain('humor', 10);
+            $humorModel = new HumorPost_Model();
+            $list_humor = $humorModel->getLatest(12);
             $list_pick  = $boardWriteModel->getListForMain('pick', 10);
             $list_free  = $boardWriteModel->getListForMain('free', 10);
             $boardPhotoModel = new BoardPhoto_Model();
             $list_photo = $boardPhotoModel->getListForMain(14);
+
+            $is_humor_admin = false;
+            if ($objMember && isset($objMember->mb_level) && (int)$objMember->mb_level >= 100) {
+                $is_humor_admin = true;
+            }
             $navInfo = getNavInfo($objMember);
             $viewData = array_merge($headInfo, $navInfo, [
                 'objMember'  => $objMember,
@@ -281,6 +505,7 @@ class Home extends BaseController
                 'list_pick'  => $list_pick,
                 'list_free'  => $list_free,
                 'list_photo' => $list_photo,
+                'is_humor_admin' => $is_humor_admin,
             ]);
             echo view('home/main', $viewData);
         }
@@ -1718,9 +1943,6 @@ class Home extends BaseController
 	}
     public function chat()
     {
-        if (!is_login(false)) {
-            return $this->response->redirect(site_furl('/login'));
-        }
         $headInfo = $this->getSiteConf();
         $objMember = null;
         $userToken = '';
@@ -1729,30 +1951,34 @@ class Home extends BaseController
             $objMember = $this->modelMember->getByUid($user_id);
             $userToken = md5($this->session->session_id . ($objMember->mb_uid ?? ''));
         }
+        $timerInfo = $this->getDrawTimerInfo();
         $data = [
             'site_title'   => $headInfo['site_title'] ?? $headInfo['site_name'] ?? '파워볼 채팅',
             'server_time'  => time(),
             'objMember'    => $objMember,
             'userToken'    => $userToken,
+            'time_round'   => (int) ($timerInfo['next_round'] ?? 1),
+            'remain_time'  => (int) ($timerInfo['remain_seconds'] ?? 300),
         ];
         return view('home/chat', $data);
     }
 
+    public function ajaxChatTimer()
+    {
+        $timerInfo = $this->getDrawTimerInfo();
+        return $this->response->setJSON([
+            'state' => 'success',
+            'time_round' => (int) ($timerInfo['next_round'] ?? 1),
+            'remain_seconds' => (int) ($timerInfo['remain_seconds'] ?? 300),
+        ]);
+    }
+
     public function ajaxChatList()
     {
-        if (!is_login(false)) {
-            return $this->response->setJSON(['state' => 'error', 'message' => 'notlogin']);
-        }
-
         $chatModel = new \App\Models\ChatMessage_Model();
         $chatModel->ensureTable();
 
-        $todayFrom = date('Y-m-d 00:00:00');
-        $todayTo = date('Y-m-d 23:59:59');
-
         $rows = $chatModel
-            ->where('created_at >=', $todayFrom)
-            ->where('created_at <=', $todayTo)
             ->orderBy('id', 'DESC')
             ->findAll(100);
 
