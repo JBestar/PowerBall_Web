@@ -11,6 +11,7 @@ use App\Models\PickPost_Model;
 use App\Models\FreePost_Model;
 use App\Models\QnaPost_Model;
 use App\Models\FaqPost_Model;
+use App\Models\RequestPost_Model;
 
 class Home extends BaseController
 {
@@ -831,6 +832,158 @@ class Home extends BaseController
             $qnaModel->delete($id);
 
             return $this->response->redirect(site_furl('frame/communityBoard?bo_table=qna'));
+        }
+
+        // 기능개선요청 등록 (로그인 회원)
+        else if ($this->request->getGet('view') === 'requestRegister') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {
+            }
+
+            if (!$objMember) {
+                return $this->redirectWithMessage(site_furl('/'), '회원 정보를 확인할 수 없습니다.');
+            }
+
+            $requestModel = new RequestPost_Model();
+            $requestModel->ensureTable();
+
+            if ($this->request->getMethod() === 'post') {
+                $title = trim((string) $this->request->getPost('title'));
+                $content = trim((string) $this->request->getPost('content'));
+
+                if ($title === '' || $content === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=requestRegister'), '제목과 내용을 입력해주세요.');
+                }
+
+                if (mb_strlen($title) > 200) {
+                    $title = mb_substr($title, 0, 200);
+                }
+                if (mb_strlen($content) > 50000) {
+                    $content = mb_substr($content, 0, 50000);
+                }
+
+                $auth = $this->communityAuthorUidNick($objMember);
+                if ($auth === null) {
+                    return $this->redirectWithMessage(site_furl('/?view=requestRegister'), '등록자 정보가 없습니다.');
+                }
+
+                $now = date('Y-m-d H:i:s');
+                $data = [
+                    'mb_uid' => $auth['mb_uid'],
+                    'mb_nickname' => $auth['mb_nickname'],
+                    'title' => $title,
+                    'content' => $content,
+                    'comment_count' => 0,
+                    'wr_hit' => 0,
+                    'wr_good' => 0,
+                    'is_notice' => 0,
+                    'created_at' => $now,
+                ];
+                $requestModel->insert($data);
+                $newId = (int) $requestModel->getInsertID();
+
+                return $this->response->redirect(site_furl('frame/communityBoard?bo_table=request&wr_id=' . $newId));
+            }
+
+            return view('home/requestRegister');
+        }
+
+        // 기능개선요청 수정 (관리자)
+        else if ($this->request->getGet('view') === 'requestEdit') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {
+            }
+
+            if (!$objMember || (int) ($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 수정 가능합니다.');
+            }
+
+            $id = (int) $this->request->getGet('id');
+            $requestModel = new RequestPost_Model();
+            $requestModel->ensureTable();
+            $post = $requestModel->find($id);
+            if (!$post) {
+                return $this->redirectWithMessage(site_furl('/'), '글을 찾을 수 없습니다.');
+            }
+
+            if ($this->request->getMethod() === 'post') {
+                $title = trim((string) $this->request->getPost('title'));
+                $content = trim((string) $this->request->getPost('content'));
+                if ($title === '' || $content === '') {
+                    return $this->redirectWithMessage(site_furl('/?view=requestEdit&id=' . $id), '제목/내용을 입력하세요.');
+                }
+                if (mb_strlen($title) > 200) {
+                    $title = mb_substr($title, 0, 200);
+                }
+                if (mb_strlen($content) > 50000) {
+                    $content = mb_substr($content, 0, 50000);
+                }
+
+                $mbUidKeep = (string) ($post->mb_uid ?? ($objMember->mb_uid ?? ''));
+                $mbNickKeep = trim((string) ($post->mb_nickname ?? ''));
+                if ($mbNickKeep === '') {
+                    $auth = $this->communityAuthorUidNick($objMember);
+                    $mbNickKeep = $auth['mb_nickname'] ?? $mbUidKeep;
+                }
+                if ($mbNickKeep === '') {
+                    $mbNickKeep = $mbUidKeep;
+                }
+
+                $requestModel->update($id, [
+                    'title' => $title,
+                    'content' => $content,
+                    'mb_uid' => $mbUidKeep,
+                    'mb_nickname' => $mbNickKeep,
+                    'comment_count' => (int) ($post->comment_count ?? 0),
+                    'wr_hit' => (int) ($post->wr_hit ?? 0),
+                    'wr_good' => (int) ($post->wr_good ?? 0),
+                    'is_notice' => (int) ($post->is_notice ?? 0),
+                    'created_at' => (string) ($post->created_at ?? date('Y-m-d H:i:s')),
+                ]);
+
+                return $this->response->redirect(site_furl('frame/communityBoard?bo_table=request&wr_id=' . $id));
+            }
+
+            return view('home/requestEdit', ['post' => $post]);
+        }
+
+        // 기능개선요청 삭제 (관리자)
+        else if ($this->request->getGet('view') === 'requestDelete') {
+            if (!is_login(false)) {
+                return $this->redirectWithMessage(site_furl('/login'), '로그인 후 이용가능합니다.');
+            }
+
+            $objMember = null;
+            try {
+                $userId = $this->session->user_id ?? '';
+                $objMember = $userId !== '' ? $this->modelMember->getByUid($userId) : null;
+            } catch (\Throwable $e) {
+            }
+
+            if (!$objMember || (int) ($objMember->mb_level ?? 0) < 100) {
+                return $this->redirectWithMessage(site_furl('/'), '관리자만 삭제 가능합니다.');
+            }
+
+            $id = (int) $this->request->getGet('id');
+            $requestModel = new RequestPost_Model();
+            $requestModel->ensureTable();
+            $requestModel->delete($id);
+
+            return $this->response->redirect(site_furl('frame/communityBoard?bo_table=request'));
         }
 
         // 2-1-5. 채팅방
@@ -2478,12 +2631,12 @@ class Home extends BaseController
             $boTable = 'humor';
         }
 
-        if (! in_array($boTable, ['humor', 'photo', 'pick', 'free', 'qna', 'faq'], true)) {
+        if (! in_array($boTable, ['humor', 'photo', 'pick', 'free', 'qna', 'faq', 'request'], true)) {
             return $this->response->redirect('/bbs/board.php?' . http_build_query(['bo_table' => $boTable]));
         }
 
         $page = max(1, (int) $this->request->getGet('page'));
-        $perPage = $boTable === 'photo' ? 24 : ($boTable === 'faq' ? 50 : 10);
+        $perPage = $boTable === 'photo' ? 24 : ($boTable === 'faq' ? 50 : ($boTable === 'request' ? 20 : 10));
         $sfl = (string) $this->request->getGet('sfl');
         if ($sfl === '') {
             $sfl = 'wr_subject';
@@ -2908,6 +3061,110 @@ class Home extends BaseController
             ]);
 
             $html = view('home/qna_board_frame', $viewData);
+            $this->response->setBody($html);
+            $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
+            $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+
+            return $this->response;
+        }
+
+        if ($boTable === 'request') {
+            $requestModel = new RequestPost_Model();
+            $requestModel->ensureTable();
+            $total = $requestModel->countListFiltered($sfl, $stx);
+            $totalPages = max(1, (int) ceil($total / $perPage));
+            if ($page > $totalPages) {
+                $page = $totalPages;
+            }
+            $rows = $requestModel->getListPage($page, $perPage, $sfl, $stx, $sst, $sod);
+            $requestNotices = ($page === 1) ? $requestModel->getNotices() : [];
+
+            $wrId = (int) $this->request->getGet('wr_id');
+            if ($wrId <= 0) {
+                $wrId = (int) $this->request->getGet('id');
+            }
+            $readPost = null;
+            $requestNewerId = null;
+            $requestOlderId = null;
+            $readAuthorNick = '';
+            $readAuthorGrade = 2;
+            if ($wrId > 0) {
+                $readPost = $requestModel->find($wrId);
+                if ($readPost) {
+                    $neighbors = $requestModel->getNeighborIds($wrId);
+                    $requestNewerId = $neighbors['newer_id'];
+                    $requestOlderId = $neighbors['older_id'];
+                    $readAuthorNick = trim((string) ($readPost->mb_nickname ?? ''));
+                    try {
+                        $author = $this->modelMember->getByUid((string) ($readPost->mb_uid ?? ''));
+                        if ($author) {
+                            if ($readAuthorNick === '') {
+                                $readAuthorNick = (string) ($author->mb_nickname ?? $readPost->mb_uid ?? '');
+                            }
+                            $readAuthorGrade = (int) ($author->mb_grade ?? 2);
+                        } elseif ($readAuthorNick === '') {
+                            $readAuthorNick = (string) ($readPost->mb_uid ?? '');
+                        }
+                    } catch (\Throwable $e) {
+                        if ($readAuthorNick === '') {
+                            $readAuthorNick = (string) ($readPost->mb_uid ?? '');
+                        }
+                    }
+                    if ($readAuthorGrade < 0) {
+                        $readAuthorGrade = 0;
+                    }
+                    if ($readAuthorGrade > 20) {
+                        $readAuthorGrade = 20;
+                    }
+                } else {
+                    $wrId = 0;
+                }
+            }
+
+            $loginUid = '';
+            $isRequestAdmin = false;
+            try {
+                if (is_login(false)) {
+                    $loginUid = (string) ($this->session->user_id ?? '');
+                    $adm = $loginUid !== '' ? $this->modelMember->getByUid($loginUid) : null;
+                    $isRequestAdmin = $adm && (int) ($adm->mb_level ?? 0) >= 100;
+                }
+            } catch (\Throwable $e) {
+            }
+
+            $siteTitle = ($headInfo['site_name'] ?? '파워볼게임') . ' : 기능개선요청 ' . $page . ' 페이지';
+            if ($readPost) {
+                $siteTitle = ($readPost->title ?? '기능개선') . ' > 기능개선요청 | ' . ($headInfo['site_name'] ?? '파워볼게임');
+            }
+
+            $viewData = array_merge($headInfo, [
+                'site_title' => $siteTitle,
+                'local' => $local,
+                'cssVer' => $cssVer,
+                'bo_table' => $boTable,
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
+                'totalPages' => $totalPages,
+                'rows' => $rows,
+                'sfl' => $sfl,
+                'stx' => $stx,
+                'sst' => $sst,
+                'sod' => $sod,
+                'sop' => $sop,
+                'isLogin' => is_login(false),
+                'login_uid' => $loginUid,
+                'is_request_admin' => $isRequestAdmin,
+                'wr_id' => $wrId,
+                'read_post' => $readPost,
+                'request_newer_id' => $requestNewerId,
+                'request_older_id' => $requestOlderId,
+                'read_author_nick' => $readAuthorNick,
+                'read_author_grade' => $readAuthorGrade,
+                'request_notices' => $requestNotices,
+            ]);
+
+            $html = view('home/request_board_frame', $viewData);
             $this->response->setBody($html);
             $this->response->setHeader('Content-Type', 'text/html; charset=UTF-8');
             $this->response->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');

@@ -26,6 +26,8 @@ $humor_older_id = isset($humor_older_id) ? ($humor_older_id === null ? null : (i
 $read_author_nick = (string) ($read_author_nick ?? '');
 $read_author_grade = (int) ($read_author_grade ?? 2);
 $icoNotice = site_furl('images/ico_notice.png');
+$icoReply = site_furl('skin/board/community/img/icon_reply.png');
+$icoSecret = site_furl('skin/board/community/img/icon_secret.png');
 
 $buildUrl = static function (array $q) use ($bo_table): string {
     $q = array_merge(['bo_table' => $bo_table], $q);
@@ -323,13 +325,18 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 	        $dShow = $dRaw ? date('m-d', strtotime((string) $dRaw)) : '';
 	        $numShow = $listNumBase - $idx;
 	        $rowRead = ($wr_id > 0 && $hid === $wr_id);
+	        $isReplyRow = strncasecmp(ltrim($title), 're:', 3) === 0;
 	        ?>
 		<tr class="<?= $rowRead ? 'bo_read' : '' ?>">
 			<td class="td_num"><?= $hid > 0 ? $numShow : '' ?></td>
 			<td class="td_subject">
+				<?php if ($isReplyRow): ?>
+				<img src="<?= esc($icoReply) ?>" style="margin-left:10px;" alt="답변글">
+				<?php endif; ?>
 				<a href="<?= esc($buildUrl(array_merge($listBaseQuery, ['wr_id' => $hid]))) ?>"><?= esc($title) ?>
 					<?php if ($cc > 0): ?><span class="sound_only">댓글</span><span class="cnt_cmt">[<?= $cc ?>]</span><span class="sound_only">개</span><?php endif; ?>
 				</a>
+				<img src="<?= esc($icoSecret) ?>" alt="비밀글">
 			</td>
 			<td class="td_name sv_use"><img src="<?= esc(site_furl('images/class/M2.gif')) ?>" alt=""> <span class="sv_member"><?= esc($mb) ?></span></td>
 			<td class="td_date"><?= esc($dShow) ?></td>

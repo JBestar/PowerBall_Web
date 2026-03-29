@@ -1,11 +1,11 @@
 <?php
 /**
- * mainFrame 전용 — 1:1 문의사항 (community 스킨, 선배 qna 와 동일 구조)
- * 참고: https://powerballgame.co.kr/bbs/board.php?bo_table=qna
+ * mainFrame 전용 — 기능개선요청 (community 스킨, 선배 request 와 동일 구조)
+ * 참고: https://powerballgame.co.kr/bbs/board.php?bo_table=request
  */
 $local = $local ?? rtrim(site_furl(''), '/');
 $cssVer = $cssVer ?? '1';
-$bo_table = $bo_table ?? 'qna';
+$bo_table = $bo_table ?? 'request';
 $page = (int) ($page ?? 1);
 $totalPages = (int) ($totalPages ?? 1);
 $total = (int) ($total ?? 0);
@@ -17,12 +17,12 @@ $sod = $sod ?? 'desc';
 $sop = $sop ?? 'and';
 $isLogin = $isLogin ?? false;
 $login_uid = $login_uid ?? '';
-$is_qna_admin = $is_qna_admin ?? false;
+$is_request_admin = $is_request_admin ?? false;
 $wr_id = (int) ($wr_id ?? 0);
 $read_post = $read_post ?? null;
-$qna_notices = $qna_notices ?? [];
-$qna_newer_id = isset($qna_newer_id) ? ($qna_newer_id === null ? null : (int) $qna_newer_id) : null;
-$qna_older_id = isset($qna_older_id) ? ($qna_older_id === null ? null : (int) $qna_older_id) : null;
+$request_notices = $request_notices ?? [];
+$request_newer_id = isset($request_newer_id) ? ($request_newer_id === null ? null : (int) $request_newer_id) : null;
+$request_older_id = isset($request_older_id) ? ($request_older_id === null ? null : (int) $request_older_id) : null;
 $read_author_nick = (string) ($read_author_nick ?? '');
 $read_author_grade = (int) ($read_author_grade ?? 2);
 $icoNotice = site_furl('images/ico_notice.png');
@@ -65,7 +65,7 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title><?= esc($site_title ?? '1:1문의사항') ?></title>
+	<title><?= esc($site_title ?? '기능개선요청') ?></title>
 	<link rel="stylesheet" href="<?= esc($local) ?>/css/default.css?v=<?= esc((string) $cssVer) ?>" type="text/css">
 	<link rel="stylesheet" href="<?= esc($local) ?>/css/style.css?v=<?= esc((string) $cssVer) ?>" type="text/css">
 	<link rel="stylesheet" href="<?= esc($local) ?>/css/bbs.css?v=<?= esc((string) $cssVer) ?>" type="text/css">
@@ -198,30 +198,30 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 
 	<div id="bo_v_top">
 		<ul class="bo_v_nb">
-			<?php if ($qna_newer_id): ?>
-			<li><a href="<?= esc($buildUrl(array_merge($listBaseQuery, ['wr_id' => $qna_newer_id]))) ?>" class="btn_b01">이전글</a></li>
+			<?php if ($request_newer_id): ?>
+			<li><a href="<?= esc($buildUrl(array_merge($listBaseQuery, ['wr_id' => $request_newer_id]))) ?>" class="btn_b01">이전글</a></li>
 			<?php endif; ?>
-			<?php if ($qna_older_id): ?>
-			<li><a href="<?= esc($buildUrl(array_merge($listBaseQuery, ['wr_id' => $qna_older_id]))) ?>" class="btn_b01">다음글</a></li>
+			<?php if ($request_older_id): ?>
+			<li><a href="<?= esc($buildUrl(array_merge($listBaseQuery, ['wr_id' => $request_older_id]))) ?>" class="btn_b01">다음글</a></li>
 			<?php endif; ?>
 		</ul>
 		<ul class="bo_v_com">
 			<li><a href="<?= esc($buildUrl($listBaseQuery)) ?>" class="btn_b01">목록</a></li>
-			<li><a href="#" class="btn_b02" onclick="<?php if ($isLogin): ?>window.open('<?= esc(site_furl('/?view=qnaRegister')) ?>','qnaRegister','width=600,height=650');<?php else: ?>alert('로그인 후 이용가능합니다.');<?php endif ?> return false;">글쓰기</a></li>
+			<li><a href="#" class="btn_b02" onclick="<?php if ($isLogin): ?>window.open('<?= esc(site_furl('/?view=requestRegister')) ?>','requestRegister','width=600,height=650');<?php else: ?>alert('로그인 후 이용가능합니다.');<?php endif ?> return false;">글쓰기</a></li>
 		</ul>
 	</div>
 	<?php endif; ?>
 
 	<div class="tbl_head01 tbl_wrap">
 		<table>
-		<caption class="sound_only">1:1문의사항 목록</caption>
+		<caption class="sound_only">기능개선요청 목록</caption>
 		<colgroup>
 			<col style="width:60px">
 			<col>
 			<col style="width:150px">
 			<col style="width:70px">
 			<col style="width:60px">
-			<?php if ($is_qna_admin): ?><col style="width:88px"><?php endif; ?>
+			<?php if ($is_request_admin): ?><col style="width:88px"><?php endif; ?>
 		</colgroup>
 		<thead>
 		<tr>
@@ -230,22 +230,22 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 			<th scope="col">글쓴이</th>
 			<th scope="col"><a href="<?= esc($sortUrl('wr_datetime', $sst === 'wr_datetime' && $sod === 'desc' ? 'asc' : 'desc')) ?>">날짜</a></th>
 			<th scope="col"><a href="<?= esc($sortUrl('wr_hit', $sst === 'wr_hit' && $sod === 'desc' ? 'asc' : 'desc')) ?>">조회</a></th>
-			<?php if ($is_qna_admin): ?><th scope="col">관리</th><?php endif; ?>
+			<?php if ($is_request_admin): ?><th scope="col">관리</th><?php endif; ?>
 		</tr>
 		</thead>
 		<tbody>
-		<?php if ($page === 1 && !empty($qna_notices)) :
-		    foreach ($qna_notices as $qna_notice) :
-		    $nid = (int) ($qna_notice->id ?? 0);
-		    $ntitle = (string) ($qna_notice->title ?? '');
-		    $ncc = (int) ($qna_notice->comment_count ?? 0);
-		    $nUid = (string) ($qna_notice->mb_uid ?? '');
-		    $nmb = trim((string) ($qna_notice->mb_nickname ?? ''));
+		<?php if ($page === 1 && !empty($request_notices)) :
+		    foreach ($request_notices as $request_notice) :
+		    $nid = (int) ($request_notice->id ?? 0);
+		    $ntitle = (string) ($request_notice->title ?? '');
+		    $ncc = (int) ($request_notice->comment_count ?? 0);
+		    $nUid = (string) ($request_notice->mb_uid ?? '');
+		    $nmb = trim((string) ($request_notice->mb_nickname ?? ''));
 		    if ($nmb === '') {
 		        $nmb = $nUid !== '' ? $nUid : '운영자';
 		    }
-		    $nhit = (int) ($qna_notice->wr_hit ?? 0);
-		    $nTime = $qna_notice->created_at ?? '';
+		    $nhit = (int) ($request_notice->wr_hit ?? 0);
+		    $nTime = $request_notice->created_at ?? '';
 		    $nDateShow = $nTime ? date('m-d', strtotime((string) $nTime)) : '';
 		    $nGrade = (strpos($nUid, '운영') !== false || $nUid === 'operator') ? 30 : 2;
 		    if ($nGrade > 20) {
@@ -263,7 +263,7 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 			<td class="td_name sv_use"><img src="<?= esc($nGif) ?>" alt="" onerror="this.style.display='none'"> <span class="sv_member"><?= esc($nmb) ?></span></td>
 			<td class="td_date"><?= esc($nDateShow) ?></td>
 			<td class="td_num"><?= number_format($nhit) ?></td>
-			<?php if ($is_qna_admin): ?><td></td><?php endif; ?>
+			<?php if ($is_request_admin): ?><td></td><?php endif; ?>
 		</tr>
 		<?php
 		    endforeach;
@@ -299,16 +299,16 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 			<td class="td_name sv_use"><img src="<?= esc(site_furl('images/class/M2.gif')) ?>" alt=""> <span class="sv_member"><?= esc($mb) ?></span></td>
 			<td class="td_date"><?= esc($dShow) ?></td>
 			<td class="td_num"><?= number_format($hit) ?></td>
-			<?php if ($is_qna_admin): ?>
+			<?php if ($is_request_admin): ?>
 			<td class="td_mng" style="text-align:right; white-space:nowrap; font-size:10px;">
-				<a href="#" onclick="window.open('<?= esc(site_furl('/?view=qnaEdit&id=' . $hid)) ?>','qnaEdit','width=600,height=650'); return false;" style="color:#0e609c;">수정</a>
-				<a href="<?= esc(site_furl('/?view=qnaDelete&id=' . $hid)) ?>" onclick="return confirm('정말 삭제하시겠습니까?');" style="color:#c11a20; margin-left:4px;">삭제</a>
+				<a href="#" onclick="window.open('<?= esc(site_furl('/?view=requestEdit&id=' . $hid)) ?>','requestEdit','width=600,height=650'); return false;" style="color:#0e609c;">수정</a>
+				<a href="<?= esc(site_furl('/?view=requestDelete&id=' . $hid)) ?>" onclick="return confirm('정말 삭제하시겠습니까?');" style="color:#c11a20; margin-left:4px;">삭제</a>
 			</td>
 			<?php endif; ?>
 		</tr>
 		<?php endforeach; ?>
-		<?php if ($total === 0 && count($rows) === 0 && empty($qna_notices)): ?>
-		<tr><td colspan="<?= $is_qna_admin ? 6 : 5 ?>" style="text-align:center;padding:24px;color:#999;">등록된 글이 없습니다.</td></tr>
+		<?php if ($total === 0 && count($rows) === 0 && empty($request_notices)): ?>
+		<tr><td colspan="<?= $is_request_admin ? 6 : 5 ?>" style="text-align:center;padding:24px;color:#999;">등록된 글이 없습니다.</td></tr>
 		<?php endif; ?>
 		</tbody>
 		</table>
@@ -316,7 +316,7 @@ $sortUrl = static function (string $col, string $dir) use ($buildUrl, $sfl, $stx
 
 	<div class="bo_fx">
 		<ul class="btn_bo_user">
-			<li><a href="#" class="btn_b02" onclick="<?php if ($isLogin): ?>window.open('<?= esc(site_furl('/?view=qnaRegister')) ?>','qnaRegister','width=600,height=650');<?php else: ?>alert('로그인 후 이용가능합니다.');<?php endif ?> return false;">글쓰기</a></li>
+			<li><a href="#" class="btn_b02" onclick="<?php if ($isLogin): ?>window.open('<?= esc(site_furl('/?view=requestRegister')) ?>','requestRegister','width=600,height=650');<?php else: ?>alert('로그인 후 이용가능합니다.');<?php endif ?> return false;">글쓰기</a></li>
 		</ul>
 	</div>
 </div>
@@ -351,7 +351,7 @@ $pgQ = array_merge($listBaseQuery, ['wr_id' => null]);
 <fieldset id="bo_sch">
 	<legend class="sound_only">게시물 검색</legend>
 	<form name="fsearch" method="get" action="<?= esc(site_furl('frame/communityBoard')) ?>">
-		<input type="hidden" name="bo_table" value="qna">
+		<input type="hidden" name="bo_table" value="request">
 		<input type="hidden" name="sca" value="">
 		<input type="hidden" name="sop" value="and">
 		<label for="sfl" class="sound_only">검색대상</label>
