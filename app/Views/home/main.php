@@ -413,44 +413,13 @@
             }
             // ajaxPattern('oddEven', '2026-03-07', 'powerball');
         });
-        // 공지 롤링 (scrollNotice) — #scrollNotice top 애니메이션 후 첫 li 를 맨 뒤로 이동
-        // 겹침 방지: 제목이 2줄로 말려도 outerHeight 는 23인데 scrollHeight 는 46일 수 있음 → 이동량은 scrollHeight 까지 반영
-        // 디버그 콘솔: ?scrollNoticeDebug=1 또는 localStorage.scrollNoticeDebug = '1'
+        // 공지 롤링 (scrollNotice) — #scrollNotice top 애니메이션 후 첫 li 를 맨 뒤로 이동 (이동량은 scrollHeight 반영)
         var $scrollNotice = $("#scrollNotice");
         if ($scrollNotice.length && $scrollNotice.find("ul li").length > 1) {
             var $ul = $scrollNotice.find("ul");
             var rolling = false;
-            var snTick = 0;
-            var snDbg = (typeof location !== "undefined" && /[?&]scrollNoticeDebug=1(?:&|$)/.test(location.search))
-                || (typeof localStorage !== "undefined" && localStorage.getItem("scrollNoticeDebug") === "1");
-            function snLog() {
-                if (!snDbg || typeof console === "undefined" || !console.warn) return;
-                console.warn.apply(console, ["[scrollNotice]"].concat([].slice.call(arguments)));
-            }
-            function snLiSnippet($li) {
-                var t = ($li && $li.find("a").first().text()) || $li.text() || "";
-                return String(t).replace(/\s+/g, " ").trim().substring(0, 100);
-            }
-            function snMeasureHeights() {
-                var arr = [];
-                $ul.find("li").each(function() {
-                    var el = this;
-                    var $li = $(el);
-                    arr.push({
-                        h: $li.outerHeight(true),
-                        inner: $li.outerHeight(false),
-                        scroll: el.scrollHeight,
-                        client: el.clientHeight,
-                        text: snLiSnippet($li)
-                    });
-                });
-                return arr;
-            }
             var tickNotice = function() {
-                if (rolling) {
-                    snLog("SKIP tick still rolling", "tick=" + snTick);
-                    return;
-                }
+                if (rolling) return;
                 var $first = $ul.find("li").first();
                 var el0 = $first[0];
                 var aEl = $first.find("a").get(0);
@@ -458,38 +427,11 @@
                 var scLi = el0 ? el0.scrollHeight : 0;
                 var scA = aEl ? aEl.scrollHeight : 0;
                 var lineH = Math.max(outerT, scLi, scA) || 23;
-                var topBefore = $scrollNotice.css("top");
-                var outgoing = snLiSnippet($first);
-                var next$ = $first.next("li");
-                var incomingPreview = next$.length ? snLiSnippet(next$) : "(wrap)";
-                snTick += 1;
-                var scH = scLi;
-                var clH = el0 ? el0.clientHeight : 0;
-                var kw = /완료|일부 접속|장애/.test(outgoing) || /완료|일부 접속|장애/.test(incomingPreview);
-                snLog("TICK#" + snTick,
-                    "OUT→", outgoing,
-                    "| NEXT≈", incomingPreview,
-                    "| slidePx=", lineH,
-                    "| outerT=", outerT,
-                    "| scrollLi=", scLi,
-                    "| scrollA=", scA,
-                    "| clientH=", clH,
-                    "| top=", topBefore,
-                    "| hadWrap=", scLi > outerT + 1 || scA > outerT + 1 ? "yes" : "no",
-                    kw ? "| KEYWORD" : "");
-                if (snDbg && kw) snLog("keyword tick detail");
-                if (snDbg) {
-                    var hs = snMeasureHeights();
-                    snLog("DBG heights all li", JSON.stringify(hs));
-                }
                 rolling = true;
                 var dur = Math.min(700, Math.max(350, Math.round(lineH * 12)));
                 $scrollNotice.animate({ top: -lineH }, dur, function() {
                     $ul.append($first);
                     $scrollNotice.css("top", "0");
-                    var $newFirst = $ul.find("li").first();
-                    snLog("END#" + snTick, "NOW=", snLiSnippet($newFirst), "| slideWas=", lineH);
-                    if (snDbg) snLog("DBG heights after rotate", JSON.stringify(snMeasureHeights()));
                     rolling = false;
                 });
             };

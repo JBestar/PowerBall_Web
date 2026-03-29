@@ -392,63 +392,6 @@ class Home extends BaseController
             $humorModel = new HumorPost_Model();
             $post = $humorModel->findById($id);
 
-            $hasContentCol = false;
-            try {
-                $hasContentCol = \Config\Database::connect()->fieldExists('content', 'humor_post');
-            } catch (\Throwable $e) {
-                log_message('critical', 'humorDetail dbg: fieldExists failed: ' . $e->getMessage());
-            }
-            if ($post !== null) {
-                $props = get_object_vars($post);
-                $keys = array_keys($props);
-                $rawContent = $props['content'] ?? null;
-                log_message('critical', 'humorDetail dbg: id=' . $id . ' rowKeys=' . json_encode($keys, JSON_UNESCAPED_UNICODE)
-                    . ' dbHasContentCol=' . ($hasContentCol ? '1' : '0')
-                    . ' contentPropIsset=' . (array_key_exists('content', $props) ? '1' : '0')
-                    . ' contentLen=' . (is_string($rawContent) ? strlen($rawContent) : 'n/a')
-                    . ' titleLen=' . strlen((string) ($props['title'] ?? '')));
-
-                $cStr = is_string($rawContent) ? $rawContent : '';
-                $cTrim = trim($cStr);
-                $hexMax = 96;
-                log_message('critical', 'humorDetail dbg2: id=' . $id
-                    . ' ctype=' . gettype($rawContent)
-                    . ' is_string=' . (is_string($rawContent) ? '1' : '0')
-                    . ' mb_strlen=' . mb_strlen($cStr, 'UTF-8')
-                    . ' mb_strlen_trim=' . mb_strlen($cTrim, 'UTF-8')
-                    . ' byteHex(' . min(strlen($cStr), $hexMax) . ')=' . bin2hex(substr($cStr, 0, $hexMax))
-                    . ' onlyWhitespace=' . ($cStr !== '' && $cTrim === '' ? '1' : '0'));
-
-                try {
-                    $db = \Config\Database::connect();
-                    $tn = $db->prefixTable('humor_post');
-                    $sqlRow = $db->query(
-                        "SELECT LENGTH(`content`) AS blen, CHAR_LENGTH(`content`) AS clen, HEX(LEFT(`content`, 48)) AS h48 FROM `{$tn}` WHERE `id` = ? LIMIT 1",
-                        [$id]
-                    )->getRow();
-                    if ($sqlRow) {
-                        log_message('critical', 'humorDetail dbg3: id=' . $id . ' SQL_LENGTH_bytes=' . ($sqlRow->blen ?? '')
-                            . ' SQL_CHAR_LENGTH=' . ($sqlRow->clen ?? '')
-                            . ' SQL_hex48=' . ($sqlRow->h48 ?? ''));
-                    } else {
-                        log_message('critical', 'humorDetail dbg3: id=' . $id . ' SQL row missing');
-                    }
-                } catch (\Throwable $e) {
-                    log_message('critical', 'humorDetail dbg3: SQL probe failed: ' . $e->getMessage());
-                }
-
-                try {
-                    $escOut = esc($cStr);
-                    log_message('critical', 'humorDetail dbg4: id=' . $id . ' esc_strlen=' . strlen($escOut)
-                        . ' esc_mb_strlen=' . mb_strlen($escOut, 'UTF-8')
-                        . ' esc_prefix_hex48=' . bin2hex(substr($escOut, 0, 24)));
-                } catch (\Throwable $e) {
-                    log_message('critical', 'humorDetail dbg4: esc failed: ' . $e->getMessage());
-                }
-            } else {
-                log_message('critical', 'humorDetail dbg: id=' . $id . ' post=null dbHasContentCol=' . ($hasContentCol ? '1' : '0'));
-            }
-
             $isHumorAdmin = false;
             try {
                 if (is_login(false)) {
@@ -704,8 +647,6 @@ class Home extends BaseController
                 $boards = $this->modelNotice->getBoards();
                 $boards = is_array($boards) ? array_slice($boards, 0, 10) : [];
             } catch (\Throwable $e) {
-                log_message('critical', 'index main getBoards exception: ' . $e->getMessage()
-                    . ' @ ' . $e->getFile() . ':' . $e->getLine());
                 $boards = [];
             }
             // 리스트박스용 게시 목록 (유머/분석픽공유/자유) - DB 조회
@@ -2031,16 +1972,12 @@ class Home extends BaseController
             $boards = $this->modelNotice->getBoards();
             $boards = is_array($boards) ? $boards : [];
         } catch (\Throwable $e) {
-            log_message('critical', 'frameCustomerCenter getBoards exception: ' . $e->getMessage()
-                . ' @ ' . $e->getFile() . ':' . $e->getLine() . "\n" . $e->getTraceAsString());
             $boards = [];
         }
-        log_message('debug', 'frameCustomerCenter after getBoards count=' . count($boards));
 
         $stx = trim((string) $this->request->getGet('stx'));
         $sfl = (string) $this->request->getGet('sfl');
         if ($stx !== '') {
-            $beforeSearch = count($boards);
             $boards = array_values(array_filter($boards, function ($row) use ($stx, $sfl) {
                 $title = (string) ($row->notice_title ?? '');
                 $content = (string) ($row->notice_content ?? '');
@@ -2064,7 +2001,6 @@ class Home extends BaseController
                         return mb_stripos($title, $stx) !== false;
                 }
             }));
-            log_message('debug', 'frameCustomerCenter search stx=' . json_encode($stx, JSON_UNESCAPED_UNICODE) . ' sfl=' . $sfl . ' before=' . $beforeSearch . ' after=' . count($boards));
         }
 
         $id = (int) $this->request->getGet('id');
@@ -2081,8 +2017,6 @@ class Home extends BaseController
                     $post->notice_hit = (int) ($post->notice_hit ?? 0) + 1;
                 }
             } catch (\Throwable $e) {
-                log_message('critical', 'frameCustomerCenter getBoardById(id=' . $id . ') exception: ' . $e->getMessage()
-                    . ' @ ' . $e->getFile() . ':' . $e->getLine());
                 $post = null;
             }
         }
@@ -2097,8 +2031,6 @@ class Home extends BaseController
                         $post->notice_hit = (int) ($post->notice_hit ?? 0) + 1;
                     }
                 } catch (\Throwable $e) {
-                    log_message('critical', 'frameCustomerCenter getBoardById(first fid=' . $fid . ') exception: ' . $e->getMessage()
-                        . ' @ ' . $e->getFile() . ':' . $e->getLine());
                     $post = null;
                 }
             }
@@ -2113,22 +2045,6 @@ class Home extends BaseController
             $page = $totalPages;
         }
         $boardsPage = array_slice($boards, ($page - 1) * $perPage, $perPage);
-
-        $pgCollide = [];
-        foreach (['page', 'total', 'totalPages', 'perPage', 'boards', 'boardsPage'] as $_k) {
-            if (array_key_exists($_k, $headInfo)) {
-                $pgCollide[] = $_k;
-            }
-        }
-        $fidSample = [];
-        foreach (array_slice($boards, 0, 15) as $_row) {
-            $fidSample[] = (int) ($_row->notice_fid ?? 0);
-        }
-        log_message('critical', 'frameCustomerCenter pg dbg: GET_page=' . (int) $this->request->getGet('page')
-            . ' boardCount=' . $total . ' perPage=' . $perPage . ' ceilRaw=' . $ceilRaw
-            . ' totalPages=' . $totalPages . ' finalPage=' . $page . ' sliceCount=' . count($boardsPage)
-            . ' headInfoCollide=' . json_encode($pgCollide)
-            . ' fidSample=' . json_encode($fidSample));
 
         $prevId = null;
         $nextId = null;
@@ -2173,10 +2089,6 @@ class Home extends BaseController
             'isLogin' => is_login(false),
             'is_notice_admin' => $is_notice_admin,
         ]);
-
-        log_message('critical', 'frameCustomerCenter pg dbg: after merge view totalPages='
-            . ($viewData['totalPages'] ?? 'MISSING') . ' total=' . ($viewData['total'] ?? 'MISSING')
-            . ' perPage=' . ($viewData['perPage'] ?? 'MISSING'));
 
         $html = view('home/customer_center_frame', $viewData);
         $this->response->setBody($html);

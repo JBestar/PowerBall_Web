@@ -105,26 +105,6 @@ class Notice_Model extends Model
         $tn = $this->tablePrefixed();
         $mn = $this->memberPrefixed();
 
-        log_message('debug', sprintf(
-            'Notice_Model::getBoards start table=%s member=%s expect_type=[%s,%s] state_active=%s state_delete=%s',
-            $tn,
-            $mn,
-            self::TYPE_NOTICE,
-            self::TYPE_GUIDE,
-            (string) STATE_ACTIVE,
-            (string) STATE_DISABLE
-        ));
-
-        try {
-            $diagSql = "SELECT `notice_fid`, `notice_type`, `notice_state_active`, `notice_state_delete`,
-                HEX(`notice_type`) AS notice_type_hex, CHAR_LENGTH(`notice_type`) AS notice_type_len
-                FROM `{$tn}` ORDER BY `notice_fid` DESC LIMIT 20";
-            $diag = $this->db->query($diagSql)->getResultArray();
-            log_message('debug', 'Notice_Model::getBoards DB snapshot (last 20, no filter): ' . json_encode($diag, JSON_UNESCAPED_UNICODE));
-        } catch (\Throwable $e) {
-            log_message('critical', 'Notice_Model::getBoards snapshot query failed: ' . $e->getMessage());
-        }
-
         $collate = self::JOIN_STRING_COLLATE;
         $types   = self::siteBoardTypesForQuery();
         $inHold  = implode(',', array_fill(0, count($types), '?'));
@@ -140,10 +120,7 @@ class Notice_Model extends Model
             (int) STATE_ACTIVE,
             (int) STATE_DISABLE,
         ]));
-        $rows = $result->getResultObject();
-        log_message('debug', 'Notice_Model::getBoards filtered count=' . count($rows) . ' lastQuery=' . (string) $this->db->getLastQuery());
-
-        return $rows;
+        return $result->getResultObject();
     }
 
     public function getBoardById($fid)
@@ -168,13 +145,10 @@ class Notice_Model extends Model
             AND `{$tn}`.`notice_state_active` = ?
             AND `{$tn}`.`notice_state_delete` = ?";
 
-        $row = $this->db->query($sql, array_merge([$fid], $types, [
+        return $this->db->query($sql, array_merge([$fid], $types, [
             (int) STATE_ACTIVE,
             (int) STATE_DISABLE,
         ]))->getFirstRow('object');
-        log_message('debug', 'Notice_Model::getBoardById fid=' . $fid . ' found=' . ($row ? 'yes' : 'no') . ' lastQuery=' . (string) $this->db->getLastQuery());
-
-        return $row;
     }
 
     /** 조회수 +1 (공지/안내·구 가이드만) */
