@@ -1,9 +1,18 @@
 # CI4 & 환경 설정
 .env
-/writable/*
-!/writable/index.html
-!/writable/.htaccess
 /vendor/
+
+# writable: 폴더 구조·index.html·.htaccess만 추적, 생성 파일은 제외
+writable/cache/*
+!writable/cache/index.html
+writable/debugbar/*
+!writable/debugbar/index.html
+writable/logs/*
+!writable/logs/index.html
+writable/session/*
+!writable/session/index.html
+writable/uploads/*
+!writable/uploads/index.html
 
 # OS & IDE
 .DS_Store
