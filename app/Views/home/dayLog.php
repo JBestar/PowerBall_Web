@@ -580,21 +580,9 @@
 		<tr>
 			
 		<th class="menu on" style="position:relative;"><a href="/?view=dayLog" class="tab1 on">일자별 분석<div style="position:absolute;top:5px;left:20px;"><img src="/images/realtime_bt.gif" width="37" height="19"></div></a></th>
-		<?php if (!empty($can_access_analysis)): ?>
 		<th class="menu"><a href="/?view=latestLog" class="tab2">최근 분석<div style="position:absolute;top:5px;left:20px;"><img src="/images/realtime_bt.gif" width="37" height="19"></div></a></th>
-		<?php else: ?>
-		<th class="menu"><a href="#" onclick="alert('로그인 후 이용가능합니다.');return false;" class="tab2">최근 분석<div style="position:absolute;top:5px;left:20px;"><img src="/images/realtime_bt.gif" width="37" height="19"></div></a></th>
-		<?php endif; ?>
-		<?php if (!empty($can_access_analysis)): ?>
 		<th class="menu"><a href="/?view=periodLog" class="tab3">기간별 분석</a></th>
-		<?php else: ?>
-		<th class="menu"><a href="#" onclick="alert('로그인 후 이용가능합니다.');return false;" class="tab3">기간별 분석</a></th>
-		<?php endif; ?>
-		<?php if (!empty($can_access_analysis)): ?>
 		<th class="menu"><a href="/?view=patternAnalyze" class="tab5">패턴별 분석</a></th>
-		<?php else: ?>
-		<th class="menu"><a href="#" onclick="alert('로그인 후 이용가능합니다.');return false;" class="tab5">패턴별 분석</a></th>
-		<?php endif; ?>
 
 		</tr>
 	</table>

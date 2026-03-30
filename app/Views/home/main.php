@@ -139,20 +139,20 @@
             </div>
             <div class="gnb">
                 <ul>
-                    <!-- 1. 파워볼게임 (활성화 상태 'on') -->
-                    <li><a href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame" class="on">파워볼2게임(PBG2)</a></li>
+                    <!-- 1. 파워볼게임 (활성화 상태 'on'; 픽/마켓 선택 시에도 시각적 활성 유지용 id) -->
+                    <li><a id="gnbPowerball" href="<?php echo site_furl('frame/dayLog'); ?>" target="mainFrame" class="on">파워볼2게임(PBG2)</a></li>
                     
-                    <!-- 2. 픽 (로그인 체크 로직 포함) -->
+                    <!-- 2. 픽 (탭 하이라이트는 파워볼2게임 유지) -->
                     <li>
-                        <a href="#" onclick="<?php echo is_login(false) ? 'location.href=\'/pick\'' : 'alert(\'로그인 후 이용가능합니다.\');'; ?> return false;">픽</a>
+                        <a href="#" id="gnbPick">픽</a>
                     </li>
 
                     <!-- 3. 커뮤니티 (활성 시 a.on → #topArea .gnb ul li a.on 배경 #0d568c) -->
                     <li><a id="gnbCommunity" href="<?= esc(site_furl('frame/communityBoard?bo_table=humor')) ?>" target="mainFrame">커뮤니티</a></li>
 
-                    <!-- 4. 마켓 (로그인 체크) -->
+                    <!-- 4. 마켓 (탭 하이라이트는 파워볼2게임 유지) -->
                     <li>
-                        <a href="#" onclick="<?php echo is_login(false) ? 'location.href=\'/market\'' : 'alert(\'로그인 후 이용가능합니다.\');'; ?> return false;">마켓</a>
+                        <a href="#" id="gnbMarket">마켓</a>
                     </li>
 
                     <!-- 5. 방채팅 -->
@@ -504,6 +504,21 @@
             $("#topArea .gnb a[target=\"mainFrame\"]").on("click", function() {
                 $("#topArea .gnb a").removeClass("on");
                 $(this).addClass("on");
+            });
+            // 픽·마켓은 별도 경로로 이동; GNB 활성 탭은 파워볼2게임 유지 (픽/마켓 쪽에서 로그인 요구 시 해당 페이지에서 처리)
+            var gnbPickUrl = <?= json_encode(site_furl('pick'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+            var gnbMarketUrl = <?= json_encode(site_furl('market'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+            $("#gnbPick").on("click", function(e) {
+                e.preventDefault();
+                $("#topArea .gnb a").removeClass("on");
+                $("#gnbPowerball").addClass("on");
+                location.href = gnbPickUrl;
+            });
+            $("#gnbMarket").on("click", function(e) {
+                e.preventDefault();
+                $("#topArea .gnb a").removeClass("on");
+                $("#gnbPowerball").addClass("on");
+                location.href = gnbMarketUrl;
             });
             // boardBox 탭 전환 (유머/포토/분석픽공유/자유) — 유머/포토 선택 시 mainFrame에 해당 게시판 로드 + GNB 커뮤니티 활성
             var frameCommunityHumor = "<?= esc(site_furl('frame/communityBoard?bo_table=humor'), 'js') ?>";

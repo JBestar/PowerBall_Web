@@ -126,11 +126,9 @@ class Home extends BaseController
         // 1. 도메인 체크 (선배님 로직)
         if($_ENV['app.name'] == APP_ATM && strpos($_SERVER['HTTP_HOST'], "xn--hi5b6a25g9xy.com") === 0){
 		    $this->response->redirect(site_furl('/domain'));
-        } 
-        // 2. 로그인 필수 설정인 경우 로그인 페이지로 리다이렉트
-        else if(!is_login(true) && array_key_exists('app.login', $_ENV) && $_ENV['app.login'] == 1){
-            return $this->response->redirect(site_furl('/login'));
         }
+        // 열람은 비로그인 허용. 로그인은 글쓰기·등록·수정·삭제·출석처리·채팅전송 등 액션에서만 요구한다.
+        // (구 app.login 전역 강제는 제거됨. 사이트 전체 잠금이 필요하면 별도 리버스프록시/인증으로 처리.)
         // 2-1. mainFrame(핵심 inner-right) 전용: view=dayLog → 별도 파일에서 수행
         else if($this->request->getGet('view') === 'dayLog'){
             $dayLogDate = $this->request->getGet('date');
@@ -142,17 +140,14 @@ class Home extends BaseController
             $dayLogData = array_merge($headInfo, $this->getDrawTimerInfo(), [
                 'site_title' => ($headInfo['site_name'] ?? '파워볼게임').' : 실시간 파워볼 분석 커뮤니티',
                 'date' => $dayLogDate,
-                'can_access_analysis' => is_login(false),
+                'can_access_analysis' => true,
                 'flash_message' => $this->session->getFlashdata('message'),
             ]);
             echo view('home/dayLog', $dayLogData);
             return;
         }
-        // 2-1-2. 최근 분석 (로그인 시에만 이용)
+        // 2-1-2. 최근 분석 (열람 비로그인 허용)
         else if ($this->request->getGet('view') === 'latestLog') {
-            if (!is_login(false)) {
-                return $this->redirectWithMessage(site_furl('/?view=dayLog'), '로그인 후 이용가능합니다.');
-            }
             $roundCnt = (int) $this->request->getGet('roundCnt');
             if ($roundCnt < 50 || $roundCnt > 2000) {
                 $roundCnt = 300;
@@ -167,12 +162,8 @@ class Home extends BaseController
             echo view('home/latestLog', $latestLogData);
             return;
         }
-        // 2-1-3. 기간별 분석 (로그인 시에만 이용)
+        // 2-1-3. 기간별 분석 (열람 비로그인 허용)
         else if ($this->request->getGet('view') === 'periodLog') {
-            if (!is_login(false)) {
-                return $this->redirectWithMessage(site_furl('/?view=dayLog'), '로그인 후 이용가능합니다.');
-            }
-
             $today = date('Y-m-d');
             $dateType = (string) $this->request->getGet('dateType');
             $startDate = (string) $this->request->getGet('startDate');
@@ -224,12 +215,8 @@ class Home extends BaseController
             echo view('home/periodLog', $periodLogData);
             return;
         }
-        // 2-1-4. 패턴별 분석 (로그인 시에만 이용)
+        // 2-1-4. 패턴별 분석 (열람 비로그인 허용)
         else if ($this->request->getGet('view') === 'patternAnalyze') {
-            if (!is_login(false)) {
-                return $this->redirectWithMessage(site_furl('/?view=dayLog'), '로그인 후 이용가능합니다.');
-            }
-
             $patternAnalyzeData = array_merge($headInfo, [
                 'site_title' => ($headInfo['site_name'] ?? '파워볼게임') . ' : 패턴별 분석',
             ]);
@@ -1105,6 +1092,7 @@ class Home extends BaseController
                 'site_title' => ($headInfo['site_name'] ?? '파워볼게임').' : 실시간 파워볼 분석 커뮤니티',
                 'date' => $dayLogDate,
                 'frame_mainFrame' => true,
+                'can_access_analysis' => true,
             ]);
             echo view('home/dayLog', $dayLogData);
             return;
@@ -1379,10 +1367,6 @@ class Home extends BaseController
      */
     public function ajaxPowerballAnalyse()
     {
-        if (!is_login(false)) {
-            return $this->response->setJSON(['state' => 'error', 'content' => 'notlogin']);
-        }
-
         $roundCnt = (int) $this->request->getPost('roundCnt');
         if ($roundCnt < 50 || $roundCnt > 2000) {
             $roundCnt = 300;
@@ -1586,9 +1570,6 @@ class Home extends BaseController
         }
 
         if ($actionType === 'latestLog') {
-            if (!is_login(false)) {
-                return $this->response->setJSON(['content' => 'notlogin']);
-            }
             $page = (int) $this->request->getPost('page');
             if ($page < 0) {
                 $page = 0;
@@ -1645,11 +1626,6 @@ class Home extends BaseController
             $roundCnt = 300;
         } else {
             $roundCnt = (int) (round($roundCnt / 50) * 50);
-        }
-
-        // 홀짝 패턴(oddEven)만 비로그인 허용, 나머지(언더오버·대중소)는 로그인 필수. iframe 내 AJAX는 쿠키 미전송 가능하므로 세션만 검사
-        if ($actionType !== 'oddEven' && !is_login(false)) {
-            return $this->response->setJSON(['content' => 'notlogin']);
         }
 
         if ($actionType === 'oddEven' && $division === 'powerball') {
@@ -2152,7 +2128,6 @@ class Home extends BaseController
 
     /**
      * 육매 분석 데이터: ajaxSixPattern (patternCnt=1~6, actionType=oddEven 등, division=powerball/number)
-     * 파워볼 홀짝만 비로그인 허용 (선배님 동작)
      */
     public function ajaxSixPattern()
     {
@@ -2172,21 +2147,6 @@ class Home extends BaseController
         }
         if ($patternCnt < 1 || $patternCnt > 6) {
             $patternCnt = 6;
-        }
-
-        // 비로그인 허용: 파워볼 홀짝 패턴만. 나머지 4개(파워볼 언더오버, 숫자합 홀짝/언더오버/대중소)는 로그인 시에만 이용 가능
-        $allowedNoLogin = [
-            ['oddEven', 'powerball'],
-        ];
-        $needLogin = true;
-        foreach ($allowedNoLogin as $pair) {
-            if ($actionType === $pair[0] && $division === $pair[1]) {
-                $needLogin = false;
-                break;
-            }
-        }
-        if ($needLogin && !is_login(false)) {
-            return $this->response->setJSON(['content' => 'notlogin']);
         }
 
         if ((($actionType === 'oddEven' || $actionType === 'underOver') && ($division === 'powerball' || $division === 'number'))
@@ -2480,7 +2440,7 @@ class Home extends BaseController
             'site_title' => ($headInfo['site_name'] ?? '파워볼게임') . ' : 실시간 파워볼 분석 커뮤니티',
             'date' => $dayLogDate,
             'frame_mainFrame' => true,
-            'can_access_analysis' => is_login(false),
+            'can_access_analysis' => true,
             'flash_message' => $this->session->getFlashdata('message'),
         ]);
         $html = view('home/dayLog', $dayLogData);
