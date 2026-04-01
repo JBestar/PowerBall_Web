@@ -398,6 +398,18 @@
     <!-- jQuery 로드 (로컬) -->
     <script type="text/javascript" src="<?php echo $local; ?>/js/jquery-1.11.2.min.js"></script>
     <script>
+        <?php
+        // site_furl('') 만 쓰면 app.furl 이 비어 있을 때 '/' 만 되어 허브가 중단됨 → '/' POST 와 동일 문제 방지
+        $drawTimerHubBase = rtrim(site_furl('/'), '/') . '/';
+        if ($drawTimerHubBase === '/' && defined('BASEURL') && BASEURL !== '') {
+            $drawTimerHubBase = rtrim((string) BASEURL, '/') . '/';
+        }
+        ?>
+        window.DRAW_TIMER_HUB_BASE = <?= json_encode($drawTimerHubBase, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+        window.CI_APP_DEBUG = <?= json_encode(function_exists('ci_app_debug') ? ci_app_debug() : (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    </script>
+    <script type="text/javascript" src="<?php echo $local; ?>/js/drawTimerHub.js"></script>
+    <script>
     (function(){
         "use strict";
         // ladderTimer (메인 페이지용 변수)
@@ -508,6 +520,19 @@
                 }
             });
             $("#bestPicksterList .content").on("click", function(){ ajaxBestPickster(); });
+            // 미니뷰 iframe: 백그라운드 복귀 시 추첨시각 즉시 동기화 (iframe 내부 visibility와 별도로 부모 탭 포커스 보강)
+            function scheduleMiniViewIframeSyncBurst() {
+                try {
+                    var f = document.getElementById("miniViewFrame");
+                    if (f && f.contentWindow && typeof f.contentWindow.scheduleMiniViewSyncBurst === "function") {
+                        f.contentWindow.scheduleMiniViewSyncBurst();
+                    }
+                } catch (e) {}
+            }
+            $(document).on("visibilitychange.mainminiview", function() {
+                if (!document.hidden) scheduleMiniViewIframeSyncBurst();
+            });
+            $(window).on("focus.mainminiview", scheduleMiniViewIframeSyncBurst);
             // 상단 GNB: mainFrame 을 여는 링크 중 하나만 .on (배경 #0d568c — common.css .gnb a.on)
             $("#topArea .gnb a[target=\"mainFrame\"]").on("click", function() {
                 $("#topArea .gnb a").removeClass("on");

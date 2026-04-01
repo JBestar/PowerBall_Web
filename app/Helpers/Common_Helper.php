@@ -1159,4 +1159,18 @@
 
         return $pool[$idx];
     }
+
+    if (! function_exists('ci_app_debug')) {
+        /**
+         * CI_ENVIRONMENT 가 development 일 때만 true (프론트 JS 디버그 로그용).
+         */
+        function ci_app_debug(): bool
+        {
+            if (defined('ENV_DEVELOPMENT')) {
+                return (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === ENV_DEVELOPMENT;
+            }
+
+            return (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development';
+        }
+    }
 ?>

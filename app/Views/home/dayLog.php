@@ -47,6 +47,13 @@
 	var actionBaseUrl = '<?= rtrim(esc(site_furl("")), "/") ?>/';
 	window.ACTION_BASE_URL = actionBaseUrl;
 
+	var CI_APP_DEBUG = <?= json_encode(function_exists('ci_app_debug') ? ci_app_debug() : (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+	var dayLogUsesParentHub = false;
+	try {
+		dayLogUsesParentHub = window.parent && window.parent !== window;
+	} catch (e) {}
+
 	// mainFrame 높이: 실제 문서 높이로 조절 (육매/패턴 영역·더보기 포함해 잘리지 않도록)
 	var DAYLOG_MIN_HEIGHT = 500;
 	var _dayLogDebug = false; // 디버그 로그 (원인 파악 후 false로)
@@ -111,9 +118,11 @@
 		// 전체 분석 데이터 (해당 날짜 집계) 초기 로드
 		refreshAnalyse();
 
-		setInterval(function(){
-			ladderTimer('dayLogTimer');
-		},1000);
+		if (!dayLogUsesParentHub) {
+			setInterval(function(){
+				ladderTimer('dayLogTimer');
+			},1000);
+		}
 
 		// 미니뷰가 닫혀 있어도 신규 회차를 빠르게 감지해 회차별 분석 데이터 갱신
 		// (dataRefresh()는 round 비교로 신규 데이터만 prepend 하므로 주기 호출해도 안전)
@@ -153,7 +162,19 @@
 		}
 		$(document).on('visibilitychange', function() {
 			if (!document.hidden) {
-				try { syncDayLogDrawTimerFromServer(); } catch(e) {}
+				if (dayLogUsesParentHub) {
+					try {
+						window.parent.postMessage({ type: 'drawTimerHubRequestSync' }, window.location.origin);
+					} catch(e0) {}
+				} else {
+					try { syncDayLogDrawTimerFromServer(); } catch(e) {}
+				}
+				try {
+					var _mv = document.getElementById('miniViewFrame');
+					if (_mv && _mv.contentWindow && typeof _mv.contentWindow.scheduleMiniViewSyncBurst === 'function') {
+						_mv.contentWindow.scheduleMiniViewSyncBurst();
+					}
+				} catch(e2) {}
 				// 돌아오는 즉시 1회 + 빠른 추격
 				try { dataRefresh(); } catch(e) {}
 				startCatchUp();
@@ -162,13 +183,14 @@
 			}
 		});
 
-		// 타이머 표시: 서버와 5초마다 재동기화 (클라이언트만 카운트다운할 때 생기는 3곳 불일치 방지)
-		setTimeout(function() { try { syncDayLogDrawTimerFromServer(); } catch(e) {} }, 300);
-		setInterval(function() {
-			try {
-				if (!document.hidden) syncDayLogDrawTimerFromServer();
-			} catch(e) {}
-		}, 5000);
+		if (!dayLogUsesParentHub) {
+			setTimeout(function() { try { syncDayLogDrawTimerFromServer(); } catch(e) {} }, 300);
+			setInterval(function() {
+				try {
+					if (!document.hidden) syncDayLogDrawTimerFromServer();
+				} catch(e) {}
+			}, 5000);
+		}
 
 /*
 		$('.defaultTable .menu').mouseover(function(){
@@ -519,6 +541,50 @@
 				$('#timeRound').text(resp.time_round);
 			}
 		}, 'json');
+	}
+
+	var _prevHubRemainDayLog = null;
+	if (dayLogUsesParentHub) {
+		window.addEventListener('message', function(ev) {
+			var d = ev.data;
+			if (!d || d.type !== 'drawTimerHub') return;
+			try {
+				if (ev.origin !== window.location.origin) {
+					if (CI_APP_DEBUG && console && console.warn) {
+						console.warn('[drawTimerHub:dayLog] origin 거부', ev.origin, 'expected', window.location.origin);
+					}
+					return;
+				}
+				if (ev.source !== window.parent) {
+					if (CI_APP_DEBUG && console && console.warn) {
+						console.warn('[drawTimerHub:dayLog] source 거부');
+					}
+					return;
+				}
+			} catch (e) { return; }
+			var sec = Math.max(0, parseInt(d.remainSeconds, 10) || 0);
+			var tr = d.timeRound;
+			try {
+				if (typeof curDate !== 'undefined' && typeof today !== 'undefined' && curDate == today) {
+					remainTime = sec;
+					if (typeof tr !== 'undefined') $('#timeRound').text(tr);
+					var ri = Math.floor(sec / 60);
+					var rs = sec % 60;
+					$('#dayLogTimer .minute').text(ri);
+					$('#dayLogTimer .second').text(rs < 10 ? '0' + rs : '' + rs);
+					if (_prevHubRemainDayLog !== null && _prevHubRemainDayLog > 0 && sec === 0) {
+						try { dataRefresh(); } catch (e3) {}
+					}
+					_prevHubRemainDayLog = sec;
+				}
+			} catch (e2) {}
+			try {
+				var _mvHub = document.getElementById('miniViewFrame');
+				if (_mvHub && _mvHub.contentWindow) {
+					_mvHub.contentWindow.postMessage(d, window.location.origin);
+				}
+			} catch (e4) {}
+		});
 	}
 
 	$(window).load(function(){

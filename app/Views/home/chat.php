@@ -211,6 +211,7 @@ $staticChatRooms = [
 
     <script>
     (function() {
+        var CI_APP_DEBUG = <?= json_encode(function_exists('ci_app_debug') ? ci_app_debug() : (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         var baseUrl = <?= json_encode(site_furl('/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         var classGif = <?= json_encode($local . '/images/class/' . $classGifId . '.gif', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         var me = <?= json_encode((string) ($objMember->mb_uid ?? ''), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
@@ -244,6 +245,11 @@ $staticChatRooms = [
             if (round) $("#timeRound").text(String(round));
         }
 
+        var chatTimerFromParentHub = false;
+        try {
+            chatTimerFromParentHub = window.parent && window.parent !== window;
+        } catch (e) {}
+
         function syncTimer() {
             $.post(baseUrl, { view: "action", action: "ajaxChatTimer" }, function(resp) {
                 if (!resp || resp.state !== "success") return;
@@ -252,6 +258,31 @@ $staticChatRooms = [
                     $("#connectUserCnt").text(resp.connectUserCnt || 0).attr("rel", resp.connectUserCnt || 0);
                 }
             }, "json");
+        }
+
+        if (chatTimerFromParentHub) {
+            window.addEventListener("message", function(ev) {
+                var d = ev.data;
+                if (!d || d.type !== "drawTimerHub") return;
+                try {
+                    if (ev.origin !== window.location.origin) {
+                        if (CI_APP_DEBUG && console && console.warn) {
+                            console.warn("[drawTimerHub:chat] origin 거부", ev.origin, "expected", window.location.origin);
+                        }
+                        return;
+                    }
+                    if (ev.source !== window.parent) {
+                        if (CI_APP_DEBUG && console && console.warn) {
+                            console.warn("[drawTimerHub:chat] source 거부");
+                        }
+                        return;
+                    }
+                } catch (e) { return; }
+                renderTimer(d.remainSeconds, d.timeRound);
+                if (typeof d.connectUserCnt !== "undefined") {
+                    $("#connectUserCnt").text(d.connectUserCnt || 0).attr("rel", d.connectUserCnt || 0);
+                }
+            });
         }
 
         /** 파워볼 → 숫자합 순서. 줄별 class는 각각 홀→msg-odd, 짝→msg-even (선배님 페이지와 동일). */
@@ -427,9 +458,11 @@ $staticChatRooms = [
 
         $("#news-ticker-slide").simpleTicker({ speed : 600, delay : 4000, easing : 'swing', effectType : 'slide' });
         loadChatList();
-        syncTimer();
+        if (!chatTimerFromParentHub) {
+            syncTimer();
+            setInterval(syncTimer, 1000);
+        }
         setInterval(loadChatList, 2500);
-        setInterval(syncTimer, 1000);
     })();
     </script>
 </body>

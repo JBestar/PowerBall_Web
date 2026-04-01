@@ -191,6 +191,7 @@
 <script>
 window.POWERBALL_AJAX_URL = '<?php echo site_furl(''); ?>';
 window.POWERBALL_BASE_URL = '<?php echo site_furl(''); ?>';
+window.CI_APP_DEBUG = <?= json_encode(function_exists('ci_app_debug') ? ci_app_debug() : (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 var remainTime = <?= (int)($remain_time ?? 300) ?>;
 function setCookie(n,v){ try{ document.cookie = n+'='+v+'; path=/'; } catch(e){} }
 function getCookie(n){ var m = document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m ? m[2] : ''; }

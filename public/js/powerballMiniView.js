@@ -1,5 +1,12 @@
+var miniViewUsesParentHub = false;
+try { miniViewUsesParentHub = window.parent && window.parent !== window; } catch (e) {}
+
 function ladderResultTimer(divId)
 {
+	// 백그라운드 탭에서는 타이머가 분 단위로만 돌아가 remainTime이 크게 밀림 → 감춤일 땐 감소 생략, 복귀 시 서버 동기화로 맞춤
+	if (typeof document !== "undefined" && document.hidden) {
+		return;
+	}
 	if(remainTime == 0)
 	{
 		remainTime = 300;
@@ -195,6 +202,81 @@ function syncMiniViewDrawTimerFromServer() {
 	}, 'json');
 }
 
+/** 탭/창 복귀 직후 네트워크 지연·스로틀 보정용 연속 동기화 (부모에서도 호출 가능) */
+function scheduleMiniViewSyncBurst() {
+	if (miniViewUsesParentHub) {
+		try {
+			window.parent.postMessage({ type: 'drawTimerHubRequestSync' }, window.location.origin);
+		} catch (e) {}
+		return;
+	}
+	try { syncMiniViewDrawTimerFromServer(); } catch (e) {}
+	setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 0);
+	setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 150);
+	setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 500);
+}
+window.syncMiniViewDrawTimerFromServer = syncMiniViewDrawTimerFromServer;
+window.scheduleMiniViewSyncBurst = scheduleMiniViewSyncBurst;
+
+var _prevHubRemainMini = null;
+
+function miniViewApplyDrawTimerFromHub(sec, tr) {
+	sec = Math.max(0, parseInt(sec, 10) || 0);
+	remainTime = sec;
+	if (typeof tr !== 'undefined') {
+		$('#timeRound').text(tr);
+		$('.nextRound').text(tr);
+	}
+	var remain_i = Math.floor(sec / 60);
+	var remain_s = sec % 60;
+	$('#ladderTimer').find('.minute').text(remain_i);
+	$('#ladderTimer').find('.second').text(remain_s < 10 ? '0' + remain_s : '' + remain_s);
+	if (sec <= 10 && sec >= 0) {
+		$('#lotteryBox .play').css('display', 'block').show();
+		$('#ladderReady').hide();
+	}
+	if (_prevHubRemainMini !== null && _prevHubRemainMini > 0 && sec === 0) {
+		var drawUrl = (window.POWERBALL_BASE_URL || window.POWERBALL_AJAX_URL || '').replace(/\/$/, '') + '/lottery/getDrawResult';
+		$.getJSON(drawUrl).done(function(data){
+			if(data && (data.round != null || data.ball1 != null)){
+				updateResult(data);
+			}
+		}).fail(function(){
+			$('#lotteryBox .play').hide();
+			$('#ladderReady').show();
+		});
+	}
+	_prevHubRemainMini = sec;
+}
+
+if (miniViewUsesParentHub) {
+	window.addEventListener('message', function(ev) {
+		var d = ev.data;
+		if (!d || d.type !== 'drawTimerHub') return;
+		try {
+			if (ev.origin !== window.location.origin) {
+				if (window.CI_APP_DEBUG && console && console.warn) {
+					console.warn('[drawTimerHub:miniView] origin 거부', ev.origin, 'expected', window.location.origin);
+				}
+				return;
+			}
+			if (ev.source !== window.parent) {
+				if (window.CI_APP_DEBUG && console && console.warn) {
+					console.warn('[drawTimerHub:miniView] source 거부');
+				}
+				return;
+			}
+		} catch (e) { return; }
+		if (document.hidden) {
+			if (window.CI_APP_DEBUG && console && console.log) {
+				console.log('[drawTimerHub:miniView] document.hidden → UI 갱신 생략');
+			}
+			return;
+		}
+		miniViewApplyDrawTimerFromHub(d.remainSeconds, d.timeRound);
+	});
+}
+
 $(document).ready(function(){
 	rebuildBallsNoWhitespace('lotteryResult', true);
 	rebuildBallsNoWhitespace('beforeResult', false);
@@ -203,20 +285,32 @@ $(document).ready(function(){
 		$('#lotteryBox .play').css('display', 'block').show();
 		$('#ladderReady').hide();
 	}
-	setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 300);
-	setInterval(function() {
-		try {
-			if (!document.hidden) syncMiniViewDrawTimerFromServer();
-		} catch (e) {}
-	}, 5000);
+	if (!miniViewUsesParentHub) {
+		setTimeout(function() { try { syncMiniViewDrawTimerFromServer(); } catch (e) {} }, 300);
+		setInterval(function() {
+			try {
+				if (!document.hidden) syncMiniViewDrawTimerFromServer();
+			} catch (e) {}
+		}, 5000);
+	}
 	$(document).on('visibilitychange.miniviewtimer', function() {
 		if (!document.hidden) {
-			try { syncMiniViewDrawTimerFromServer(); } catch (e) {}
+			scheduleMiniViewSyncBurst();
 		}
 	});
-	setInterval(function(){
-		ladderResultTimer('ladderTimer');
-	},1000);
+	$(window).on('focus.miniviewtimer', function() {
+		scheduleMiniViewSyncBurst();
+	});
+	$(window).on('pageshow.miniviewtimer', function(ev) {
+		if (ev.originalEvent && ev.originalEvent.persisted) {
+			scheduleMiniViewSyncBurst();
+		}
+	});
+	if (!miniViewUsesParentHub) {
+		setInterval(function(){
+			ladderResultTimer('ladderTimer');
+		},1000);
+	}
 });
 
 $(document).ready(function(){
