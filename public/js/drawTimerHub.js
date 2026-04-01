@@ -83,10 +83,8 @@
 
     function broadcast() {
         var payload = buildPayload();
-        var origin = window.location.origin || '*';
-        if (!window.location.origin) {
-            dbgWarn('location.origin 없음');
-        }
+        // targetOrigin 은 *수신 창*의 origin 이어야 함. 부모 origin 을 넣으면 www/비-www·리다이렉트 시
+        // 자식과 불일치해 브라우저가 메시지를 버림 → '*' + 수신 측에서 source 검증.
         var ids = ['chatFrame', 'mainFrame'];
         for (var i = 0; i < ids.length; i++) {
             var id = ids[i];
@@ -102,7 +100,7 @@
                 continue;
             }
             try {
-                el.contentWindow.postMessage(payload, origin);
+                el.contentWindow.postMessage(payload, '*');
             } catch (e) {
                 dbgWarn('postMessage 실패 #' + id, e && e.message ? e.message : e);
             }
@@ -205,8 +203,19 @@
             if (!d || d.type !== 'drawTimerHubRequestSync') {
                 return;
             }
-            if (ev.origin && ev.origin !== window.location.origin) {
-                dbgWarn('drawTimerHubRequestSync origin 불일치', ev.origin);
+            var ch = document.getElementById('chatFrame');
+            var mf = document.getElementById('mainFrame');
+            var ok = false;
+            try {
+                if (ch && ev.source === ch.contentWindow) {
+                    ok = true;
+                }
+                if (mf && ev.source === mf.contentWindow) {
+                    ok = true;
+                }
+            } catch (e) {}
+            if (!ok) {
+                dbgWarn('drawTimerHubRequestSync 출처 불일치');
                 return;
             }
             dbg('자식 재동기화 요청');

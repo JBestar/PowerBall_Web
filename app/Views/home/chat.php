@@ -211,7 +211,6 @@ $staticChatRooms = [
 
     <script>
     (function() {
-        var CI_APP_DEBUG = <?= json_encode(function_exists('ci_app_debug') ? ci_app_debug() : (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         var baseUrl = <?= json_encode(site_furl('/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         var classGif = <?= json_encode($local . '/images/class/' . $classGifId . '.gif', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         var me = <?= json_encode((string) ($objMember->mb_uid ?? ''), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
@@ -265,18 +264,7 @@ $staticChatRooms = [
                 var d = ev.data;
                 if (!d || d.type !== "drawTimerHub") return;
                 try {
-                    if (ev.origin !== window.location.origin) {
-                        if (CI_APP_DEBUG && console && console.warn) {
-                            console.warn("[drawTimerHub:chat] origin 거부", ev.origin, "expected", window.location.origin);
-                        }
-                        return;
-                    }
-                    if (ev.source !== window.parent) {
-                        if (CI_APP_DEBUG && console && console.warn) {
-                            console.warn("[drawTimerHub:chat] source 거부");
-                        }
-                        return;
-                    }
+                    if (ev.source !== window.parent) return;
                 } catch (e) { return; }
                 renderTimer(d.remainSeconds, d.timeRound);
                 if (typeof d.connectUserCnt !== "undefined") {

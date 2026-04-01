@@ -47,8 +47,6 @@
 	var actionBaseUrl = '<?= rtrim(esc(site_furl("")), "/") ?>/';
 	window.ACTION_BASE_URL = actionBaseUrl;
 
-	var CI_APP_DEBUG = <?= json_encode(function_exists('ci_app_debug') ? ci_app_debug() : (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-
 	var dayLogUsesParentHub = false;
 	try {
 		dayLogUsesParentHub = window.parent && window.parent !== window;
@@ -164,7 +162,7 @@
 			if (!document.hidden) {
 				if (dayLogUsesParentHub) {
 					try {
-						window.parent.postMessage({ type: 'drawTimerHubRequestSync' }, window.location.origin);
+						window.parent.postMessage({ type: 'drawTimerHubRequestSync' }, '*');
 					} catch(e0) {}
 				} else {
 					try { syncDayLogDrawTimerFromServer(); } catch(e) {}
@@ -549,18 +547,7 @@
 			var d = ev.data;
 			if (!d || d.type !== 'drawTimerHub') return;
 			try {
-				if (ev.origin !== window.location.origin) {
-					if (CI_APP_DEBUG && console && console.warn) {
-						console.warn('[drawTimerHub:dayLog] origin 거부', ev.origin, 'expected', window.location.origin);
-					}
-					return;
-				}
-				if (ev.source !== window.parent) {
-					if (CI_APP_DEBUG && console && console.warn) {
-						console.warn('[drawTimerHub:dayLog] source 거부');
-					}
-					return;
-				}
+				if (ev.source !== window.parent) return;
 			} catch (e) { return; }
 			var sec = Math.max(0, parseInt(d.remainSeconds, 10) || 0);
 			var tr = d.timeRound;
@@ -581,7 +568,7 @@
 			try {
 				var _mvHub = document.getElementById('miniViewFrame');
 				if (_mvHub && _mvHub.contentWindow) {
-					_mvHub.contentWindow.postMessage(d, window.location.origin);
+					_mvHub.contentWindow.postMessage(d, '*');
 				}
 			} catch (e4) {}
 		});

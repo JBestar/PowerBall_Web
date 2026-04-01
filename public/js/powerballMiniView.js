@@ -206,7 +206,7 @@ function syncMiniViewDrawTimerFromServer() {
 function scheduleMiniViewSyncBurst() {
 	if (miniViewUsesParentHub) {
 		try {
-			window.parent.postMessage({ type: 'drawTimerHubRequestSync' }, window.location.origin);
+			window.parent.postMessage({ type: 'drawTimerHubRequestSync' }, '*');
 		} catch (e) {}
 		return;
 	}
@@ -254,18 +254,7 @@ if (miniViewUsesParentHub) {
 		var d = ev.data;
 		if (!d || d.type !== 'drawTimerHub') return;
 		try {
-			if (ev.origin !== window.location.origin) {
-				if (window.CI_APP_DEBUG && console && console.warn) {
-					console.warn('[drawTimerHub:miniView] origin 거부', ev.origin, 'expected', window.location.origin);
-				}
-				return;
-			}
-			if (ev.source !== window.parent) {
-				if (window.CI_APP_DEBUG && console && console.warn) {
-					console.warn('[drawTimerHub:miniView] source 거부');
-				}
-				return;
-			}
+			if (ev.source !== window.parent) return;
 		} catch (e) { return; }
 		if (document.hidden) {
 			if (window.CI_APP_DEBUG && console && console.log) {
