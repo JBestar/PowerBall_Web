@@ -61,15 +61,68 @@
             return baseUrl;
         }
         try {
-            if (window.location.protocol === 'https:' && /^http:\/\//i.test(baseUrl)) {
+            var p = (window.location.protocol || '').toLowerCase();
+            var securePage = p === 'https:';
+            if (!securePage && window.location.origin && /^https:/i.test(String(window.location.origin))) {
+                securePage = true;
+            }
+            if (securePage && /^http:\/\//i.test(baseUrl)) {
                 return baseUrl.replace(/^http:\/\//i, 'https://');
             }
         } catch (e) {}
         return baseUrl;
     }
 
-    var base = normalizeHubBase(typeof window.DRAW_TIMER_HUB_BASE === 'string' ? window.DRAW_TIMER_HUB_BASE : '');
-    base = upgradeBaseToMatchPageHttps(base);
+    /**
+     * app.furl 이 http 로 찍혀도, *같은 호스트*면 항상 현재 페이지 origin(스킴 포함)으로 POST URL 고정.
+     * → protocol 검사 실패·캐시와 무관하게 Mixed Content 방지.
+     */
+    function resolveAjaxBaseForPage(raw) {
+        var rawStr = typeof raw === 'string' ? raw : '';
+        var step1 = normalizeHubBase(rawStr);
+        var step2 = step1;
+        var sameHostResolved = false;
+        try {
+            var here = new URL(window.location.href);
+            var abs = new URL(step1, window.location.href);
+            if (abs.host === here.host) {
+                var path = abs.pathname || '/';
+                if (path.slice(-1) !== '/') {
+                    path += '/';
+                }
+                step2 = here.origin + path + (abs.search || '');
+                sameHostResolved = true;
+            } else {
+                step2 = upgradeBaseToMatchPageHttps(step1);
+            }
+        } catch (e1) {
+            step2 = upgradeBaseToMatchPageHttps(step1);
+        }
+
+        if (window.CI_APP_DEBUG) {
+            dbg(
+                '[base 해석]',
+                'RAW_DRAW_TIMER_HUB_BASE=',
+                rawStr,
+                '| normalize=',
+                step1,
+                '| sameHost=',
+                sameHostResolved,
+                '| final=',
+                step2,
+                '| loc.protocol=',
+                window.location.protocol,
+                '| loc.origin=',
+                window.location.origin,
+                '| loc.href=',
+                String(window.location.href).slice(0, 120)
+            );
+        }
+
+        return step2;
+    }
+
+    var base = resolveAjaxBaseForPage(typeof window.DRAW_TIMER_HUB_BASE === 'string' ? window.DRAW_TIMER_HUB_BASE : '');
     if (!base || base === '/') {
         dbgWarn('중단: POST URL 을 결정할 수 없음 (DRAW_TIMER_HUB_BASE=', window.DRAW_TIMER_HUB_BASE, ')');
         return;
