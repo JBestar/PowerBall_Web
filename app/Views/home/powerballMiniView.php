@@ -31,7 +31,14 @@
                     </div>
                     <div class="result">
                         [<span id="lastRound"><?= esc($last_round ?? '') ?></span>회차] 결과는<br>
-                        [<span id="lastResult" style="font-size:15px;"><?= esc($last_result ?? '-') ?></span>] 입니다.
+                        [<span id="lastResult" style="font-size:15px;color:#fff;"><?php
+                            $lrh = $last_result_html ?? '';
+                            if ($lrh !== '') {
+                                echo $lrh;
+                            } else {
+                                echo esc($last_result ?? '-');
+                            }
+                        ?></span>] 입니다.
                     </div>
                 </div>               
             </div>

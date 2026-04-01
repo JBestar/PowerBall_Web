@@ -1102,6 +1102,8 @@ class Home extends BaseController
             $headInfo   = $this->getSiteConf();
             $lastRound  = '';
             $lastResult = '-';
+            /** @var string JS updateResult()와 동일 마크업 — .result 노란색 상속을 피하기 위한 인라인 스타일 */
+            $lastResultHtml = '';
             $time_round = 1;
             $currentBalls = [];
             $prevBalls    = [];
@@ -1123,7 +1125,13 @@ class Home extends BaseController
                     ];
                     $pb  = (int)($latest->powerball ?? 0);
                     $sum = (int)($latest->ball_sum ?? 0);
-                    $lastResult  = implode(', ', $nums) . ', ' . $pb . ', ' . $sum;
+                    $parts = [];
+                    foreach ($nums as $n) {
+                        $parts[] = sprintf('%02d', (int) $n);
+                    }
+                    $lastResultHtml = implode(', ', $parts)
+                        . ', <span style="color:#66ffff;" class="b">' . $pb . '</span>, <span style="color:#fff;" class="b">' . $sum . '</span>';
+                    $lastResult  = implode(', ', $parts) . ', ' . $pb . ', ' . $sum;
                     $currentBalls = array_merge($nums, [$pb]);
                 }
                 if ($prev) {
@@ -1141,12 +1149,13 @@ class Home extends BaseController
                 // DB/테이블 미생성 시 빈 값 유지
             }
             $miniViewData = array_merge($headInfo, [
-                'remain_time'    => $this->getRemainSecondsUntilNextDraw(),
-                'time_round'     => $time_round,
-                'last_round'     => $lastRound,
-                'last_result'    => $lastResult,
-                'current_balls'  => $currentBalls,
-                'prev_balls'     => $prevBalls,
+                'remain_time'      => $this->getRemainSecondsUntilNextDraw(),
+                'time_round'       => $time_round,
+                'last_round'       => $lastRound,
+                'last_result'      => $lastResult,
+                'last_result_html' => $lastResultHtml,
+                'current_balls'    => $currentBalls,
+                'prev_balls'       => $prevBalls,
             ]);
             echo view('home/powerballMiniView', $miniViewData);
             return;
