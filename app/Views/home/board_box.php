@@ -37,9 +37,10 @@ $is_humor_admin = $is_humor_admin ?? false;
     $leftList = array_slice($list, 0, $half);
     $rightList = array_slice($list, $half);
 
-    // 유머 리스트: 제목이 flex로 남는 폭을 먹고, 메타(날짜)는 줄어들 수 있게 해 비로그인에서도 박스 밖으로 삐져나가지 않게 함
+    // 유머 리스트: 제목이 flex로 남는 폭을 먹음. 메타는 댓글 수만(등록일 표시 제거로 제목 글자수 상향)
     $iconColPx = '34px';
-    $titleMaxLen = $is_humor_admin ? 8 : 12;
+    $humorDateLenSaved = 7; // 기존 [n.j] 최대 길이에 맞춤
+    $titleMaxLen = ($is_humor_admin ? 8 : 12) + $humorDateLenSaved;
     ?>
     <div class="listBox" id="list_humor" style="display:block;">
         <div class="left">
@@ -64,7 +65,6 @@ $is_humor_admin = $is_humor_admin ?? false;
                     <span class="comment humorListMeta" style="flex:0 1 auto; max-width:38%; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; display:block; font-size:11px; line-height:14px; text-align:left;">
                         <?php $cc = (int)($row->comment_count ?? 0); ?>
                         <?php if ($cc > 0): ?>[<?= $cc ?>]<?php endif; ?>
-                        <?php if (!empty($row->created_at)): ?>[<?= esc(date('n.j', strtotime($row->created_at))) ?>]<?php endif; ?>
                     </span>
                     <?php if ($is_humor_admin): ?>
                         <span style="flex:0 0 auto; min-width:0; display:flex; gap:2px; align-items:center; justify-content:flex-end; white-space:nowrap; flex-shrink:0; margin-left:2px;">
@@ -105,7 +105,6 @@ $is_humor_admin = $is_humor_admin ?? false;
                     <span class="comment humorListMeta" style="flex:0 1 auto; max-width:38%; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; display:block; font-size:11px; line-height:14px; text-align:right;">
                         <?php $cc = (int)($row->comment_count ?? 0); ?>
                         <?php if ($cc > 0): ?>[<?= $cc ?>]<?php endif; ?>
-                        <?php if (!empty($row->created_at)): ?>[<?= esc(date('n.j', strtotime($row->created_at))) ?>]<?php endif; ?>
                     </span>
                     <?php if ($is_humor_admin): ?>
                         <span style="flex:0 0 auto; min-width:0; display:flex; gap:2px; align-items:center; justify-content:flex-end; white-space:nowrap; flex-shrink:0; margin-left:2px;">
