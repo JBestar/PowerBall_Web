@@ -31,7 +31,7 @@
                     </div>
                     <div class="result">
                         [<span id="lastRound"><?= esc($last_round ?? '') ?></span>회차] 결과는<br>
-                        [<span id="lastResult" style="font-size:15px;color:#fff;"><?php
+                        [<span id="lastResult" style="font-size:15px;"><?php
                             $lrh = $last_result_html ?? '';
                             if ($lrh !== '') {
                                 echo $lrh;
