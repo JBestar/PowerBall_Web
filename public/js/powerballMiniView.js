@@ -1,9 +1,14 @@
-/** 부모가 같은 출처일 때만 dayLog 허브 연동(타이머 postMessage). 타 도메인(라이온 iframe 등)이면 false → 서버 동기화 타이머 사용 */
+/**
+ * dayLog 메인과 같은 출처일 때만 부모 drawTimerHub(postMessage) 사용.
+ * void parent.location.href 로 판별하면 환경에 따라 오판할 수 있어 origin 비교(교차 출처는 접근 시 예외)로 고정.
+ */
 var miniViewUsesParentHub = false;
 try {
 	if (window.parent && window.parent !== window) {
-		void window.parent.location.href;
-		miniViewUsesParentHub = true;
+		var childOrigin = window.location.origin || (window.location.protocol + '//' + window.location.host);
+		// 교차 출처면 parent.location.* 접근 시 예외 → hub 끔
+		var parentOrigin = window.parent.location.origin;
+		miniViewUsesParentHub = (String(childOrigin) === String(parentOrigin));
 	}
 } catch (e) {
 	miniViewUsesParentHub = false;
@@ -464,6 +469,7 @@ function toggleMiniView()
 			parent.miniViewControl('open');
 		}
 		catch(e){}
+		try { if (typeof scheduleMiniViewSyncBurst === 'function') { scheduleMiniViewSyncBurst(); } } catch (e2) {}
 	}
 }
 

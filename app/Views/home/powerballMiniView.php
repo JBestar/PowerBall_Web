@@ -207,6 +207,11 @@ $(function(){
         setCookie('MINIVIEWLAYER','Y');
         $('#ladderResultBox').show();
         $('.miniViewBtn a.miniView').text('미니뷰 닫기');
+        try {
+            if (typeof window.scheduleMiniViewSyncBurst === 'function') {
+                window.scheduleMiniViewSyncBurst();
+            }
+        } catch (e) {}
     };
     window.hideLadderResultBox = function(){
         setCookie('MINIVIEWLAYER','N');
