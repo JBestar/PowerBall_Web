@@ -11,7 +11,13 @@ function miniviewDebugEnabled() {
 			return true;
 		}
 		var q = window.location && window.location.search ? window.location.search : '';
-		if (/\bmvdbg=1(?:&|$)/.test(q)) {
+		if (typeof URLSearchParams !== 'undefined') {
+			var sp = new URLSearchParams(q);
+			if (sp.get('mvdbg') === '1') {
+				return true;
+			}
+		}
+		if (q.indexOf('mvdbg=1') !== -1) {
 			return true;
 		}
 	} catch (e) {}

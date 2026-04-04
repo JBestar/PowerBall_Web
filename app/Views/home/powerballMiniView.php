@@ -188,8 +188,19 @@
     </div>
 </div>
 
-<?php /* 타이머/허브 진단: 이 페이지에 &mvdbg=1 붙이거나 콘솔에서 localStorage.setItem('MINIVIEW_DEBUG','1') 후 새로고침 → 콘솔 필터 [miniview-debug] */ ?>
+<?php
+$mvdbg = isset($_GET['mvdbg']) && (string) $_GET['mvdbg'] === '1';
+$miniViewJsPath = FCPATH . 'js' . DIRECTORY_SEPARATOR . 'powerballMiniView.js';
+$miniViewJsVer = @filemtime($miniViewJsPath) ?: time();
+?>
+<?php /* 타이머/허브 진단: ?mvdbg=1 또는 localStorage MINIVIEW_DEBUG=1. 콘솔 필터 [miniview-debug] */ ?>
 <script>
+<?php if ($mvdbg): ?>
+window.MINIVIEW_DEBUG = true;
+if (typeof console !== 'undefined' && console.info) {
+	console.info('[miniview-debug] probe: server saw mvdbg=1 → MINIVIEW_DEBUG=true (before powerballMiniView.js)');
+}
+<?php endif; ?>
 window.POWERBALL_AJAX_URL = '<?php echo site_furl(''); ?>';
 window.POWERBALL_BASE_URL = '<?php echo site_furl(''); ?>';
 window.CI_APP_DEBUG = <?= json_encode(function_exists('ci_app_debug') ? ci_app_debug() : (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
@@ -201,7 +212,7 @@ function getCookie(n){ var m = document.cookie.match(new RegExp('(^| )'+n+'=([^;
 <script src="<?php echo $local; ?>/js/jquery-ui.js"></script>
 <script>window.jQuery && !$.fn.number && ($.number = function(n){ return n == null ? '0' : String(n); });</script>
 <script src="<?php echo $local; ?>/js/TweenMax.min.js"></script>
-<script src="<?php echo $local; ?>/js/powerballMiniView.js"></script>
+<script src="<?php echo $local; ?>/js/powerballMiniView.js?v=<?= (int) $miniViewJsVer ?>"></script>
 <script>
 $(function(){
     window.showLadderResultBox = function(){
