@@ -74,7 +74,11 @@
                     <?php if (!empty($currentBalls)): ?>
                         <?php foreach ($currentBalls as $idx => $n): ?>
                             <?php $nInt = (int)$n; ?>
-                            <span class="ball_<?= mini_ball_color($nInt) ?>"><span class="ballNumber"><?= sprintf('%02d', $nInt) ?></span></span>
+                            <?php
+                            /** 일반볼 5개: 2자리 · 파워볼(0~9)만 1자리 — 0은 "0" (00 아님) */
+                            $ballLabel = ($idx < 5) ? sprintf('%02d', $nInt) : sprintf('%d', $nInt);
+                            ?>
+                            <span class="ball_<?= mini_ball_color($nInt) ?>"><span class="ballNumber"><?= esc($ballLabel) ?></span></span>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>            
@@ -83,7 +87,10 @@
                     <?php if (!empty($prevBalls)): ?>
                         <?php foreach ($prevBalls as $idx => $n): ?>
                             <?php $nInt = (int)$n; ?>
-                            <span class="ball_<?= mini_ball_color($nInt) ?>"><span class="ballNumber"><?= sprintf('%02d', $nInt) ?></span></span>
+                            <?php
+                            $ballLabelPrev = ($idx < 5) ? sprintf('%02d', $nInt) : sprintf('%d', $nInt);
+                            ?>
+                            <span class="ball_<?= mini_ball_color($nInt) ?>"><span class="ballNumber"><?= esc($ballLabelPrev) ?></span></span>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>

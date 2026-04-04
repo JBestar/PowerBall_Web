@@ -170,6 +170,10 @@ function updateResult(data)
 function showNumber(num, index)
 {
 	index = index == null ? 0 : index;
+	/** index 5 = 파워볼(0~9): 0은 "0"으로 표시(00 방지), ballColorSel도 숫자 한 자리로 맞춤 */
+	if (index === 5) {
+		num = String(parseInt(num, 10));
+	}
 	var delay = 2000 * index;
 	setTimeout(function(){
 		var ballColor = ballColorSel(num);
@@ -232,6 +236,7 @@ function ballColorSel(num)
 			var ballColor = 'green';
 			break;
 		case '0':
+		case '00':
 		case '04':
 		case '4':
 		case '08':
