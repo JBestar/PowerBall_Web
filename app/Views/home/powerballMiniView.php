@@ -190,6 +190,8 @@
 
 <?php
 $mvdbg = isset($_GET['mvdbg']) && (string) $_GET['mvdbg'] === '1';
+/** 라이온 등 외부 팝업 iframe: ?openMini=1 이면 초기 로드 시 미니뷰(추첨 패널) 펼침 */
+$openMiniEmbed = isset($_GET['openMini']) && (string) $_GET['openMini'] === '1';
 $miniViewJsPath = FCPATH . 'js' . DIRECTORY_SEPARATOR . 'powerballMiniView.js';
 $miniViewJsVer = @filemtime($miniViewJsPath) ?: time();
 ?>
@@ -204,6 +206,7 @@ if (typeof console !== 'undefined' && console.info) {
 window.POWERBALL_AJAX_URL = '<?php echo site_furl(''); ?>';
 window.POWERBALL_BASE_URL = '<?php echo site_furl(''); ?>';
 window.CI_APP_DEBUG = <?= json_encode(function_exists('ci_app_debug') ? ci_app_debug() : (string) ($_ENV['CI_ENVIRONMENT'] ?? '') === 'development', JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+window.PB_OPEN_MINI_EMBED = <?= !empty($openMiniEmbed) ? 'true' : 'false' ?>;
 var remainTime = <?= (int)($remain_time ?? 300) ?>;
 function setCookie(n,v){ try{ document.cookie = n+'='+v+'; path=/'; } catch(e){} }
 function getCookie(n){ var m = document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)')); return m ? m[2] : ''; }
@@ -230,7 +233,9 @@ $(function(){
         $('#ladderResultBox').hide();
         $('.miniViewBtn a.miniView').text('미니뷰 열기');
     };
-    if(getCookie('MINIVIEWLAYER') == 'Y'){
+    if (typeof window.PB_OPEN_MINI_EMBED !== 'undefined' && window.PB_OPEN_MINI_EMBED) {
+        showLadderResultBox();
+    } else if (getCookie('MINIVIEWLAYER') == 'Y') {
         showLadderResultBox();
     }
     /** 부모가 다른 도메인이면 접근 시 SecurityError → try/catch 로 null */
