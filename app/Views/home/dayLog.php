@@ -47,10 +47,19 @@
 	var actionBaseUrl = '<?= rtrim(esc(site_furl("")), "/") ?>/';
 	window.ACTION_BASE_URL = actionBaseUrl;
 
+	/** 미니뷰와 동일: 부모가 있어도 교차 출처이면 허브(postMessage) 없음 → ladder·ajax 동기화 필요 */
 	var dayLogUsesParentHub = false;
+	var _dayLogHubDetectError = null;
 	try {
-		dayLogUsesParentHub = window.parent && window.parent !== window;
-	} catch (e) {}
+		if (window.parent && window.parent !== window) {
+			var _chO = window.location.origin || (window.location.protocol + '//' + window.location.host);
+			var _prO = window.parent.location.origin;
+			dayLogUsesParentHub = (String(_chO) === String(_prO));
+		}
+	} catch (e) {
+		_dayLogHubDetectError = e && e.message ? e.message : String(e);
+		dayLogUsesParentHub = false;
+	}
 
 	// mainFrame 높이: 실제 문서 높이로 조절 (육매/패턴 영역·더보기 포함해 잘리지 않도록)
 	var DAYLOG_MIN_HEIGHT = 500;
@@ -181,14 +190,13 @@
 			}
 		});
 
-		if (!dayLogUsesParentHub) {
-			setTimeout(function() { try { syncDayLogDrawTimerFromServer(); } catch(e) {} }, 300);
-			setInterval(function() {
-				try {
-					if (!document.hidden) syncDayLogDrawTimerFromServer();
-				} catch(e) {}
-			}, 5000);
-		}
+		/* 허브만 쓰는 iframe에서 drawTimerHub 메시지를 놓치면 remainTime·추첨 0초 갱신이 안 됨 → ajaxChatTimer는 항상 보조 */
+		setTimeout(function() { try { syncDayLogDrawTimerFromServer(); } catch(e) {} }, 300);
+		setInterval(function() {
+			try {
+				if (!document.hidden) syncDayLogDrawTimerFromServer();
+			} catch(e) {}
+		}, 5000);
 
 /*
 		$('.defaultTable .menu').mouseover(function(){
@@ -521,6 +529,8 @@
 
 	// ladderTimer (서버에서 다음 추첨까지 남은 초·다음 회차로 초기화)
 	var remainTime = <?= (int)($remain_seconds ?? 300) ?>;
+	/** ajaxChatTimer 응답 기준 직전 remain — 0초 진입 시 회차별 분석 refresh (허브 누락 보강) */
+	var _prevAjaxChatRemainDayLog = null;
 
 	/** 서버 시계와 동기화 — 채팅(ajaxChatTimer)과 동일 소스로 맞춤 (다중 타이머·iframe 간 편차 방지) */
 	function syncDayLogDrawTimerFromServer() {
@@ -539,6 +549,14 @@
 			if (typeof resp.time_round !== 'undefined') {
 				$('#timeRound').text(resp.time_round);
 			}
+			try {
+				if (typeof curDate !== 'undefined' && typeof today !== 'undefined' && curDate == today) {
+					if (_prevAjaxChatRemainDayLog !== null && _prevAjaxChatRemainDayLog > 0 && sec === 0) {
+						try { dataRefresh(); } catch (e3) {}
+					}
+					_prevAjaxChatRemainDayLog = sec;
+				}
+			} catch (e4) {}
 		}, 'json');
 	}
 
