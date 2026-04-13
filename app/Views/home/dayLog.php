@@ -416,6 +416,11 @@
 
 					dataRefresh_process = false;
 
+					if (data && data.state === 'error' && data.msg) {
+						dayLogDbgLog('dataRefresh server error (HTTP 200)', { msg: data.msg });
+						console.warn('[dayLog] refreshLog server error:', data.msg);
+					}
+
 					if(data.state == 'success')
 					{
 						// 전체 분석 데이터 갱신

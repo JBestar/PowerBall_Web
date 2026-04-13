@@ -235,11 +235,14 @@ class PowerballDraw_Model extends Model
             try {
                 $db->query("ALTER TABLE `{$table}` ADD COLUMN `daily_round` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'KST 당일 일회차(1~)' AFTER `round`");
             } catch (\Throwable $e) {
+                // Duplicate column: 경합. 그 외: 공유호스팅 DDL 금지·권한 없음 등 — ajax 열람이 500 나지 않도록 throw 하지 않음(마이그레이션으로 컬럼 추가 필요).
                 if (stripos($e->getMessage(), 'Duplicate column') === false) {
-                    throw $e;
+                    log_message('critical', 'PowerballDraw_Model ensureDailyRoundColumn ADD daily_round: ' . $e->getMessage());
                 }
             }
-            $this->backfillDailyRound();
+            if ($db->fieldExists('daily_round', $table)) {
+                $this->backfillDailyRound();
+            }
         } elseif ($this->where('daily_round', 0)->countAllResults() > 0) {
             $this->backfillDailyRound();
         }

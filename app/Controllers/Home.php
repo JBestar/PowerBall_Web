@@ -1506,6 +1506,20 @@ class Home extends BaseController
      */
     public function ajaxPowerballLog()
     {
+        try {
+            return $this->ajaxPowerballLogBody();
+        } catch (\Throwable $e) {
+            log_message('critical', 'ajaxPowerballLog: ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine());
+
+            return $this->response->setStatusCode(200)->setJSON([
+                'state' => 'error',
+                'msg'   => (defined('ENVIRONMENT') && ENVIRONMENT === 'development') ? $e->getMessage() : 'ajaxPowerballLog failed',
+            ]);
+        }
+    }
+
+    private function ajaxPowerballLogBody()
+    {
         $actionType = $this->request->getPost('actionType');
         $drawModel  = new \App\Models\PowerballDraw_Model();
         $drawModel->ensureDailyRoundColumn();
@@ -1557,9 +1571,10 @@ class Home extends BaseController
 
             [$dateFrom, $dateTo] = \App\Models\PowerballDraw_Model::gameDayWindowFromPickerDate($date);
 
+            // ensureDailyRoundColumn() 이후 빌더 상태·인스턴스 오염 방지: 조회마다 새 모델
             $latestRoundInWindow = 0;
             if ($daylogSyncDebug) {
-                $latestRow = $drawModel
+                $latestRow = (new \App\Models\PowerballDraw_Model())
                     ->where('drawn_at >=', $dateFrom)
                     ->where('drawn_at <=', $dateTo)
                     ->orderBy('round', 'DESC')
@@ -1567,7 +1582,7 @@ class Home extends BaseController
                 $latestRoundInWindow = $latestRow ? (int) $latestRow->round : 0;
             }
 
-            $draw = $drawModel
+            $draw = (new \App\Models\PowerballDraw_Model())
                 ->where('drawn_at >=', $dateFrom)
                 ->where('drawn_at <=', $dateTo)
                 ->where('round >', $afterRound)
@@ -1575,6 +1590,10 @@ class Home extends BaseController
                 ->first();
 
             if ($daylogSyncDebug) {
+                $logDir = WRITEPATH . 'logs';
+                if (! is_dir($logDir)) {
+                    @mkdir($logDir, 0755, true);
+                }
                 $logLine = sprintf(
                     "[%s] daylog refreshLog date=%s window=[%s..%s] client_afterRound=%d latest_db_in_window=%d new_row=%s\n",
                     date('c'),
@@ -1585,7 +1604,7 @@ class Home extends BaseController
                     $latestRoundInWindow,
                     $draw ? 'Y round=' . (int) $draw->round : 'N'
                 );
-                @file_put_contents(WRITEPATH . 'logs/daylog_sync_debug.log', $logLine, FILE_APPEND | LOCK_EX);
+                @file_put_contents($logDir . '/daylog_sync_debug.log', $logLine, FILE_APPEND | LOCK_EX);
             }
 
             if (!$draw) {
