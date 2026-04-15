@@ -320,7 +320,8 @@
 					action:'ajaxPowerballLog',
 					actionType:'dayLog',
 					date:curDate,
-					page:page
+					page:page,
+					daylog_sync_debug: _dayLogDebug ? '1' : '0'
 				},
 				success:function(data,textStatus){
 					var $tbody = $('#powerballLogBox tbody.content');
@@ -417,8 +418,8 @@
 					dataRefresh_process = false;
 
 					if (data && data.state === 'error' && data.msg) {
-						dayLogDbgLog('dataRefresh server error (HTTP 200)', { msg: data.msg });
-						console.warn('[dayLog] refreshLog server error:', data.msg);
+						dayLogDbgLog('dataRefresh server error (HTTP 200)', { msg: data.msg, error_class: data.error_class });
+						console.warn('[dayLog] refreshLog server error:', data.msg, data.error_class || '');
 					}
 
 					if(data.state == 'success')

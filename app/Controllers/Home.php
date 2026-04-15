@@ -1509,12 +1509,37 @@ class Home extends BaseController
         try {
             return $this->ajaxPowerballLogBody();
         } catch (\Throwable $e) {
+            $exposeDetail = (defined('ENVIRONMENT') && ENVIRONMENT === 'development')
+                || ($this->request->getPost('daylog_sync_debug') === '1');
+
+            $logDir = WRITEPATH . 'logs';
+            if (! is_dir($logDir)) {
+                @mkdir($logDir, 0755, true);
+            }
+            $logBody = date('c')
+                . ' actionType=' . var_export($this->request->getPost('actionType'), true)
+                . ' daylog_sync_debug=' . var_export($this->request->getPost('daylog_sync_debug'), true)
+                . "\n" . $e->getMessage()
+                . ' @ ' . $e->getFile() . ':' . $e->getLine()
+                . "\n" . $e->getTraceAsString() . "\n\n";
+            @file_put_contents($logDir . '/ajax_powerball_log_errors.log', $logBody, FILE_APPEND | LOCK_EX);
+
             log_message('critical', 'ajaxPowerballLog: ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine());
 
-            return $this->response->setStatusCode(200)->setJSON([
+            $msg = $exposeDetail ? $e->getMessage() : 'ajaxPowerballLog failed';
+            if ($exposeDetail && strlen($msg) > 1200) {
+                $msg = substr($msg, 0, 1200) . '…';
+            }
+
+            $payload = [
                 'state' => 'error',
-                'msg'   => (defined('ENVIRONMENT') && ENVIRONMENT === 'development') ? $e->getMessage() : 'ajaxPowerballLog failed',
-            ]);
+                'msg'   => $msg,
+            ];
+            if ($exposeDetail) {
+                $payload['error_class'] = get_class($e);
+            }
+
+            return $this->response->setStatusCode(200)->setJSON($payload);
         }
     }
 

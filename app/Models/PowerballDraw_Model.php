@@ -241,10 +241,11 @@ class PowerballDraw_Model extends Model
                 }
             }
             if ($db->fieldExists('daily_round', $table)) {
-                $this->backfillDailyRound();
+                $this->backfillDailyRound(500);
             }
-        } elseif ($this->where('daily_round', 0)->countAllResults() > 0) {
-            $this->backfillDailyRound();
+        } else {
+            // 컬럼은 있는데 0인 행만 소량씩 백필 (운영 대용량에서 매 요청 전체 findAll 금지 → ajax 예외 방지)
+            $this->backfillDailyRound(500);
         }
         $this->ensureUniqueDrawnAtConstraint();
         // 게임일(00:05 기준) 규칙 변경 후 기존 일회차를 다시 맞추려면 DB에서 한 번 실행:
@@ -274,11 +275,17 @@ class PowerballDraw_Model extends Model
 
     /**
      * daily_round=0 인 행에 대해 drawn_at(KST) 시각 기준 일회차로 백필.
+     * 운영에서 draw_results가 크면 전체 스캔 시 요청 타임아웃·메모리 초과 → 한 요청당 최대 $maxRows 행만 처리.
      */
-    public function backfillDailyRound(): void
+    public function backfillDailyRound(int $maxRows = 500): void
     {
-        $all = $this->orderBy('round', 'ASC')->findAll();
-        foreach ($all as $draw) {
+        if ($maxRows < 1) {
+            return;
+        }
+        $rows = $this->where('daily_round', 0)
+            ->orderBy('id', 'ASC')
+            ->findAll($maxRows);
+        foreach ($rows as $draw) {
             $at = $draw->drawn_at ?? '';
             if ($at === '') {
                 continue;
