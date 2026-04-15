@@ -62,6 +62,8 @@
 	var actionBaseUrl = '<?= rtrim(esc(site_furl("")), "/") ?>/';
 	window.ACTION_BASE_URL = actionBaseUrl;
 	var roundCnt = <?= (int)($roundCnt ?? 300) ?>;
+	/** 회차별 분석 테이블만 dayLog와 동일 30행 (전체 분석·패턴·육매는 roundCnt 유지) */
+	var latestLogRowsPerPage = 30;
 	window.ANALYSIS_MODE = 'latestLog';
 	window.LATEST_ROUND_CNT = roundCnt;
 	var today = '<?= date('Y-m-d') ?>';
@@ -144,8 +146,8 @@
 					setTimeout(function () { $newRows.removeClass('powerballLogNewFlash'); }, 2800);
 
 					var $content = $('#powerballLogBox tbody.content');
-					if ($content.find('tr').length > roundCnt) {
-						$content.find('tr').slice(roundCnt).remove();
+					if ($content.find('tr').length > latestLogRowsPerPage) {
+						$content.find('tr').slice(latestLogRowsPerPage).remove();
 					}
 
 					// 일자별 분석 dataRefresh와 동일: resultBox 바 테두리 펄스
@@ -254,7 +256,7 @@
 						$tbody.append($('#tmpl_dayLog').tmpl(data));
 					else
 						$tbody.append('<tr class="trOdd"><td colspan="12" height="50" align="center" style="color:#888;">최근 추첨 결과가 없습니다.</td></tr>');
-					var maxRows = roundCnt;
+					var maxRows = latestLogRowsPerPage;
 					if ($tbody.find('tr').length > maxRows)
 						$tbody.find('tr').slice(maxRows).remove();
 				} else if (page !== 0 && data && data.content && data.content.length) {
@@ -586,7 +588,7 @@
 			<col width="12%"/><col width="5%"/><col width="9%"/><col width="9%"/><col width="7%"/><col width="7%"/>
 		</colgroup>
 		<tr>
-			<th height="30" colspan="12" class="title" style="position:relative;">회차별 분석 데이터 (최근)<span style="position:absolute;top:6px;right:10px;color:#969696;" class="siteLink">copyright <a href="/?referer=dayLogBtn" target="_blank" class="titleCopy">powerballgame.co.kr</a></span></th>
+			<th height="30" colspan="12" class="title" style="position:relative;">회차별 분석 데이터 (최근 30회)<span style="position:absolute;top:6px;right:10px;color:#969696;" class="siteLink">copyright <a href="/?referer=dayLogBtn" target="_blank" class="titleCopy">powerballgame.co.kr</a></span></th>
 		</tr>
 		<tr class="subTitle">
 			<th height="60" rowspan="2">회차</th>

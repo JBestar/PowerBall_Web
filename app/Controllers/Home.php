@@ -1653,13 +1653,8 @@ class Home extends BaseController
             if ($page < 0) {
                 $page = 0;
             }
-            $roundCnt = (int) $this->request->getPost('roundCnt');
-            if ($roundCnt < 50 || $roundCnt > 2000) {
-                $roundCnt = 300;
-            } else {
-                $roundCnt = (int) (round($roundCnt / 50) * 50);
-            }
-            $perPage = $roundCnt;
+            // 회차별 표는 일자별 분석(dayLog)과 동일하게 30행 단위. 상단「최근 N회」집계용 roundCnt는 ajaxPowerballAnalyse 등에서만 사용.
+            $perPage = 30;
             $offset  = $page * $perPage;
 
             $rows = $drawModel
